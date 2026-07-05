@@ -1,14 +1,23 @@
-# Restaurant Revenue AI SaaS - Production Core V1
+# Restaurant Revenue AI SaaS - Production Core V1.1
 
 Production Core for the SaaS platform: Vercel frontend + serverless API + Supabase-ready persistence.
 
 ## What changed in this version
 
+- Dashboard button **Générer rapport** now works.
+  - It reads the KPI cards, IA recommendations, assistant-server signals, products, and active promotions currently displayed.
+  - It opens a director-ready report modal.
+  - The report can be copied or downloaded as a `.txt` file.
+- Visual redesign with a modern restaurant/kitchen atmosphere.
+  - Warmer culinary background.
+  - Subtle tile/grid texture.
+  - Sober charcoal, cream, amber and wood-inspired tones.
+  - More premium cards and panels.
 - Super Admin tabs fixed: clicking `Vue globale`, `Restaurants`, `Plans`, `Onboarding`, `Support`, or `Analytics` no longer scrolls the page to the top.
 - App tabs also keep context instead of forcing a top scroll.
 - UI state is preserved in localStorage.
 - Product and promotion changes persist locally and can sync to Supabase.
-- New API endpoints:
+- API endpoints:
   - `/api/health`
   - `/api/signup`
   - `/api/restaurants`
@@ -39,6 +48,14 @@ https://YOUR_DOMAIN.vercel.app/health
 https://YOUR_DOMAIN.vercel.app/api/products
 https://YOUR_DOMAIN.vercel.app/api/promotions
 ```
+
+Then open:
+
+```text
+Espace restaurant > Dashboard > Générer rapport
+```
+
+Expected result: a modal report appears with KPI synthesis, recommendations, operational reading, and 7-day action plan.
 
 ## Connect Supabase
 

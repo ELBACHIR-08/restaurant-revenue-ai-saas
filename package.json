@@ -1,8 +1,8 @@
 {
   "name": "restaurant-revenue-ai-saas",
-  "version": "1.2.0-production-core",
+  "version": "1.2.1-report-kitchen",
   "private": true,
-  "description": "Restaurant Revenue AI - SaaS Production Core for restaurants in Senegal",
+  "description": "Restaurant Revenue AI - SaaS Production Core with working report generation and restaurant-inspired UI",
   "scripts": {
     "dev": "vercel dev",
     "check": "node scripts/check.js"

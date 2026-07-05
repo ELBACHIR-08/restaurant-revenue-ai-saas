@@ -7,14 +7,14 @@
   <meta name="description" content="Plateforme SaaS IA production-ready core pour restaurants : reservations, commandes, paiements, CRM, promotions, dashboard revenue et administration." />
   <style>
     :root{
-      --bg:#f7f4ed;
+      --bg:#f5efe4;
       --paper:#ffffff;
       --ink:#14110f;
       --muted:#706a62;
-      --soft:#eee7da;
-      --line:#e1d7c6;
-      --accent:#c88a1d;
-      --accent-2:#7d4e17;
+      --soft:#efe3d0;
+      --line:#dccbb2;
+      --accent:#b9781e;
+      --accent-2:#6f4214;
       --good:#168a5b;
       --bad:#b42318;
       --info:#2b63b8;
@@ -27,10 +27,35 @@
     html{scroll-behavior:smooth}
     body{
       margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
       color:var(--ink);
-      background:radial-gradient(circle at 10% 0%, #fff7e6 0, transparent 35%), radial-gradient(circle at 90% 8%, #eadbc4 0, transparent 30%), var(--bg);
+      background:
+        radial-gradient(circle at 12% 4%, rgba(255,239,204,.92) 0, transparent 31%),
+        radial-gradient(circle at 92% 7%, rgba(195,132,52,.20) 0, transparent 28%),
+        linear-gradient(135deg,#fbf7ef 0%,#f2e7d5 45%,#efe2cd 100%);
       font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(circle at 14% 28%, rgba(255,255,255,.58) 0 0, rgba(255,255,255,.22) 0 18%, transparent 19%),
+        radial-gradient(circle at 83% 21%, rgba(23,19,15,.06) 0 0, rgba(23,19,15,.03) 0 14%, transparent 15%),
+        radial-gradient(circle at 88% 76%, rgba(185,120,30,.13) 0 0, transparent 24%),
+        repeating-linear-gradient(90deg, rgba(84,62,40,.050) 0 1px, transparent 1px 82px),
+        repeating-linear-gradient(0deg, rgba(84,62,40,.038) 0 1px, transparent 1px 82px);
+      mix-blend-mode:multiply;
+    }
+    body::after{
+      content:"";position:fixed;right:-90px;bottom:-110px;width:360px;height:360px;pointer-events:none;z-index:0;opacity:.38;
+      background:
+        radial-gradient(circle, transparent 0 42%, rgba(255,255,255,.72) 43% 52%, transparent 53% 100%),
+        radial-gradient(circle at 48% 48%, rgba(86,54,24,.12) 0 6%, transparent 7%);
+      border-radius:50%;
+      filter:blur(.2px);
+    }
+    header, main, .mobile-bar, .toast, .modal-backdrop{position:relative;z-index:1}
     button,input,select,textarea{font:inherit}
     button{cursor:pointer}
     a{color:inherit;text-decoration:none}
@@ -38,7 +63,7 @@
     .topbar{
       position:sticky;top:0;z-index:50;
       backdrop-filter:blur(18px);
-      background:rgba(247,244,237,.82);
+      background:rgba(249,244,235,.86);
       border-bottom:1px solid rgba(225,215,198,.78);
     }
     .nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -67,10 +92,10 @@
     .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
     .trust-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;color:#5d554b;font-weight:750;font-size:14px}
     .trust-row span{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.65);border:1px solid rgba(225,215,198,.8);padding:9px 12px;border-radius:999px}
-    .hero-card{background:linear-gradient(180deg,#1e1711,#11100f);color:#fff;border-radius:34px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-card{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 16px),linear-gradient(180deg,#211811,#11100f);color:#fff;border-radius:34px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
     .hero-card:before{content:"";position:absolute;inset:-120px -60px auto auto;height:270px;width:270px;background:radial-gradient(circle,#d6972a66,transparent 67%)}
     .hero-card h3{margin:0;font-size:21px}
-    .screen{position:relative;background:#fff;color:var(--ink);border-radius:28px;margin-top:20px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+    .screen{position:relative;background:linear-gradient(180deg,#fff,#fbf6ed);color:var(--ink);border:1px solid rgba(255,255,255,.75);border-radius:28px;margin-top:20px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
     .screen-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:13px;margin-bottom:14px}
     .dots{display:flex;gap:6px}.dots i{height:9px;width:9px;background:#d7c8b0;border-radius:999px;display:block}
     .metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -84,11 +109,11 @@
     .section-title p{color:var(--muted);line-height:1.6;font-size:18px;max-width:780px;margin:0 auto}
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
     .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .card{background:rgba(255,255,255,.86);border:1px solid rgba(225,215,198,.8);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(31,23,14,.05)}
+    .card{background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border:1px solid rgba(220,203,178,.82);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(31,23,14,.05)}
     .card h3{margin:0 0 8px;font-size:21px;letter-spacing:-.02em}
     .card p{margin:0;color:var(--muted);line-height:1.55}
     .icon{height:44px;width:44px;border-radius:16px;background:#fff0cf;display:grid;place-items:center;font-size:22px;margin-bottom:14px}
-    .dark-section{margin:54px 0;padding:38px 0;background:linear-gradient(135deg,#17130f,#2a1c0f);color:#fff;border-radius:36px;overflow:hidden}
+    .dark-section{margin:54px 0;padding:38px 0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 14px),linear-gradient(135deg,#17130f,#2a1c0f);color:#fff;border-radius:36px;overflow:hidden}
     .dark-section .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);box-shadow:none;color:#fff}
     .dark-section .card p{color:#d7c8b9}
     .pricing{padding:16px 0 48px}
@@ -124,16 +149,24 @@
     .product-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;display:grid;gap:12px;box-shadow:0 10px 26px rgba(31,23,14,.05)}.product-top{display:flex;justify-content:space-between;gap:14px}.product-name{font-weight:950;font-size:18px}.price-small{font-weight:950;color:#7a4f13}.toggles{display:flex;gap:6px;flex-wrap:wrap}
     .check-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee4d5}.check-row:last-child{border-bottom:0}.switch{height:28px;width:50px;border-radius:999px;background:#dfd2c0;position:relative;transition:.18s}.switch:after{content:"";position:absolute;top:4px;left:4px;height:20px;width:20px;background:#fff;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.18s}.switch.on{background:var(--good)}.switch.on:after{left:26px}
     .checkout{position:relative;border-radius:28px;background:linear-gradient(180deg,#fff,#fbf5ea);border:1px solid var(--line);padding:20px;box-shadow:var(--shadow)}
-    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(100px);background:#17130f;color:#fff;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 18px 40px rgba(0,0,0,.22);z-index:100;opacity:0;transition:.25s}.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .modal-backdrop{display:none;position:fixed;inset:0;z-index:200;background:rgba(18,14,10,.58);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:22px}
+    .modal-backdrop.show{display:flex}
+    .report-modal{width:min(980px,100%);max-height:min(88vh,900px);overflow:auto;background:linear-gradient(180deg,#fff,#fbf6ed);border:1px solid rgba(255,255,255,.72);border-radius:30px;box-shadow:0 28px 90px rgba(0,0,0,.34);padding:22px}
+    .report-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
+    .report-head h2{margin:0;font-size:34px;letter-spacing:-.05em}.report-head p{margin:7px 0 0;color:var(--muted)}
+    .report-actions{display:flex;gap:8px;flex-wrap:wrap}.report-actions button{white-space:nowrap}
+    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.report-kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}.report-kpi .value{font-size:24px;font-weight:950;letter-spacing:-.04em}.report-kpi .label{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+    .report-section{margin-top:16px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:22px;padding:18px}.report-section h3{margin:0 0 10px}.report-section ul{margin:0;padding-left:20px;line-height:1.65;color:#3f352c}.report-note{background:#17130f;color:#fff;border-radius:22px;padding:18px;line-height:1.6}.report-note strong{color:#ffd175}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(100px);background:#17130f;color:#fff;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 18px 40px rgba(0,0,0,.22);z-index:300;opacity:0;transition:.25s}.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
     .mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:60;padding:8px 10px}.mobile-bar button{flex:1;border:0;background:transparent;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:900;color:#5b5248}.mobile-bar button.active{background:#17130f;color:#fff}
-    .admin-hero{background:linear-gradient(135deg,#101010,#2b2016);color:#fff;border-radius:34px;padding:28px;box-shadow:var(--shadow);margin:24px 0}.admin-shell{display:grid;grid-template-columns:260px 1fr;gap:18px;padding-bottom:44px}
+    .admin-hero{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 14px),linear-gradient(135deg,#101010,#2b2016);color:#fff;border-radius:34px;padding:28px;box-shadow:var(--shadow);margin:24px 0}.admin-shell{display:grid;grid-template-columns:260px 1fr;gap:18px;padding-bottom:44px}
     .progress{height:9px;background:#eee0ce;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#f1b94d);border-radius:999px}
     .timeline{display:grid;gap:12px}.timeline .item{display:grid;grid-template-columns:28px 1fr;gap:10px}.timeline .dot{height:26px;width:26px;border-radius:999px;background:#fff0cf;display:grid;place-items:center;color:#70480e;font-weight:950}.timeline .body{border-bottom:1px solid #eee4d5;padding-bottom:12px}.timeline .body b{display:block;margin-bottom:4px}
     @media (max-width: 1024px){
       .hero-grid,.split,.app-shell,.admin-shell{grid-template-columns:1fr}.sidebar{position:relative;top:auto;max-height:none}.kpi-grid,.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3,.three-col,.two-col{grid-template-columns:1fr}.hero-card{order:-1}.panel-title{align-items:flex-start;flex-direction:column}.navlinks{display:none}.mobile-bar{display:flex}.wrap{padding:0 16px}.topbar .nav{height:64px}.hero{padding-top:34px}body{padding-bottom:72px}.price-card.featured{transform:none}
     }
     @media (max-width:620px){
-      .metric-grid,.kpi-grid,.form-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.panel-title h2{font-size:30px}.card,.form-card,.checkout{border-radius:20px;padding:16px}.price{font-size:36px}.brand span:last-child{font-size:15px}.logo{height:38px;width:38px}.hero-actions .primary,.hero-actions .secondary{width:100%;text-align:center;justify-content:center}.row .primary,.row .secondary{width:100%}
+      .metric-grid,.kpi-grid,.form-grid,.report-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.panel-title h2{font-size:30px}.card,.form-card,.checkout{border-radius:20px;padding:16px}.price{font-size:36px}.brand span:last-child{font-size:15px}.logo{height:38px;width:38px}.hero-actions .primary,.hero-actions .secondary{width:100%;text-align:center;justify-content:center}.row .primary,.row .secondary{width:100%}.report-modal{padding:16px;border-radius:22px}.report-head{flex-direction:column}.report-head h2{font-size:28px}.report-actions{width:100%}.report-actions button{flex:1}
     }
   </style>
 </head>
@@ -348,6 +381,23 @@
     <button data-page="app">App</button>
     <button data-page="admin">Admin</button>
   </div>
+  <div class="modal-backdrop" id="reportModal" aria-hidden="true" onclick="if(event.target.id==='reportModal') closeReportModal()">
+    <div class="report-modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+      <div class="report-head">
+        <div>
+          <span class="badge">Rapport généré selon les KPI affichés</span>
+          <h2 id="reportTitle">Rapport directeur</h2>
+          <p id="reportSubtitle">Synthèse revenue, recommandations IA et plan d'action.</p>
+        </div>
+        <div class="report-actions">
+          <button class="secondary" onclick="copyReport()">Copier</button>
+          <button class="primary" onclick="downloadReport()">Télécharger</button>
+          <button class="secondary" onclick="closeReportModal()">Fermer</button>
+        </div>
+      </div>
+      <div id="reportContent"></div>
+    </div>
+  </div>
   <div class="toast" id="toast">Action effectuée</div>
 
 <script>
@@ -438,6 +488,7 @@ let state = {
   ownerName: "Bachir",
   phone: "+221 77 000 00 00",
   email: "contact@restaurant.sn",
+  latestReport: "",
   products: [
     { name: "Chateaubriand 600g", category: "Viande premium", price: 45000, tags: ["Signature", "Sur place"], delivery: false, takeaway: true, margin: 62 },
     { name: "Filet de daurade royale", category: "Poisson", price: 16500, tags: ["Populaire", "Livrable"], delivery: true, takeaway: true, margin: 48 },
@@ -635,9 +686,110 @@ function openAppView(view){
   renderAppNav();
   persistUiState();
 }
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+}
+function collectDisplayedDashboardData(){
+  const root = qs("#app-dashboard");
+  const kpis = qsa("#app-dashboard .kpi-grid .kpi").map(card => ({
+    label: card.querySelector(".lab")?.textContent.trim() || "KPI",
+    value: card.querySelector(".num")?.textContent.trim() || "-",
+    trend: card.querySelector(".trend")?.textContent.trim() || ""
+  }));
+  const recommendations = qsa("#app-dashboard .timeline .body").map(item => ({
+    title: item.querySelector("b")?.textContent.trim() || "Recommandation",
+    detail: item.querySelector("span")?.textContent.trim() || ""
+  }));
+  const scoreCard = root?.querySelector(".two-col .card:nth-child(2)");
+  const score = scoreCard?.querySelector("p")?.textContent.trim() || "Score Revenue AI non disponible";
+  const assistantSignals = qsa("#app-dashboard .card:last-child .metric").map(item => ({
+    context: item.querySelector(".label")?.textContent.trim() || "Signal",
+    value: item.querySelector(".value")?.textContent.trim() || "-",
+    action: item.querySelector(".delta")?.textContent.trim() || ""
+  }));
+  return { kpis, recommendations, score, assistantSignals, products: state.products, promos: state.promos, generatedAt: new Date().toLocaleString("fr-FR") };
+}
+function buildDashboardReport(data){
+  const byLabel = (keyword) => data.kpis.find(k => k.label.toLowerCase().includes(keyword.toLowerCase())) || {value:"-", trend:""};
+  const revenue = byLabel("CA direct");
+  const basket = byLabel("Panier moyen");
+  const reservations = byLabel("Réservations");
+  const orders = byLabel("Commandes");
+  const promoActive = data.promos.filter(p => (p.status || "").toLowerCase() === "active").length;
+  const deliveryProducts = data.products.filter(p => p.delivery).length;
+  const text = [
+    `Rapport directeur - Restaurant Revenue AI`,
+    `Généré le ${data.generatedAt}`,
+    ``,
+    `Synthèse exécutive`,
+    `Selon les résultats affichés dans le dashboard, le restaurant affiche ${revenue.value} de CA direct aujourd'hui, un panier moyen de ${basket.value}, ${reservations.value} réservations et ${orders.value} commandes directes. ${revenue.trend ? `La tendance principale est : ${revenue.trend}.` : ""}`,
+    ``,
+    `KPI affichés`,
+    ...data.kpis.map(k => `- ${k.label}: ${k.value}${k.trend ? ` (${k.trend})` : ""}`),
+    ``,
+    `Recommandations IA`,
+    ...data.recommendations.map((r,i) => `${i+1}. ${r.title} - ${r.detail}`),
+    ``,
+    `Lecture opérationnelle`,
+    `- Produits configurés: ${data.products.length}, dont ${deliveryProducts} livrables.`,
+    `- Promotions actives: ${promoActive} sur ${data.promos.length}.`,
+    `- Priorité commerciale: pousser les upsells à forte valeur sur les créneaux premium et déclencher les promotions livraison uniquement sur panier minimum.`,
+    ``,
+    `Plan d'action recommandé`,
+    `1. Mettre en avant les produits signature après 20h avec accord boisson.` ,
+    `2. Forcer une proposition dessert après les plats poisson et les commandes duo.` ,
+    `3. Suivre la conversion des promotions actives pendant 7 jours avant scaling.`
+  ].join("\n");
+  return { revenue, basket, reservations, orders, promoActive, deliveryProducts, text };
+}
+function generateDashboardReport(){
+  const data = collectDisplayedDashboardData();
+  const report = buildDashboardReport(data);
+  state.latestReport = report.text;
+  const kpiHtml = data.kpis.map(k => `<div class="report-kpi"><div class="label">${escapeHtml(k.label)}</div><div class="value">${escapeHtml(k.value)}</div><div class="mini muted">${escapeHtml(k.trend)}</div></div>`).join("");
+  const recHtml = data.recommendations.map((r,i) => `<li><strong>${i+1}. ${escapeHtml(r.title)}</strong><br><span class="muted">${escapeHtml(r.detail)}</span></li>`).join("");
+  const assistantHtml = data.assistantSignals.map(s => `<li><strong>${escapeHtml(s.context)} : ${escapeHtml(s.value)}</strong> — ${escapeHtml(s.action)}</li>`).join("");
+  qs("#reportSubtitle").textContent = `Généré le ${data.generatedAt} à partir des chiffres visibles dans le dashboard.`;
+  qs("#reportContent").innerHTML = `
+    <div class="report-note"><strong>Synthèse exécutive.</strong> Selon les KPI affichés, le restaurant génère <strong>${escapeHtml(report.revenue.value)}</strong> de CA direct aujourd'hui, avec un panier moyen de <strong>${escapeHtml(report.basket.value)}</strong>, <strong>${escapeHtml(report.reservations.value)}</strong> réservations et <strong>${escapeHtml(report.orders.value)}</strong> commandes directes.</div>
+    <div class="report-grid mt">${kpiHtml}</div>
+    <div class="report-section"><h3>Recommandations IA à exécuter</h3><ul>${recHtml}</ul></div>
+    <div class="report-section"><h3>Signaux assistant serveur</h3><ul>${assistantHtml}</ul></div>
+    <div class="report-section"><h3>Lecture opérationnelle</h3><ul><li>${data.products.length} produits configurés, dont ${report.deliveryProducts} livrables.</li><li>${report.promoActive} promotions actives sur ${data.promos.length} configurées.</li><li>Priorité : pousser les upsells à forte valeur sur les créneaux premium et mesurer la conversion sur 7 jours.</li></ul></div>
+    <div class="report-section"><h3>Plan d'action 7 jours</h3><ul><li>Mettre en avant les produits signature après 20h avec accord boisson.</li><li>Déclencher dessert ou boisson maison après les commandes poisson et duo.</li><li>Suivre les promotions actives et couper celles qui ne génèrent pas de panier additionnel.</li></ul></div>
+  `;
+  qs("#reportModal").classList.add("show");
+  qs("#reportModal").setAttribute("aria-hidden","false");
+  showToast("Rapport généré selon les KPI affichés");
+}
+function closeReportModal(){
+  qs("#reportModal")?.classList.remove("show");
+  qs("#reportModal")?.setAttribute("aria-hidden","true");
+}
+function copyReport(){
+  if(!state.latestReport) generateDashboardReport();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(state.latestReport).then(() => showToast("Rapport copié"), () => showToast("Copie non disponible"));
+  } else {
+    showToast("Copie non disponible sur ce navigateur");
+  }
+}
+function downloadReport(){
+  if(!state.latestReport) generateDashboardReport();
+  const blob = new Blob([state.latestReport], { type:"text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rapport-restaurant-revenue-ai-" + new Date().toISOString().slice(0,10) + ".txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast("Téléchargement du rapport lancé");
+}
 function renderDashboard(){
   qs("#app-dashboard").innerHTML = `
-    <div class="panel-title"><div><h2>Dashboard directeur</h2><p>Vue exécutive : revenus, réservations, commandes, upsell et recommandations IA.</p></div><button class="primary" onclick="showToast('Rapport hebdomadaire généré')">Générer rapport</button></div>
+    <div class="panel-title"><div><h2>Dashboard directeur</h2><p>Vue exécutive : revenus, réservations, commandes, upsell et recommandations IA.</p></div><button class="primary" onclick="generateDashboardReport()">Générer rapport</button></div>
     <div class="kpi-grid">
       <div class="kpi"><div class="lab">CA direct aujourd'hui</div><div class="num">1,18M</div><div class="trend">+26% vs hier</div></div>
       <div class="kpi"><div class="lab">Panier moyen</div><div class="num">42,3k</div><div class="trend">+18% grâce aux upsells</div></div>
@@ -792,6 +944,7 @@ function init(){
   restoreUiState(); loadLocalData(); renderFeatures(); renderPricing(); renderSignup(); renderAllAppPanels(); renderAdminPanels(); applyPanelState(); hydrateProductionData();
   qsa(".mobile-bar button").forEach(b => b.classList.toggle("active", b.dataset.page === "home"));
 }
+document.addEventListener("keydown", (event) => { if(event.key === "Escape") closeReportModal(); });
 document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
