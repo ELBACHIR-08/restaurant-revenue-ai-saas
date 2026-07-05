@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Restaurant Revenue AI - SaaS</title>
-  <meta name="description" content="Plateforme SaaS IA pour restaurants : reservations, commandes, paiements, CRM, promotions et dashboard revenue." />
+  <title>Restaurant Revenue AI - Production Core</title>
+  <meta name="description" content="Plateforme SaaS IA production-ready core pour restaurants : reservations, commandes, paiements, CRM, promotions, dashboard revenue et administration." />
   <style>
     :root{
       --bg:#f7f4ed;
@@ -169,10 +169,14 @@
               <button class="secondary" data-page="pricing">Voir les offres</button>
             </div>
             <div class="trust-row">
+              <span>✓ Production Core V1</span>
               <span>✓ 30 jours gratuits</span>
               <span>✓ Paiements wallet</span>
               <span>✓ QR intelligent</span>
               <span>✓ IA upsell & CRM</span>
+            </div>
+            <div class="card" style="margin-top:18px;background:rgba(255,255,255,.72)">
+              <strong>Statut production :</strong> interface Vercel active, endpoints API prêts, schéma Supabase inclus, CRUD produits/promos préparé et UX Super Admin corrigée sans remontée de page.
             </div>
           </div>
           <div class="hero-card">
@@ -450,6 +454,73 @@ let state = {
 function money(v){ return v.toLocaleString("fr-FR") + " FCFA"; }
 function qs(sel){ return document.querySelector(sel); }
 function qsa(sel){ return [...document.querySelectorAll(sel)]; }
+function loadLocalData(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("rrai-business-data") || "{}");
+    if(Array.isArray(saved.products) && saved.products.length) state.products = saved.products;
+    if(Array.isArray(saved.promos) && saved.promos.length) state.promos = saved.promos;
+  }catch(e){}
+}
+function saveLocalData(){
+  try{ localStorage.setItem("rrai-business-data", JSON.stringify({products:state.products, promos:state.promos})); }catch(e){}
+}
+function normalizeProductFromApi(p){
+  return {
+    name: p.name || "Produit",
+    category: p.category || "Plat",
+    price: Number(p.price || 0),
+    tags: Array.isArray(p.tags) ? p.tags : [],
+    delivery: Boolean(p.delivery_enabled ?? p.delivery ?? true),
+    takeaway: Boolean(p.takeaway_enabled ?? p.takeaway ?? true),
+    margin: Number(p.margin_rate || p.margin || 0)
+  };
+}
+function normalizePromoFromApi(p){
+  return {
+    name: p.name || "Promotion",
+    trigger: p.trigger_rule || p.trigger || "Déclencheur",
+    benefit: p.benefit || "Avantage",
+    status: (p.status || "active").toLowerCase() === "active" ? "Active" : "Brouillon"
+  };
+}
+async function hydrateProductionData(){
+  try{
+    const [productsRes, promosRes] = await Promise.all([
+      fetch('/api/products?restaurant_id=demo-restaurant-id'),
+      fetch('/api/promotions?restaurant_id=demo-restaurant-id')
+    ]);
+    const productsData = await productsRes.json();
+    const promosData = await promosRes.json();
+    if(productsData.ok && productsData.mode === 'supabase' && productsData.products.length){
+      state.products = productsData.products.map(normalizeProductFromApi);
+      saveLocalData();
+      renderProductList();
+    }
+    if(promosData.ok && promosData.mode === 'supabase' && promosData.promotions.length){
+      state.promos = promosData.promotions.map(normalizePromoFromApi);
+      saveLocalData();
+      renderPromoList();
+    }
+  }catch(e){ /* offline/demo mode */ }
+}
+async function syncProductToApi(product){
+  try{
+    await fetch('/api/products', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({restaurant_id:'demo-restaurant-id', name:product.name, category:product.category, price:product.price, tags:product.tags, delivery_enabled:product.delivery, takeaway_enabled:product.takeaway, margin_rate:product.margin})});
+  }catch(e){}
+}
+async function syncPromoToApi(promo){
+  try{
+    await fetch('/api/promotions', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({restaurant_id:'demo-restaurant-id', name:promo.name, trigger_rule:promo.trigger, benefit:promo.benefit, status:promo.status === 'Active' ? 'active' : 'draft'})});
+  }catch(e){}
+}
+function persistUiState(){ try{ localStorage.setItem("rrai-ui-state", JSON.stringify({appView:state.appView, adminView:state.adminView, role:state.role})); }catch(e){} }
+function restoreUiState(){ try{ const saved=JSON.parse(localStorage.getItem("rrai-ui-state")||"{}"); if(saved.appView) state.appView=saved.appView; if(saved.adminView) state.adminView=saved.adminView; if(saved.role) state.role=saved.role; }catch(e){} }
+function applyPanelState(){
+  qsa("#app .panel").forEach(p => p.classList.toggle("active", p.id === "app-" + state.appView));
+  qsa("#admin .panel").forEach(p => p.classList.toggle("active", p.id === "admin-" + state.adminView));
+  renderAppNav();
+  renderAdminNav();
+}
 function showToast(msg){ const t=qs("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
 function showPage(page){
@@ -562,7 +633,7 @@ function openAppView(view){
   state.appView = view;
   qsa("#app .panel").forEach(p => p.classList.toggle("active", p.id === "app-" + view));
   renderAppNav();
-  window.scrollTo({top:0, behavior:"smooth"});
+  persistUiState();
 }
 function renderDashboard(){
   qs("#app-dashboard").innerHTML = `
@@ -635,7 +706,8 @@ function addProduct(){
   const name = (qs("#newProductName") && qs("#newProductName").value) || "Produit signature demo";
   const price = Number((qs("#newProductPrice") && qs("#newProductPrice").value) || 12000);
   const category = (qs("#newProductCategory") && qs("#newProductCategory").value) || "Plat";
-  state.products.unshift({name, category, price, tags:["Nouveau","IA ready"], delivery:true, takeaway:true, margin:52});
+  const product = {name, category, price, tags:["Nouveau","IA ready"], delivery:true, takeaway:true, margin:52};
+  state.products.unshift(product); saveLocalData(); syncProductToApi(product);
   renderProductList(); showToast("Produit ajouté : " + name);
 }
 function renderPromotions(){
@@ -656,7 +728,7 @@ function addPromo(){
   const type = (qs("#promoType") && qs("#promoType").value) || "Promo demo";
   const trigger = (qs("#promoTrigger") && qs("#promoTrigger").value) || "Déclencheur demo";
   const benefit = (qs("#promoBenefit") && qs("#promoBenefit").value) || "Avantage demo";
-  state.promos.unshift({name:type, trigger, benefit, status:"Active"}); renderPromoList(); showToast("Promotion activée");
+  const promo = {name:type, trigger, benefit, status:"Active"}; state.promos.unshift(promo); saveLocalData(); syncPromoToApi(promo); renderPromoList(); showToast("Promotion activée");
 }
 function renderCustomers(){
   qs("#app-customers").innerHTML = `
@@ -705,7 +777,7 @@ function renderAllAppPanels(){
 function renderAdminNav(){
   qs("#adminNav").innerHTML = adminViews.map(([id,icon,label]) => `<button class="${state.adminView===id?'active':''}" onclick="openAdminView('${id}')" style="color:${state.adminView===id?'#fff':'#4e453d'};background:${state.adminView===id?'#17130f':'transparent'}">${icon} ${label}</button>`).join("");
 }
-function openAdminView(view){ state.adminView=view; qsa("#admin .panel").forEach(p=>p.classList.toggle("active",p.id==="admin-"+view)); renderAdminNav(); window.scrollTo({top:0,behavior:"smooth"}); }
+function openAdminView(view){ state.adminView=view; qsa("#admin .panel").forEach(p=>p.classList.toggle("active",p.id==="admin-"+view)); renderAdminNav(); persistUiState(); }
 function renderAdminPanels(){
   qs("#admin-overview").innerHTML = `<div class="panel-title"><div><h2>Vue globale plateforme</h2><p>Performance SaaS multi-restaurants.</p></div><button class="primary" onclick="showToast('Export global généré')">Exporter</button></div><div class="kpi-grid"><div class="kpi"><div class="lab">Restaurants</div><div class="num">38</div><div class="trend">12 en essai</div></div><div class="kpi"><div class="lab">MRR potentiel</div><div class="num">1,21M</div><div class="trend">FCFA/mois</div></div><div class="kpi"><div class="lab">Conversion trial</div><div class="num">64%</div><div class="trend">Objectif 70%</div></div><div class="kpi"><div class="lab">Support ouvert</div><div class="num">7</div><div class="trend">3 urgents</div></div></div><div class="two-col mt"><div class="card"><h3>Actions prioritaires</h3><div class="timeline mt"><div class="item"><div class="dot">1</div><div class="body"><b>Relancer 5 essais J+25</b><span class="muted">Proposer Growth à 30 000 FCFA.</span></div></div><div class="item"><div class="dot">2</div><div class="body"><b>Activer paiement wallet</b><span class="muted">8 restaurants prêts à encaisser.</span></div></div><div class="item"><div class="dot">3</div><div class="body"><b>Importer 12 menus</b><span class="muted">Onboarding à finaliser avant vendredi.</span></div></div></div></div><div class="card"><h3>Répartition plans</h3><div class="progress mt"><i style="width:52%"></i></div><p class="muted mt">Growth représente 52 % des comptes actifs. Premium AI doit devenir l'offre phare pour restaurants premium.</p></div></div>`;
   qs("#admin-restaurants").innerHTML = `<div class="panel-title"><div><h2>Restaurants</h2><p>Gestion des comptes, activation, suspension et suivi d'essai.</p></div><button class="primary" onclick="showToast('Restaurant créé')">+ Restaurant</button></div><div class="table-wrap"><table><thead><tr><th>Restaurant</th><th>Ville</th><th>Plan</th><th>Essai</th><th>Statut</th><th>MRR</th></tr></thead><tbody><tr><td>La Fourchette</td><td>Dakar</td><td>Premium AI</td><td>J+7/30</td><td><span class="tag green">Actif</span></td><td>50 000</td></tr><tr><td>Lounge Saly</td><td>Saly</td><td>Growth</td><td>J+25/30</td><td><span class="tag blue">À convertir</span></td><td>30 000</td></tr><tr><td>Café Plateau</td><td>Dakar</td><td>Starter</td><td>Terminé</td><td><span class="tag green">Payant</span></td><td>20 000</td></tr><tr><td>Hôtel Mbour</td><td>Mbour</td><td>Enterprise</td><td>Setup</td><td><span class="tag red">En attente</span></td><td>Devis</td></tr></tbody></table></div>`;
@@ -717,7 +789,7 @@ function renderAdminPanels(){
 
 function init(){
   qsa("[data-page]").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
-  renderFeatures(); renderPricing(); renderSignup(); renderAppNav(); renderAllAppPanels(); renderAdminNav(); renderAdminPanels();
+  restoreUiState(); loadLocalData(); renderFeatures(); renderPricing(); renderSignup(); renderAllAppPanels(); renderAdminPanels(); applyPanelState(); hydrateProductionData();
   qsa(".mobile-bar button").forEach(b => b.classList.toggle("active", b.dataset.page === "home"));
 }
 document.addEventListener("DOMContentLoaded", init);

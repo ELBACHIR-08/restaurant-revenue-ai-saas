@@ -1,12 +1,14 @@
 {
   "name": "restaurant-revenue-ai-saas",
-  "version": "1.0.0",
+  "version": "1.2.0-production-core",
   "private": true,
-  "description": "Restaurant Revenue AI - SaaS demo platform for restaurants in Senegal",
+  "description": "Restaurant Revenue AI - SaaS Production Core for restaurants in Senegal",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "check": "node scripts/check.js"
   },
   "engines": {
     "node": "20.x"
-  }
+  },
+  "type": "module"
 }
