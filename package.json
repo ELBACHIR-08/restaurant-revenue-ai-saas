@@ -1,6 +1,6 @@
 {
   "name": "restaurant-revenue-ai-saas",
-  "version": "2.0.0-supabase-core",
+  "version": "2.0.2-clean-upload-v4",
   "private": true,
   "description": "Restaurant Revenue AI - Supabase Production Core V2",
   "scripts": {

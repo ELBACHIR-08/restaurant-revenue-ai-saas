@@ -245,7 +245,15 @@
       if (state.token) headers.Authorization = `Bearer ${state.token}`;
       if (state.restaurantId) headers['x-restaurant-id'] = state.restaurantId;
       const res = await fetch(path, { ...options, headers });
-      const data = await res.json().catch(()=>({ ok:false, error:'Invalid JSON response' }));
+      const contentType = res.headers.get('content-type') || '';
+      let data;
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        const shortText = text.replace(/\s+/g, ' ').slice(0, 220);
+        throw new Error(`Réponse API non JSON (${res.status}). Vérifie que les routes /api sont bien déployées. Réponse: ${shortText}`);
+      }
       if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
       return data;
     }
@@ -259,7 +267,7 @@
       loadState();
       try { state.config = await api('/api/config'); state.mode = state.config.mode || 'demo'; } catch(e) { state.config = { configured:false, mode:'demo' }; }
       $('#signupNotice').textContent = state.config.configured ? 'Mode Supabase actif : création de compte réelle avec persistance.' : 'Mode démo : ajoutez SUPABASE_URL, SUPABASE_ANON_KEY et SUPABASE_SERVICE_ROLE_KEY sur Vercel pour passer en réel.';
-      if(state.token){ try{ const me = await api('/api/auth/me'); state.user = me.user; state.memberships = me.memberships || []; state.platformAdmin = me.platformAdmin; if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id; }catch(e){} }
+      if(state.token){ try{ const me = await api('/api/auth-me'); state.user = me.user; state.memberships = me.memberships || []; state.platformAdmin = me.platformAdmin; if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id; }catch(e){} }
       await loadBusinessData();
       bind();
       show(state.view || 'home');
@@ -297,7 +305,7 @@
     async function loadBusinessData(){
       try{ const p=await api('/api/products'); state.products=p.products||[]; }catch(e){ if(!state.products.length) state.products = demoProducts(); }
       try{ const pr=await api('/api/promotions'); state.promotions=pr.promotions||[]; }catch(e){ if(!state.promotions.length) state.promotions = demoPromotions(); }
-      try{ const s=await api('/api/admin/summary'); state.adminSummary=s.summary; }catch(e){ state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; }
+      try{ const s=await api('/api/admin-summary'); state.adminSummary=s.summary; }catch(e){ state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; }
       saveState();
     }
 
@@ -355,14 +363,14 @@
     function renderAdmin(){
       setActiveButtons(); const s=state.adminSummary||{}; const c=$('#adminContent');
       if(state.adminTab==='global') c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Super Admin · sans remontée de page</span><h2>Vue globale plateforme</h2><p>Les onglets changent uniquement le contenu, sans scroll automatique.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Actions admin</h3><div class="features"><div class="feature"><span class="check">✓</span>Activer / suspendre restaurant</div><div class="feature"><span class="check">✓</span>Changer plan et statut abonnement</div><div class="feature"><span class="check">✓</span>Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
-      if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin/restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
+      if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin-restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
       if(state.adminTab==='plans') c.innerHTML = `<div class="toolbar"><div><h2>Plans</h2><p>Starter, Growth, Premium AI et Enterprise.</p></div></div><div class="pricing"><div class="card"><h3>Starter</h3><div class="price">20k</div><p>Menu, QR, réservations simples.</p></div><div class="card featured"><h3>Growth</h3><div class="price">30k</div><p>Commandes, livraison, CRM, paiements.</p></div><div class="card"><h3>Premium AI</h3><div class="price">50k</div><p>Sommelier, assistant serveur, analytics.</p></div></div>`;
       if(state.adminTab==='onboarding') c.innerHTML = `<div class="toolbar"><div><h2>Onboarding</h2><p>Suivi des restaurants en période gratuite.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">À configurer</div><div class="value">5</div><div class="sub">menus à importer</div></div><div class="metric"><div class="label">Prêts à lancer</div><div class="value">4</div><div class="sub">QR + produits OK</div></div><div class="metric"><div class="label">À relancer</div><div class="value">2</div><div class="sub">trial J-5</div></div></div>`;
       if(state.adminTab==='support') c.innerHTML = `<div class="toolbar"><div><h2>Support</h2><p>Tickets, demandes d’intégration, incidents paiement et demandes restaurants.</p></div></div><div class="card"><table class="table"><tbody><tr><td><strong>La Fourchette</strong></td><td>Importer photos menu</td><td><span class="status gold">En cours</span></td></tr><tr><td><strong>Saly Beach Kitchen</strong></td><td>Activer livraison</td><td><span class="status green">Prêt</span></td></tr></tbody></table></div>`;
       if(state.adminTab==='analytics') c.innerHTML = `<div class="toolbar"><div><h2>Analytics plateforme</h2><p>MRR, activation, conversion trial, utilisation modules.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Conversion trial</div><div class="value">38%</div><div class="sub">objectif 45%</div></div><div class="metric"><div class="label">ARPA</div><div class="value">37k</div><div class="sub">FCFA / mois</div></div><div class="metric"><div class="label">Modules actifs</div><div class="value">4.8</div><div class="sub">par restaurant</div></div><div class="metric"><div class="label">Churn risk</div><div class="value">${s.churn_risk||2}</div><div class="sub">à traiter</div></div></div>`;
     }
     function renderAdminRestaurantsTable(){ const rows = state.adminRestaurants.length ? state.adminRestaurants : [{ name:'La Fourchette Dakar', city:'Dakar', status:'trial', owner_email:'owner@example.com' },{ name:'Saly Beach Kitchen', city:'Saly', status:'active', owner_email:'manager@example.com' }]; return `<table class="table"><thead><tr><th>Restaurant</th><th>Ville</th><th>Owner</th><th>Statut</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.city||'')}</td><td>${esc(r.owner_email||'')}</td><td><span class="status ${r.status==='active'?'green':r.status==='trial'?'gold':'gray'}">${esc(r.status||'trial')}</span></td></tr>`).join('')}</tbody></table>`; }
-    async function loadAdminRestaurants(){ try{ const data=await api('/api/admin/restaurants'); state.adminRestaurants=data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
+    async function loadAdminRestaurants(){ try{ const data=await api('/api/admin-restaurants'); state.adminRestaurants=data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
 
     function bindInlineForms(){ }
     window.openProductModal = function(){ modal(`<h2>Ajouter produit</h2><p>Produit sauvegardé dans Supabase si configuré, sinon en local pour la démo.</p><form class="form" id="productForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Gambas flambées au Pastis"></div><div class="field"><label>Prix FCFA</label><input class="input" name="price" type="number" required value="22500"></div></div><div class="form-row"><div class="field"><label>Catégorie</label><input class="input" name="category" value="Poissons"></div><div class="field"><label>Tags</label><input class="input" name="tags" value="premium,livrable"></div></div><div class="field"><label>Notes upsell</label><input class="input" name="upsell_notes" value="Chablis, dessert signature"></div><div class="quick"><label><input type="checkbox" name="dine_in_enabled" checked> Sur place</label><label><input type="checkbox" name="delivery_enabled" checked> Livraison</label><label><input type="checkbox" name="takeaway_enabled" checked> À emporter</label></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Sauvegarder</button></div></form>`); $('#productForm').addEventListener('submit', submitProduct); };
@@ -375,7 +383,7 @@
     async function generateReport(){
       const metrics=dashboardMetrics();
       const payload={ restaurant_id:state.restaurantId, restaurantName:(state.memberships[0]&&state.memberships[0].restaurants&&state.memberships[0].restaurants.name)||'Restaurant pilote', metrics, products:state.products, promotions:state.promotions };
-      try{ const data=await api('/api/reports/generate',{method:'POST',body:JSON.stringify(payload)}); openReport(data.report.content); }
+      try{ const data=await api('/api/reports-generate',{method:'POST',body:JSON.stringify(payload)}); openReport(data.report.content); }
       catch(err){ openReport(localReport(payload)); }
     }
     function localReport(payload){ const m=payload.metrics; return [`Rapport performance - ${payload.restaurantName}`,`Date: ${new Date().toLocaleString('fr-FR')}`,'',`CA direct estimé: ${money(m.direct_revenue_xof)}`,`Panier moyen: ${money(m.average_basket_xof)}`,`Réservations: ${m.reservations}`,`Commandes directes: ${m.orders}`,`Taux upsell: ${m.upsell_rate}%`,`Clients collectés: ${m.customers}`,'',`Produits configurés: ${payload.products.length}`,`Promotions actives: ${payload.promotions.filter(p=>p.status==='active').length}`,'','Recommandations:', '- Activer les upsells sur les produits signature.', '- Protéger les plats premium non adaptés à la livraison.', '- Relancer les clients anniversaires via WhatsApp.', '- Suivre conversion trial vers Growth/Premium AI.'].join('\n'); }

@@ -1,43 +1,49 @@
-import { hasSupabaseConfig, selectRows } from './_lib/supabase-rest.js';
+const { send, handleOptions, getBearer } = require('./_lib/http');
+const { isConfigured, select, getUserFromToken, isPlatformAdmin } = require('./_lib/supabase-rest');
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'Method not allowed' });
-
-  if (!hasSupabaseConfig()) {
-    return res.status(200).json({
-      ok: true,
-      mode: 'demo-fallback',
-      summary: {
-        restaurants: 38,
-        trials: 12,
-        activeSubscriptions: 26,
-        mrrPotential: 1210000,
-        supportOpen: 7,
-        conversionTrial: 64
-      }
-    });
-  }
-
+module.exports = async (req, res) => {
+  if (handleOptions(req, res)) return;
   try {
-    const restaurants = await selectRows('restaurants', 'select=id,status&limit=1000');
-    const subscriptions = await selectRows('subscriptions', 'select=id,status,plan_code&limit=1000');
-    const activeSubscriptions = subscriptions.filter(s => s.status === 'active').length;
-    const trials = restaurants.filter(r => String(r.status || '').includes('trial')).length;
-    const mrrByPlan = { starter: 20000, growth: 30000, premium_ai: 50000, premium: 50000 };
-    const mrrPotential = subscriptions.reduce((sum, s) => sum + (mrrByPlan[s.plan_code] || 0), 0);
-    return res.status(200).json({
+    const token = getBearer(req);
+    const user = token ? await getUserFromToken(token) : { demo: true, email: 'demo@restaurant.ai' };
+    const platformAdmin = await isPlatformAdmin(user);
+    if (!platformAdmin) return send(res, 403, { ok: false, error: 'Platform admin only' });
+    if (!isConfigured() || user.demo) {
+      return send(res, 200, {
+        ok: true,
+        mode: 'demo',
+        summary: {
+          restaurants: 18,
+          trial_active: 11,
+          active_subscriptions: 7,
+          mrr_xof: 260000,
+          pending_onboarding: 5,
+          support_open: 3,
+          churn_risk: 2
+        }
+      });
+    }
+    const restaurants = await select('restaurants', { select: 'id,status' });
+    const subscriptions = await select('subscriptions', { select: 'id,status,plans(code,price_monthly_xof)' });
+    const support = await select('support_tickets', { select: 'id,status' });
+    const activeSubs = subscriptions.filter(s => s.status === 'active' || s.status === 'trial_active');
+    const mrr = subscriptions
+      .filter(s => s.status === 'active')
+      .reduce((sum, s) => sum + Number(s.plans && s.plans.price_monthly_xof || 0), 0);
+    send(res, 200, {
       ok: true,
       mode: 'supabase',
       summary: {
         restaurants: restaurants.length,
-        trials,
-        activeSubscriptions,
-        mrrPotential,
-        supportOpen: 0,
-        conversionTrial: restaurants.length ? Math.round((activeSubscriptions / restaurants.length) * 100) : 0
+        trial_active: subscriptions.filter(s => s.status === 'trial_active').length,
+        active_subscriptions: activeSubs.length,
+        mrr_xof: mrr,
+        pending_onboarding: restaurants.filter(r => r.status === 'trial').length,
+        support_open: support.filter(t => t.status === 'open').length,
+        churn_risk: subscriptions.filter(s => s.status === 'past_due').length
       }
     });
   } catch (error) {
-    return res.status(500).json({ ok: false, error: error.message });
+    send(res, error.statusCode || 500, { ok: false, error: error.message, payload: error.payload || null });
   }
-}
+};

@@ -1,0 +1,20 @@
+STRUCTURE API APLATIE - IMPORTANT
+
+Cette version evite les doublons de noms de fichiers pendant l'upload.
+
+Il n'y a plus :
+- api/restaurants.js ET api/admin/restaurants.js
+
+Les routes admin sont renommees :
+- api/admin-restaurants.js       -> /api/admin-restaurants
+- api/admin-subscriptions.js     -> /api/admin-subscriptions
+- api/admin-summary.js           -> /api/admin-summary
+
+Les autres routes aplaties :
+- api/auth-me.js                 -> /api/auth-me
+- api/reports-generate.js        -> /api/reports-generate
+
+La route restaurant classique reste :
+- api/restaurants.js             -> /api/restaurants
+
+Tu peux donc dezipper et uploader directement tout le contenu du dossier dans GitHub.
