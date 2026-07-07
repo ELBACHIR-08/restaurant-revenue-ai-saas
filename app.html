@@ -201,6 +201,7 @@
       state.user = null;
       state.memberships = [];
       state.platformAdmin = false;
+      state.view = 'home';
       saveState();
       window.location.replace('/');
     }
@@ -217,6 +218,8 @@
     async function init(){
       loadState();
       if (!state.token) {
+        state.view = 'home';
+        saveState();
         window.location.replace('/');
         return;
       }
