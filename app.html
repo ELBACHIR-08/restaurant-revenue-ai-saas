@@ -222,6 +222,7 @@
           <button class="side-btn" data-section="promotions">🏷️ Promotions</button>
           <button class="side-btn" data-section="reservations">📅 Réservations</button>
           <button class="side-btn" data-section="orders">🛵 Commandes</button>
+          <button class="side-btn" data-section="invoices">🧾 Achats & Factures</button>
           <button class="side-btn" data-section="customers">👥 CRM</button>
           <button class="side-btn" data-section="subscription">💳 Abonnement</button>
           <button class="side-btn" data-section="settings">⚙️ Paramètres</button>
@@ -421,7 +422,7 @@
       token: null, user: null, memberships: [], platformAdmin: false,
       restaurantId: DEMO_RESTAURANT_ID,
       selectedPlan: 'growth',
-      products: [], promotions: [], orders: [], reservations: [], adminSummary: null, adminRestaurants: [], adminSubscriptions: [],
+      products: [], promotions: [], orders: [], reservations: [], expenses: [], adminSummary: null, adminRestaurants: [], adminSubscriptions: [],
       mode: 'demo'
     };
 
@@ -529,6 +530,16 @@
         if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id;
       } catch(e) {}
 
+      // --- DEV TESTING CHEATS ---
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('role') === 'superadmin') {
+        state.platformAdmin = true;
+        state.view = 'admin';
+      } else if (urlParams.get('role') === 'admin') {
+        state.platformAdmin = false;
+        state.view = 'app';
+      }
+
       updateAdminVisibility();
       await loadBusinessData();
       bind();
@@ -603,6 +614,7 @@
       try{ const p = await api('/api/products'); state.products = p.products||[]; }catch(e){ if(!state.products.length && !state.token) state.products = demoProducts(); }
       try{ const pr = await api('/api/promotions'); state.promotions = pr.promotions||[]; }catch(e){ if(!state.promotions.length && !state.token) state.promotions = demoPromotions(); }
       try{ const o = await api('/api/orders'); state.orders = o.orders||[]; }catch(e){ state.orders = []; }
+      try{ const ex = await api('/api/expenses'); state.expenses = ex.expenses||[]; }catch(e){ state.expenses = []; }
       try{ const r = await api('/api/reservations'); state.reservations = r.reservations||[]; }catch(e){ state.reservations = []; }
       try{ const s = await api('/api/admin-summary'); state.adminSummary = s.summary; }catch(e){ if(!state.token) state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; else state.adminSummary = { restaurants:0, trial_active:0, active_subscriptions:0, mrr_xof:0, pending_onboarding:0, support_open:0, churn_risk:0 }; }
       saveState();
@@ -661,6 +673,7 @@
       if(state.appSection==='promotions') content.innerHTML = renderPromotions();
       if(state.appSection==='reservations') content.innerHTML = renderReservations();
       if(state.appSection==='orders') content.innerHTML = renderOrders();
+      if(state.appSection==='invoices') content.innerHTML = renderInvoices();
       if(state.appSection==='customers') content.innerHTML = renderCustomers();
       if(state.appSection==='subscription') content.innerHTML = renderSubscription();
       if(state.appSection==='settings') content.innerHTML = renderSettings();
@@ -671,6 +684,17 @@
     function renderPromotions(){ return `<div class="toolbar"><div><h2>Gestion promotions</h2><p>Créez des offres déclenchées par contexte : midi, anniversaire, livraison, groupe.</p></div><button class="btn gold" type="button" onclick="openPromoModal()">Créer promotion</button></div>${state.promotions.length?`<table class="table"><thead><tr><th>Promo</th><th>Canal</th><th>Règle</th><th>Statut</th><th></th></tr></thead><tbody>${state.promotions.map(p=>`<tr><td><strong>${esc(p.name)}</strong><br><span class="mini">${esc(p.description||'')}</span></td><td>${esc(p.channel||'chatbot')}</td><td>${esc(p.rule_summary||'')}</td><td><span class="status ${p.status==='active'?'green':'gray'}">${esc(p.status||'draft')}</span></td><td class="right"><button class="btn danger" data-delete-promo="${p.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune promotion. Créez une offre ciblée.</div>'}`; }
     function renderReservations(){ const res = state.reservations || []; return `<div class="toolbar"><div><h2>Réservations</h2><p>Gérez vos réservations de table.</p></div></div>${res.length ? `<table class="table"><thead><tr><th>Date & Heure</th><th>Client</th><th>Couverts</th><th>Occasion</th><th>Statut</th><th></th></tr></thead><tbody>${res.map(r => `<tr><td><strong>${esc(r.reservation_date)} à ${esc(r.reservation_time)}</strong></td><td>${esc(r.notes.split('\\n')[0].replace('Nom: ', ''))}<br><span class="mini">${esc(r.notes.split('\\n')[1].replace('Tél: ', ''))}</span></td><td>${r.party_size} pers.</td><td>${esc(r.notes.split('\\n')[2].replace('Occasion: ', ''))}</td><td><span class="status ${r.status==='approved'?'green':r.status==='rejected'?'gray':'gold'}">${r.status}</span></td><td class="right">${r.status==='pending'?`<button class="btn green" onclick="updateReservation('${r.id}','approved')">✓ Accepter</button> <button class="btn danger" onclick="updateReservation('${r.id}','rejected')">✗ Refuser</button>`:''}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Aucune réservation pour le moment.</div>'}`; }
     function renderOrders(){ const ords = state.orders || []; return `<div class="toolbar"><div><h2>Commandes</h2><p>Historique des commandes et édition de factures.</p></div></div>${ords.length ? `<table class="table"><thead><tr><th>Client</th><th>Téléphone</th><th>Montant</th><th>Méthode</th><th>Date</th><th></th></tr></thead><tbody>${ords.map(o => `<tr><td><strong>${esc(o.customer_name)}</strong></td><td>${esc(o.customer_phone)}</td><td>${money(o.total_amount)}</td><td>${esc(o.payment_method)}</td><td>${new Date(o.created_at).toLocaleDateString('fr-FR')}</td><td class="right"><button class="btn gold" onclick="openInvoice('${o.id}')">📄 Facture</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Aucune commande pour le moment.</div>'}`; }
+    function renderInvoices(){ 
+      const exps = state.expenses || []; 
+      return `
+        <div class="toolbar">
+          <div><h2>Achats & Factures</h2><p>Prenez en photo les reçus de vos fournisseurs, l'IA les digitalise.</p></div>
+          <button class="btn gold" id="uploadInvoiceBtn" onclick="document.getElementById('invoiceUploadInput').click()">📸 Scanner une facture (IA)</button>
+          <input type="file" id="invoiceUploadInput" accept="image/*" style="display:none" onchange="handleInvoiceUpload(event)">
+        </div>
+        ${exps.length ? `<table class="table"><thead><tr><th>Date</th><th>Fournisseur</th><th>Montant</th><th>Articles (IA)</th></tr></thead><tbody>${exps.map(e => `<tr><td>${e.date}</td><td><strong>${esc(e.supplier_name)}</strong></td><td>${money(e.total_amount)}</td><td>${e.extracted_items ? e.extracted_items.length : 0} articles</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Aucune dépense enregistrée. Prenez en photo un reçu !</div>'}
+      `; 
+    }
     function renderCustomers(){ return `<div class="toolbar"><div><h2>CRM clients</h2><p>Téléphone, email, consentement, historique et préférences.</p></div></div><div class="card"><h3>Segments prêts</h3><div class="grid cols-4"><div class="metric"><div class="label">Clients</div><div class="value">142</div><div class="sub">collectés</div></div><div class="metric"><div class="label">Anniversaire</div><div class="value">18</div><div class="sub">à relancer</div></div><div class="metric"><div class="label">Livraison</div><div class="value">46</div><div class="sub">commandes directes</div></div><div class="metric"><div class="label">Consentement</div><div class="value">62%</div><div class="sub">marketing opt-in</div></div></div></div>`; }
     function renderSubscription(){ return `<div class="toolbar"><div><h2>Abonnement</h2><p>Trial 30 jours puis conversion vers Starter, Growth ou Premium AI.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div class="price">20 000</div><p>FCFA / mois</p></div><div class="card featured"><h3>Growth</h3><div class="price">30 000</div><p>FCFA / mois · recommandé</p></div><div class="card"><h3>Premium AI</h3><div class="price">50 000</div><p>FCFA / mois</p></div></div><div class="notice" style="margin-top:16px">PayDunya sera branché après validation du Core Supabase : webhook IPN, factures, activation/suspension automatique.</div>`; }
     function renderSettings(){ return `<div class="toolbar"><div><h2>Paramètres</h2><p>Rôles, canaux, horaires, zones de livraison et moyens de paiement.</p></div></div><div class="grid cols-2"><div class="card"><h3>Rôles</h3><p>Owner, Manager, Serveur, Cuisine, Marketing, Comptable.</p></div><div class="card"><h3>Wallets</h3><p>Wave, Orange Money, Free Money et PayDunya à connecter.</p></div></div>`; }
@@ -748,6 +772,32 @@
     window.openProductModal = function(){ modal(`<h2>Ajouter produit</h2><p>Produit sauvegardé dans Supabase si configuré, sinon en local pour la démo.</p><form class="form" id="productForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Gambas flambées au Pastis"></div><div class="field"><label>Prix FCFA</label><input class="input" name="price" type="number" required value="22500"></div></div><div class="form-row"><div class="field"><label>Catégorie</label><input class="input" name="category" value="Poissons"></div><div class="field"><label>Tags</label><input class="input" name="tags" value="premium,livrable"></div></div><div class="field"><label>Notes upsell</label><input class="input" name="upsell_notes" value="Chablis, dessert signature"></div><div class="quick"><label><input type="checkbox" name="dine_in_enabled" checked> Sur place</label><label><input type="checkbox" name="delivery_enabled" checked> Livraison</label><label><input type="checkbox" name="takeaway_enabled" checked> À emporter</label></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Sauvegarder</button></div></form>`); $('#productForm').addEventListener('submit', submitProduct); };
     async function submitProduct(e){ e.preventDefault(); const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries()); body.dine_in_enabled = fd.has('dine_in_enabled'); body.delivery_enabled = fd.has('delivery_enabled'); body.takeaway_enabled = fd.has('takeaway_enabled'); body.price = Number(body.price); try{ const data = await api('/api/products',{method:'POST',body:JSON.stringify(body)}); state.products.unshift(data.product); saveState(); closeModal(); renderApp(); }catch(err){ alert(err.message); } }
     async function deleteProductById(id){ if(!confirm('Supprimer ce produit ?')) return; try{ await api('/api/products',{method:'DELETE',body:JSON.stringify({id})}); }catch(e){} state.products = state.products.filter(p => String(p.id) !== String(id)); saveState(); renderApp(); }
+
+    window.handleInvoiceUpload = async function(e){
+      const file = e.target.files[0];
+      if(!file) return;
+      const btn = document.getElementById('uploadInvoiceBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Analyse de l\'IA en cours... ⏳';
+      btn.disabled = true;
+      try {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          const b64 = ev.target.result.split(',')[1];
+          const payload = { base64: b64, mimeType: file.type };
+          const data = await api('/api/parse-invoice', { method: 'POST', body: JSON.stringify(payload) });
+          state.expenses.unshift(data.expense);
+          saveState();
+          renderApp();
+          alert('Facture analysée et enregistrée avec succès !');
+        };
+        reader.readAsDataURL(file);
+      } catch(err) {
+        alert(err.message);
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    };
     window.openPromoModal = function(){ modal(`<h2>Créer promotion</h2><p>Définissez une règle commerciale simple, déclenchable dans le chatbot.</p><form class="form" id="promoForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Livraison offerte soir"></div><div class="field"><label>Canal</label><select name="channel"><option value="chatbot">Chatbot</option><option value="site_qr">QR / Site</option><option value="delivery">Livraison</option><option value="whatsapp">WhatsApp</option></select></div></div><div class="form-row"><div class="field"><label>Type</label><select name="discount_type"><option value="gift">Cadeau</option><option value="percentage">Pourcentage</option><option value="fixed">Montant fixe</option><option value="bundle">Bundle</option></select></div><div class="field"><label>Valeur</label><input class="input" name="value" type="number" value="0"></div></div><div class="field"><label>Règle</label><input class="input" name="rule_summary" value="Livraison offerte dès 30 000 FCFA entre 19h et 22h"></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Créer</button></div></form>`); $('#promoForm').addEventListener('submit', submitPromo); };
     async function submitPromo(e){ e.preventDefault(); const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries()); body.value = Number(body.value); body.status = 'active'; try{ const data = await api('/api/promotions',{method:'POST',body:JSON.stringify(body)}); state.promotions.unshift(data.promotion); saveState(); closeModal(); renderApp(); }catch(err){ alert(err.message); } }
     async function deletePromoById(id){ if(!confirm('Supprimer cette promotion ?')) return; try{ await api('/api/promotions',{method:'DELETE',body:JSON.stringify({id})}); }catch(e){} state.promotions = state.promotions.filter(p => String(p.id) !== String(id)); saveState(); renderApp(); }

@@ -984,6 +984,12 @@
   }
 
   async function init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('reset') === 'true') {
+      localStorage.clear();
+      window.location.replace('/');
+      return;
+    }
     loadState();
     if (state.token) { window.location.replace('/app.html'); return; }
     if (state.view === 'app' || state.view === 'admin') { state.view = 'home'; saveState(); }

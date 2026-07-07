@@ -254,6 +254,19 @@ create table if not exists public.audit_logs (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.expenses (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants(id) on delete cascade,
+  supplier_name text,
+  date date,
+  total_amount integer,
+  extracted_items jsonb not null default '[]'::jsonb,
+  image_url text,
+  status text not null default 'pending',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create index if not exists idx_members_user on public.restaurant_members(user_id);
 create index if not exists idx_products_restaurant on public.products(restaurant_id);
 create index if not exists idx_promotions_restaurant on public.promotions(restaurant_id);
@@ -261,6 +274,7 @@ create index if not exists idx_customers_restaurant on public.customers(restaura
 create index if not exists idx_orders_restaurant on public.orders(restaurant_id);
 create index if not exists idx_reservations_restaurant on public.reservations(restaurant_id);
 create index if not exists idx_reports_restaurant on public.reports(restaurant_id);
+create index if not exists idx_expenses_restaurant on public.expenses(restaurant_id);
 
 alter table public.profiles enable row level security;
 alter table public.restaurants enable row level security;
@@ -280,6 +294,7 @@ alter table public.chat_messages enable row level security;
 alter table public.reports enable row level security;
 alter table public.support_tickets enable row level security;
 alter table public.audit_logs enable row level security;
+alter table public.expenses enable row level security;
 
 create or replace function public.is_platform_admin(uid uuid)
 returns boolean language sql stable security definer as $$
@@ -321,6 +336,7 @@ create policy "chat_sessions_member" on public.chat_sessions for all using (publ
 create policy "reports_member" on public.reports for all using (public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid())) with check (public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid()));
 create policy "support_member" on public.support_tickets for all using (restaurant_id is null or public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid())) with check (restaurant_id is null or public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid()));
 create policy "audit_read_admin" on public.audit_logs for select using (public.is_platform_admin(auth.uid()) or public.is_restaurant_member(restaurant_id, auth.uid()));
+create policy "expenses_member" on public.expenses for all using (public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid())) with check (public.is_restaurant_member(restaurant_id, auth.uid()) or public.is_platform_admin(auth.uid()));
 
 -- Order items inherit order visibility
 create policy "order_items_member" on public.order_items for all using (

@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "name": "restaurant-revenue-ai-saas",
   "framework": null,
   "rewrites": [
     { "source": "/health", "destination": "/api/index.js?_path=health" },

@@ -777,25 +777,13 @@
 
       const orderNum = data.order.id.toString().substring(0, 8);
       document.getElementById('successOrderNum').textContent = 'Commande #' + orderNum;
-      pendingWhatsAppMsg = data.whatsapp_message;
+      // Save data for when we return from payment gateway
+      localStorage.setItem('pendingOrderId', orderNum);
+      localStorage.setItem('pendingOrderMsg', data.whatsapp_message);
 
-      // Update success screen to show WhatsApp button
-      const ss = document.getElementById('successScreen');
-      ss.innerHTML = `
-        <div class="success-check">✅</div>
-        <h2>Commande confirmée !</h2>
-        <p>Votre commande est enregistrée. Cliquez ci-dessous pour l'envoyer au restaurant sur WhatsApp et finaliser la préparation.</p>
-        <div class="success-order">Commande #${orderNum}</div>
-        <button onclick="sendWhatsApp()" style="background:#25D366;border:none;padding:16px 32px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.02em;border-radius:12px;margin-bottom:16px;width:100%">
-          Envoyer sur WhatsApp 📱
-        </button>
-        <button onclick="resetOrder()" style="background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer">
-          Retour au menu
-        </button>
-      `;
-
-      document.getElementById('paymentScreen').classList.remove('active');
-      ss.classList.add('active');
+      // Redirect to simulated payment gateway
+      const totalAmount = cart.reduce((s,c)=>s+c.price*c.qty,0);
+      window.location.href = `/paydunya-checkout.html?amount=${totalAmount}&orderId=${orderNum}`;
 
     } catch(err) {
       showToast('Erreur: ' + err.message, true);
@@ -878,6 +866,35 @@
         btn.disabled = false;
       }
     }
+
+    // --- PAYMENT RETURN HANDLING ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('payment') === 'success') {
+        cart = [];
+        updateCartUI();
+        const orderNum = localStorage.getItem('pendingOrderId') || urlParams.get('orderId') || '0000';
+        pendingWhatsAppMsg = localStorage.getItem('pendingOrderMsg') || '';
+        
+        const ss = document.getElementById('successScreen');
+        ss.innerHTML = `
+          <div class="success-check" style="background:linear-gradient(135deg, #1bbae1, #0047ff); border:none; box-shadow:0 10px 20px rgba(0,71,255,0.3)">🎉</div>
+          <h2>Paiement validé !</h2>
+          <p>Votre commande est payée et part en cuisine.</p>
+          <div class="success-order">Commande #${orderNum}</div>
+          <button onclick="sendWhatsApp()" style="background:#25D366;border:none;padding:16px 32px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.02em;border-radius:12px;margin-bottom:16px;width:100%">
+            Envoyer le bon sur WhatsApp 📱
+          </button>
+          <button onclick="resetOrder()" style="background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer">
+            Retour au menu
+          </button>
+        `;
+        ss.classList.add('active');
+        
+        // Clean URL to prevent showing success again on refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
 
     // --- TOAST NOTIFICATION ---
     let toastTimeout;
