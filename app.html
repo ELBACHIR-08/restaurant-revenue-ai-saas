@@ -600,6 +600,7 @@
     async function loadBusinessData(){
       try{ const p = await api('/api/products'); state.products = p.products||[]; }catch(e){ if(!state.products.length && !state.token) state.products = demoProducts(); }
       try{ const pr = await api('/api/promotions'); state.promotions = pr.promotions||[]; }catch(e){ if(!state.promotions.length && !state.token) state.promotions = demoPromotions(); }
+      try{ const o = await api('/api/orders'); state.orders = o.orders||[]; }catch(e){ state.orders = []; }
       try{ const s = await api('/api/admin-summary'); state.adminSummary = s.summary; }catch(e){ if(!state.token) state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; else state.adminSummary = { restaurants:0, trial_active:0, active_subscriptions:0, mrr_xof:0, pending_onboarding:0, support_open:0, churn_risk:0 }; }
       saveState();
     }
@@ -619,14 +620,19 @@
       const activePromos = state.promotions.filter(p=>p.status==='active').length;
       
       if (state.token) {
-        // En tant que membre connecté, pas de données fictives !
+        // En tant que membre connecté, vraies statistiques basées sur Supabase !
+        const realRevenue = (state.orders||[]).reduce((s,o)=>s+Number(o.total_amount||0), 0);
+        const realOrdersCount = (state.orders||[]).length;
+        const realAvgBasket = realOrdersCount > 0 ? Math.round(realRevenue / realOrdersCount) : 0;
+        const uniqueCustomers = new Set((state.orders||[]).map(o=>o.customer_phone).filter(Boolean)).size;
+
         return { 
-          direct_revenue_xof: 0, 
-          average_basket_xof: 0, 
+          direct_revenue_xof: realRevenue, 
+          average_basket_xof: realAvgBasket, 
           reservations: 0, 
-          orders: 0, 
+          orders: realOrdersCount, 
           upsell_rate: 0, 
-          customers: 0 
+          customers: uniqueCustomers 
         };
       }
 

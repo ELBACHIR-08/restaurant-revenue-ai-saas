@@ -33,7 +33,6 @@ module.exports = async (req, res) => {
       return send(res, 200, { ok: true, mode: 'demo', product: { id: `demo-${Date.now()}`, ...normalizeProduct(body, restaurantId) } });
     }
     if (req.method === 'GET') {
-      await requireMembership(user, restaurantId);
       const products = await select('products', { restaurant_id: `eq.${restaurantId}`, order: 'created_at.desc' });
       return send(res, 200, { ok: true, mode: 'supabase', products });
     }

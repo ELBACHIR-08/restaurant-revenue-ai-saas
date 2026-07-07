@@ -340,28 +340,18 @@
 
   <script>
   /* ════════════════════════════════════════════════════════
-     DEMO MENU DATA
-     (In production this would be fetched from /api/menu?r=RESTAURANT_ID)
+     MENU DATA (Dynamic)
   ═══════════════════════════════════════════════════════ */
-  const RESTAURANT = {
-    name: 'Le Baobab Doré',
-    city: 'Dakar · Plateau',
+  let RESTAURANT = {
+    name: 'Chargement...',
+    city: 'Livraison & Emporter',
     chatbot_name: 'Ami'
   };
 
-  const MENU = [
-    { id:1, name:'Thiéboudienne royale', category:'🍖 Plats', price:4500, emoji:'🍚', desc:'Le plat national sénégalais, riz au poisson frais, légumes de saison.', tags:['signature','populaire'], available:true },
-    { id:2, name:'Yassa poulet fermier', category:'🍖 Plats', price:3800, emoji:'🍗', desc:'Poulet mariné au citron et oignons caramélisés, servi avec riz parfumé.', tags:['populaire'], available:true },
-    { id:3, name:'Mafé bœuf', category:'🍖 Plats', price:3500, emoji:'🥘', desc:'Ragoût de bœuf à la pâte d\'arachide, légumes et épices.', tags:['traditionnel'], available:true },
-    { id:4, name:'Poisson braisé entier', category:'🍖 Plats', price:5500, emoji:'🐟', desc:'Poisson du jour grillé, sauce tomate maison, attiéké.', tags:['premium','du moment'], available:true },
-    { id:5, name:'Salade de crudités', category:'🥗 Entrées', price:1500, emoji:'🥗', desc:'Légumes frais de saison, vinaigrette maison.', tags:[], available:true },
-    { id:6, name:'Accra de niébé', category:'🥗 Entrées', price:1200, emoji:'🥙', desc:'Beignets croustillants de haricots, sauce pimentée.', tags:['traditionnel'], available:true },
-    { id:7, name:'Jus de bissap maison', category:'🥤 Boissons', price:800, emoji:'🍹', desc:'Fleurs d\'hibiscus, sucre de canne, menthe fraîche.', tags:['fait-maison'], available:true },
-    { id:8, name:'Jus de gingembre', category:'🥤 Boissons', price:800, emoji:'🫚', desc:'Gingembre frais pressé, citron, miel.', tags:['fait-maison'], available:true },
-    { id:9, name:'Eau minérale', category:'🥤 Boissons', price:400, emoji:'💧', desc:'Kirène 1.5L fraîche.', tags:[], available:true },
-    { id:10, name:'Thiakry crémeux', category:'🍰 Desserts', price:1200, emoji:'🍮', desc:'Couscous de mil, lait caillé, raisins secs.', tags:['dessert'], available:true },
-    { id:11, name:'Pastèque fraîche', category:'🍰 Desserts', price:600, emoji:'🍉', desc:'Pastèque du jour, servie glacée.', tags:[], available:true },
-  ];
+  let MENU = [];
+  let restaurantSlug = window.location.pathname.split('/r/')[1] || 'demo-restaurant';
+  // Remove trailing slashes or other paths
+  restaurantSlug = restaurantSlug.split('/')[0];
 
   /* ════════════════════════════════════════════════════════
      STATE
@@ -370,16 +360,61 @@
   const money = v => fmt.format(v) + ' FCFA';
   let cart = []; // { id, name, price, qty }
   let selectedPayMethod = 'wave';
-  let activeCategory = 'all';
+  let activeCategory = 'Tout';
+  let pendingWhatsAppMsg = '';
 
   /* ════════════════════════════════════════════════════════
      INIT
   ═══════════════════════════════════════════════════════ */
-  function init(){
+  async function init(){
     document.getElementById('restoName').textContent = RESTAURANT.name;
     document.getElementById('restoCity').textContent = RESTAURANT.city;
+    
+    try {
+      // Fetch products from the backend
+      const res = await fetch('/api/products?restaurant_id=' + restaurantSlug);
+      const data = await res.json();
+      
+      if (data.ok && data.products && data.products.length > 0) {
+        RESTAURANT.name = restaurantSlug.replace(/-/g, ' ').toUpperCase();
+        document.getElementById('restoName').textContent = RESTAURANT.name;
+
+        MENU = data.products.map(p => ({
+          id: p.id,
+          name: p.name,
+          category: p.category || 'Carte',
+          price: p.price,
+          emoji: getEmojiForCategory(p.category),
+          desc: p.description || '',
+          tags: p.tags || [],
+          available: p.status !== 'unavailable'
+        }));
+      } else {
+        // Fallback for demo
+        RESTAURANT.name = 'Le Baobab Doré (Démo)';
+        document.getElementById('restoName').textContent = RESTAURANT.name;
+        MENU = [
+          { id:1, name:'Thiéboudienne royale', category:'Plats', price:4500, emoji:'🍚', desc:'Riz au poisson frais.', tags:['signature'], available:true },
+          { id:2, name:'Yassa poulet fermier', category:'Plats', price:3800, emoji:'🍗', desc:'Poulet citron et oignons.', tags:['populaire'], available:true }
+        ];
+      }
+    } catch(err) {
+      console.error(err);
+    }
+
     buildCategories();
     renderMenu();
+  }
+
+  function getEmojiForCategory(cat) {
+    if (!cat) return '🍽️';
+    cat = cat.toLowerCase();
+    if (cat.includes('plat') || cat.includes('viande')) return '🍖';
+    if (cat.includes('poisson')) return '🐟';
+    if (cat.includes('entrée') || cat.includes('salade')) return '🥗';
+    if (cat.includes('boisson') || cat.includes('jus')) return '🥤';
+    if (cat.includes('dessert') || cat.includes('sucre')) return '🍰';
+    return '🍽️';
   }
 
   function buildCategories(){
@@ -528,30 +563,77 @@
     el.classList.add('selected');
     selectedPayMethod = method;
   }
-  function submitOrder(){
+  async function submitOrder(){
     const name = document.getElementById('payName').value.trim();
     const phone = document.getElementById('payPhone').value.trim();
     if(!name){ alert('Entrez votre prénom !'); document.getElementById('payName').focus(); return; }
     if(!phone){ alert('Entrez votre numéro WhatsApp !'); document.getElementById('payPhone').focus(); return; }
 
-    const orderNum = 'RR' + Date.now().toString().slice(-6);
-    document.getElementById('successOrderNum').textContent = 'Commande #' + orderNum;
-    document.getElementById('paymentScreen').classList.remove('active');
-    document.getElementById('successScreen').classList.add('active');
+    const btn = document.querySelector('.pay-btn');
+    btn.textContent = 'Envoi en cours...';
+    btn.disabled = true;
 
-    // Simulate WhatsApp notification
-    setTimeout(() => {
-      const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
-      const items = cart.map(c=>`${c.name} ×${c.qty}`).join(', ');
-      const msg = `🍽️ Nouvelle commande #${orderNum}!\n👤 ${name} (${phone})\n📋 ${items}\n💰 ${money(total)}\n💳 ${selectedPayMethod.toUpperCase()}`;
-      console.log('WhatsApp notification:', msg);
-    }, 1000);
+    try {
+      const payload = {
+        restaurant_id: restaurantSlug,
+        customer_name: name,
+        customer_phone: phone,
+        items: cart,
+        payment_method: selectedPayMethod,
+        order_type: 'delivery'
+      };
+
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if(!data.ok) throw new Error(data.error || 'Erreur inconnue');
+
+      const orderNum = data.order.id.toString().substring(0, 8);
+      document.getElementById('successOrderNum').textContent = 'Commande #' + orderNum;
+      pendingWhatsAppMsg = data.whatsapp_message;
+
+      // Update success screen to show WhatsApp button
+      const ss = document.getElementById('successScreen');
+      ss.innerHTML = `
+        <div class="success-check">✅</div>
+        <h2>Commande confirmée !</h2>
+        <p>Votre commande est enregistrée. Cliquez ci-dessous pour l'envoyer au restaurant sur WhatsApp et finaliser la préparation.</p>
+        <div class="success-order">Commande #${orderNum}</div>
+        <button onclick="sendWhatsApp()" style="background:#25D366;border:none;padding:16px 32px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.02em;border-radius:12px;margin-bottom:16px;width:100%">
+          Envoyer sur WhatsApp 📱
+        </button>
+        <button onclick="resetOrder()" style="background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer">
+          Retour au menu
+        </button>
+      `;
+
+      document.getElementById('paymentScreen').classList.remove('active');
+      ss.classList.add('active');
+
+    } catch(err) {
+      alert('Erreur: ' + err.message);
+      btn.textContent = '✅ Confirmer ma commande →';
+      btn.disabled = false;
+    }
   }
+
+  function sendWhatsApp(){
+    if(!pendingWhatsAppMsg) return;
+    const url = 'https://wa.me/?text=' + encodeURIComponent(pendingWhatsAppMsg);
+    window.open(url, '_blank');
+  }
+
   function resetOrder(){
     cart = [];
     updateCartUI();
     renderMenu();
     document.getElementById('successScreen').classList.remove('active');
+    const btn = document.querySelector('.pay-btn');
+    if(btn) { btn.textContent = '✅ Confirmer ma commande →'; btn.disabled = false; }
   }
 
   init();

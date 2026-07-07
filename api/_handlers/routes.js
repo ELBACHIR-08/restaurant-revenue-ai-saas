@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
       '/api/config',
       '/api/login',
       '/api/signup',
+      '/api/orders',
       '/api/parse-menu',
       '/api/products',
       '/api/promotions',
