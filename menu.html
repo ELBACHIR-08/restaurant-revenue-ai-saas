@@ -26,23 +26,36 @@
     /* ══ HEADER ══ */
     .app-header{
       background:var(--nuit-2);color:var(--ecume);
-      padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
+      padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
       position:relative; z-index:50;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
-    .resto-info .name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;word-break:break-word;}
-    .resto-info .city{font-size:11px;color:rgba(232,220,196,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
-    .cart-btn{
-      background:var(--or);border:none;cursor:pointer;
-      padding:10px 16px;display:flex;align-items:center;gap:6px;
-      font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;
-      color:var(--nuit-2);position:relative;
-      transition:background .18s;
+    .resto-info { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 40px; height: 40px; background: rgba(185,138,79,.15);
+      border-radius: 12px; display: grid; place-items: center; color: var(--or);
     }
-    .cart-btn:hover{background:var(--or-clair);}
-    .cart-count{
-      background:var(--nuit-2);color:var(--or-clair);
-      width:18px;height:18px;border-radius:50%;
-      display:grid;place-items:center;font-size:11px;font-weight:700;
+    .resto-info .name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;word-break:break-word;line-height:1.2;}
+    .resto-info .city{font-size:10px;color:rgba(232,220,196,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;}
+    
+    .header-btn {
+      border:none; cursor:pointer; font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      padding: 0 14px; height: 38px; border-radius: 30px; transition: all 0.2s;
+    }
+    .header-btn.outline {
+      background: transparent; border: 1.5px solid rgba(185,138,79,.4); color: var(--or);
+    }
+    .header-btn.outline:hover { background: rgba(185,138,79,.1); border-color: var(--or); }
+    .header-btn.solid {
+      background: var(--ecume); color: var(--nuit-2);
+      padding: 0 10px 0 14px;
+    }
+    .header-btn.solid:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
+    .header-btn .cart-count {
+      background: var(--or); color: var(--nuit-2);
+      width: 22px; height: 22px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 11.5px; font-weight: 700;
     }
 
     /* ══ BOT WELCOME ══ */
@@ -220,15 +233,21 @@
   <!-- ══ HEADER ══════════════════════════════════════════ -->
   <header class="app-header">
     <div class="resto-info">
-      <div class="name" id="restoName">Le Baobab Doré</div>
-      <div class="city" id="restoCity">Dakar · Sénégal</div>
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div>
+        <div class="name" id="restoName">Chargement...</div>
+        <div class="city" id="restoCity">Livraison & Emporter</div>
+      </div>
     </div>
-    <div style="display:flex;gap:10px;">
-      <button class="cart-btn" style="background:var(--or);color:var(--nuit-2);" onclick="openReservation()">
-        📅 Réserver
+    <div style="display:flex;gap:8px;">
+      <button class="header-btn outline" onclick="openReservation()">
+        Réserver
       </button>
-      <button class="cart-btn" id="cartToggle">
-        🛒 Panier <span class="cart-count" id="cartCount">0</span>
+      <button class="header-btn solid" id="cartToggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-count" id="cartCount">0</span>
       </button>
     </div>
   </header>
