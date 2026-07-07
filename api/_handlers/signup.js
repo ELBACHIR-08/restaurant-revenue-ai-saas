@@ -21,7 +21,16 @@ module.exports = async (req, res) => {
     const restaurantName = String(required(body.restaurantName, 'Restaurant name'));
     const ownerName = String(required(body.ownerName, 'Owner name'));
     const email = String(required(body.email, 'Email')).toLowerCase();
-    const phone = String(required(body.phone, 'Phone'));
+    let phone = String(required(body.phone, 'Phone')).replace(/[\s\-\(\)]/g, '');
+    if (!phone.startsWith('+')) {
+      if (phone.startsWith('00')) {
+        phone = '+' + phone.slice(2);
+      } else if (phone.length === 9) {
+        phone = '+221' + phone;
+      } else {
+        phone = '+' + phone;
+      }
+    }
     const password = String(body.password || `RestoAI-${Math.random().toString(36).slice(2, 10)}!`);
     const city = String(body.city || 'Dakar');
     const district = String(body.district || '');
