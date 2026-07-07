@@ -1,44 +1,63 @@
-import { hasSupabaseConfig, insertRow, selectRows } from './_lib/supabase-rest.js';
+const { send, handleOptions, readJson, getBearer, required } = require('./_lib/http');
+const { isConfigured, select, insert, update, remove, getUserFromToken, requireMembership, demoPromotions } = require('./_lib/supabase-rest');
 
-const demoPromotions = [
-  { id: 'demo-promo-1', name: 'Livraison offerte', trigger_rule: 'Panier > 30 000 FCFA', benefit: 'Frais offerts', status: 'active' },
-  { id: 'demo-promo-2', name: 'Anniversaire', trigger_rule: 'Occasion = anniversaire', benefit: 'Dessert bougie + champagne suggéré', status: 'active' }
-];
-
-export default async function handler(req, res) {
-  const restaurantId = req.query.restaurant_id || req.body?.restaurant_id || 'demo-restaurant-id';
-
-  if (!hasSupabaseConfig()) {
-    if (req.method === 'GET') return res.status(200).json({ ok: true, mode: 'demo-fallback', promotions: demoPromotions });
-    if (req.method === 'POST') return res.status(200).json({ ok: true, mode: 'demo-fallback', promotion: { id: `demo-promo-${Date.now()}`, ...req.body } });
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
-
-  try {
-    if (req.method === 'GET') {
-      const promotions = await selectRows('promotions', `select=*&restaurant_id=eq.${encodeURIComponent(restaurantId)}&order=created_at.desc`);
-      return res.status(200).json({ ok: true, mode: 'supabase', promotions });
-    }
-
-    if (req.method === 'POST') {
-      const body = req.body || {};
-      const promotion = await insertRow('promotions', {
-        restaurant_id: restaurantId,
-        name: body.name || body.type || 'Promotion',
-        trigger_rule: body.trigger_rule || body.trigger || null,
-        benefit: body.benefit || null,
-        channel: body.channel || 'all',
-        starts_at: body.starts_at || null,
-        ends_at: body.ends_at || null,
-        status: body.status || 'active',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-      return res.status(200).json({ ok: true, mode: 'supabase', promotion });
-    }
-
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  } catch (error) {
-    return res.status(500).json({ ok: false, error: error.message });
-  }
+function normalizePromotion(body, restaurantId) {
+  return {
+    restaurant_id: restaurantId,
+    name: String(required(body.name, 'Promotion name')),
+    description: body.description ? String(body.description) : null,
+    channel: body.channel || 'chatbot',
+    discount_type: body.discount_type || 'gift',
+    value: body.value ? Number(body.value) : 0,
+    status: body.status || 'active',
+    starts_at: body.starts_at || null,
+    ends_at: body.ends_at || null,
+    rule_summary: body.rule_summary ? String(body.rule_summary) : null,
+    trigger_context: body.trigger_context ? String(body.trigger_context) : null
+  };
 }
+
+module.exports = async (req, res) => {
+  if (handleOptions(req, res)) return;
+  try {
+    const restaurantId = req.headers['x-restaurant-id'] || (req.query && req.query.restaurant_id) || 'demo-restaurant';
+    const token = getBearer(req);
+    const user = token ? await getUserFromToken(token) : { demo: true };
+    if (!isConfigured() || user.demo) {
+      if (req.method === 'GET') return send(res, 200, { ok: true, mode: 'demo', promotions: demoPromotions() });
+      const body = await readJson(req);
+      return send(res, 200, { ok: true, mode: 'demo', promotion: { id: `demo-${Date.now()}`, ...normalizePromotion(body, restaurantId) } });
+    }
+    if (req.method === 'GET') {
+      await requireMembership(user, restaurantId);
+      const promotions = await select('promotions', { restaurant_id: `eq.${restaurantId}`, order: 'created_at.desc' });
+      return send(res, 200, { ok: true, mode: 'supabase', promotions });
+    }
+    if (req.method === 'POST') {
+      await requireMembership(user, restaurantId, ['owner', 'manager', 'marketing']);
+      const body = await readJson(req);
+      const promotions = await insert('promotions', normalizePromotion(body, restaurantId));
+      return send(res, 201, { ok: true, mode: 'supabase', promotion: promotions[0] });
+    }
+    if (req.method === 'PATCH') {
+      await requireMembership(user, restaurantId, ['owner', 'manager', 'marketing']);
+      const body = await readJson(req);
+      const id = required(body.id, 'Promotion id');
+      const updates = { ...body };
+      delete updates.id;
+      delete updates.restaurant_id;
+      const promotions = await update('promotions', { id: `eq.${id}`, restaurant_id: `eq.${restaurantId}` }, updates);
+      return send(res, 200, { ok: true, mode: 'supabase', promotion: promotions[0] || null });
+    }
+    if (req.method === 'DELETE') {
+      await requireMembership(user, restaurantId, ['owner', 'manager']);
+      const body = await readJson(req);
+      const id = required(body.id, 'Promotion id');
+      const deleted = await remove('promotions', { id: `eq.${id}`, restaurant_id: `eq.${restaurantId}` });
+      return send(res, 200, { ok: true, mode: 'supabase', deleted });
+    }
+    send(res, 405, { ok: false, error: 'Method not allowed' });
+  } catch (error) {
+    send(res, error.statusCode || 500, { ok: false, error: error.message, payload: error.payload || null });
+  }
+};

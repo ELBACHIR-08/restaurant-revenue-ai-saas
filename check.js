@@ -1,11 +1,17 @@
-import fs from 'node:fs';
-const required = ['index.html','package.json','vercel.json','api/health.js','api/signup.js'];
-let ok = true;
-for (const file of required) {
-  if (!fs.existsSync(file)) {
-    console.error(`Missing ${file}`);
-    ok = false;
+const fs = require('fs');
+const path = require('path');
+const root = process.cwd();
+const jsFiles = [];
+function walk(dir) {
+  for (const item of fs.readdirSync(dir)) {
+    const full = path.join(dir, item);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) walk(full);
+    else if (item.endsWith('.js')) jsFiles.push(full);
   }
 }
-if (!ok) process.exit(1);
-console.log('Production Core structure OK');
+walk(path.join(root, 'api'));
+for (const file of jsFiles) {
+  require('child_process').execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
+}
+console.log(`Checked ${jsFiles.length} API files.`);

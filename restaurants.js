@@ -1,22 +1,18 @@
-import { hasSupabaseConfig, selectRows } from './_lib/supabase-rest.js';
+const { send, handleOptions, getBearer } = require('./_lib/http');
+const { isConfigured, select, getUserFromToken, getMemberships } = require('./_lib/supabase-rest');
 
-const demoRestaurants = [
-  { id: 'demo-1', name: 'La Fourchette', city: 'Dakar', plan_code: 'premium_ai', status: 'trial_active', mrr: 50000 },
-  { id: 'demo-2', name: 'Lounge Saly', city: 'Saly', plan_code: 'growth', status: 'trial_active', mrr: 30000 },
-  { id: 'demo-3', name: 'Café Plateau', city: 'Dakar', plan_code: 'starter', status: 'active', mrr: 20000 }
-];
-
-export default async function handler(req, res) {
-  if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'Method not allowed' });
-
-  if (!hasSupabaseConfig()) {
-    return res.status(200).json({ ok: true, mode: 'demo-fallback', restaurants: demoRestaurants });
-  }
-
+module.exports = async (req, res) => {
+  if (handleOptions(req, res)) return;
   try {
-    const restaurants = await selectRows('restaurants', 'select=*&order=created_at.desc&limit=100');
-    return res.status(200).json({ ok: true, mode: 'supabase', restaurants });
+    const token = getBearer(req);
+    const user = token ? await getUserFromToken(token) : { demo: true, id: 'demo-user' };
+    if (!isConfigured() || user.demo) {
+      return send(res, 200, { ok: true, mode: 'demo', restaurants: [{ id: 'demo-restaurant', name: 'Restaurant Démo', city: 'Dakar', status: 'trial' }] });
+    }
+    const memberships = await getMemberships(user.id);
+    const restaurants = memberships.map(m => ({ ...m.restaurants, role: m.role, member_status: m.status }));
+    send(res, 200, { ok: true, mode: 'supabase', restaurants });
   } catch (error) {
-    return res.status(500).json({ ok: false, error: error.message });
+    send(res, error.statusCode || 500, { ok: false, error: error.message });
   }
-}
+};

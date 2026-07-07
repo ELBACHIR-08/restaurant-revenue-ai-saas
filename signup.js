@@ -1,92 +1,103 @@
-import { hasSupabaseConfig, insertRow, slugify } from './_lib/supabase-rest.js';
+const { send, handleOptions, readJson, required } = require('./_lib/http');
+const { isConfigured, authAdminCreateUser, insert, select } = require('./_lib/supabase-rest');
 
-function addDays(date, days) {
-  const copy = new Date(date);
-  copy.setDate(copy.getDate() + days);
-  return copy.toISOString();
+function slugify(value) {
+  return String(value || 'restaurant')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    .slice(0, 48) || 'restaurant';
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
+async function getPlanId(planCode) {
+  const rows = await select('plans', { code: `eq.${planCode || 'growth'}`, limit: 1 });
+  return rows && rows[0] ? rows[0].id : null;
+}
 
-  const body = req.body || {};
-  const restaurantName = body.restaurantName || body.restaurant || 'Restaurant demo';
-  const plan = body.plan || 'growth';
-  const now = new Date().toISOString();
-  const trialEndsAt = addDays(now, 30);
-
-  if (!hasSupabaseConfig()) {
-    return res.status(200).json({
-      ok: true,
-      mode: 'demo-fallback',
-      message: 'Compte restaurant demo cree. Connecte Supabase pour persister les donnees.',
-      trialDays: 30,
-      restaurant: {
-        id: 'demo-restaurant-id',
-        name: restaurantName,
-        city: body.city || 'Dakar',
-        district: body.district || '',
-        type: body.restaurantType || 'Restaurant',
-        status: 'trial_active'
-      },
-      subscription: {
-        plan,
-        status: 'trial_active',
-        trialEndsAt
-      }
-    });
-  }
-
+module.exports = async (req, res) => {
+  if (handleOptions(req, res)) return;
+  if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'Method not allowed' });
   try {
-    const restaurant = await insertRow('restaurants', {
+    const body = await readJson(req);
+    const restaurantName = String(required(body.restaurantName, 'Restaurant name'));
+    const ownerName = String(required(body.ownerName, 'Owner name'));
+    const email = String(required(body.email, 'Email')).toLowerCase();
+    const phone = String(required(body.phone, 'Phone'));
+    const password = String(body.password || `RestoAI-${Math.random().toString(36).slice(2, 10)}!`);
+    const city = String(body.city || 'Dakar');
+    const district = String(body.district || '');
+    const restaurantType = String(body.restaurantType || 'restaurant');
+    const selectedPlan = String(body.selectedPlan || 'growth');
+    const modules = Array.isArray(body.modules) ? body.modules : ['reservations', 'orders', 'promotions', 'crm'];
+
+    if (!isConfigured()) {
+      return send(res, 200, {
+        ok: true,
+        mode: 'demo',
+        message: 'Demo signup accepted. Configure Supabase env vars for real persistence.',
+        restaurant: { id: 'demo-restaurant', name: restaurantName, city, district, type: restaurantType },
+        user: { id: 'demo-user', email, name: ownerName },
+        subscription: { status: 'trial_active', plan: selectedPlan, trial_days: 30 }
+      });
+    }
+
+    const user = await authAdminCreateUser({ email, password, phone, name: ownerName });
+    const profilePayload = {
+      id: user.id,
+      full_name: ownerName,
+      email,
+      phone,
+      is_platform_admin: false
+    };
+    await insert('profiles', profilePayload);
+
+    const trialStart = new Date();
+    const trialEnd = new Date(trialStart.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const slugBase = slugify(restaurantName);
+    const restaurants = await insert('restaurants', {
       name: restaurantName,
-      slug: `${slugify(restaurantName)}-${Date.now().toString(36)}`,
-      city: body.city || 'Dakar',
-      district: body.district || null,
-      type: body.restaurantType || body.type || 'Restaurant',
-      phone: body.phone || null,
-      email: body.email || null,
-      website: body.website || null,
-      status: 'trial_active',
-      trial_started_at: now,
-      trial_ends_at: trialEndsAt,
-      created_at: now,
-      updated_at: now
+      slug: `${slugBase}-${Math.random().toString(36).slice(2, 7)}`,
+      city,
+      district,
+      type: restaurantType,
+      owner_name: ownerName,
+      owner_email: email,
+      owner_phone: phone,
+      status: 'trial',
+      modules
     });
-
-    const subscription = await insertRow('subscriptions', {
+    const restaurant = restaurants[0];
+    await insert('restaurant_members', {
       restaurant_id: restaurant.id,
-      plan_code: plan,
-      status: 'trial_active',
-      trial_started_at: now,
-      trial_ends_at: trialEndsAt,
-      current_period_started_at: now,
-      current_period_ends_at: trialEndsAt,
-      created_at: now,
-      updated_at: now
+      user_id: user.id,
+      role: 'owner',
+      status: 'active'
     });
-
-    await insertRow('audit_logs', {
+    const planId = await getPlanId(selectedPlan);
+    const subscriptions = await insert('subscriptions', {
       restaurant_id: restaurant.id,
-      actor_type: 'system',
-      action: 'restaurant.signup',
-      entity_type: 'restaurant',
-      entity_id: restaurant.id,
-      metadata: { plan, source: 'signup-api' },
-      created_at: now
+      plan_id: planId,
+      status: 'trial_active',
+      trial_start: trialStart.toISOString(),
+      trial_end: trialEnd.toISOString(),
+      current_period_start: trialStart.toISOString(),
+      current_period_end: trialEnd.toISOString(),
+      payment_provider: 'manual_pending'
     });
-
-    return res.status(200).json({
+    await insert('restaurant_settings', {
+      restaurant_id: restaurant.id,
+      onboarding_status: 'started',
+      menu_source: body.menuSource || null,
+      modules
+    });
+    send(res, 201, {
       ok: true,
       mode: 'supabase',
-      message: 'Compte restaurant cree avec succes',
-      trialDays: 30,
       restaurant,
-      subscription
+      user: { id: user.id, email, name: ownerName },
+      subscription: subscriptions[0],
+      temporaryPasswordUsed: !body.password
     });
   } catch (error) {
-    return res.status(500).json({ ok: false, error: error.message });
+    send(res, error.statusCode || 500, { ok: false, error: error.message, payload: error.payload || null });
   }
-}
+};

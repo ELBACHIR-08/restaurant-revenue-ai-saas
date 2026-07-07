@@ -1,88 +1,75 @@
-# Restaurant Revenue AI SaaS - Production Core V1.1
+# Restaurant Revenue AI SaaS — Production Core V2 Supabase Connected
 
-Production Core for the SaaS platform: Vercel frontend + serverless API + Supabase-ready persistence.
+This version turns the SaaS demo into a production-oriented core.
 
-## What changed in this version
+## Included
 
-- Dashboard button **Générer rapport** now works.
-  - It reads the KPI cards, IA recommendations, assistant-server signals, products, and active promotions currently displayed.
-  - It opens a director-ready report modal.
-  - The report can be copied or downloaded as a `.txt` file.
-- Visual redesign with a modern restaurant/kitchen atmosphere.
-  - Warmer culinary background.
-  - Subtle tile/grid texture.
-  - Sober charcoal, cream, amber and wood-inspired tones.
-  - More premium cards and panels.
-- Super Admin tabs fixed: clicking `Vue globale`, `Restaurants`, `Plans`, `Onboarding`, `Support`, or `Analytics` no longer scrolls the page to the top.
-- App tabs also keep context instead of forcing a top scroll.
-- UI state is preserved in localStorage.
-- Product and promotion changes persist locally and can sync to Supabase.
-- API endpoints:
-  - `/api/health`
-  - `/api/signup`
-  - `/api/restaurants`
-  - `/api/products`
-  - `/api/promotions`
-  - `/api/admin-summary`
-- Supabase SQL schema included under `supabase/schema.sql`.
-- `.env.example` included for Vercel environment variables.
+- Vercel-ready static app + serverless APIs
+- Supabase Auth-oriented signup/login flow
+- Restaurant owner account creation
+- 30-day trial subscription creation
+- Products CRUD API
+- Promotions CRUD API
+- Report generation API
+- Super Admin APIs
+- Supabase SQL schema with RLS policies
+- Kitchen/restaurant premium UI
+- Super Admin tabs fixed: no scroll-to-top on tab click
+- Fallback demo mode if Supabase is not configured
 
-## Deploy on Vercel
-
-Upload the full folder contents to GitHub, then let Vercel redeploy.
-
-Vercel settings:
+## Files
 
 ```text
-Framework Preset: Other / No Framework
-Build Command: empty
-Output Directory: empty or .
-Install Command: default
-Root Directory: ./
+index.html
+package.json
+vercel.json
+api/
+  health.js
+  config.js
+  signup.js
+  login.js
+  restaurants.js
+  products.js
+  promotions.js
+  auth/me.js
+  admin/summary.js
+  admin/restaurants.js
+  admin/subscriptions.js
+  reports/generate.js
+  _lib/http.js
+  _lib/supabase-rest.js
+supabase/schema.sql
+docs/SUPABASE_SETUP.md
+docs/PRODUCTION_LAUNCH_CHECKLIST.md
+.env.example
 ```
+
+## Deploy
+
+Upload all files to the GitHub repository, then redeploy on Vercel.
 
 ## Test
 
 ```text
-https://YOUR_DOMAIN.vercel.app/health
-https://YOUR_DOMAIN.vercel.app/api/products
-https://YOUR_DOMAIN.vercel.app/api/promotions
+/health
+/api/config
+/api/products
+/api/promotions
+/api/admin/summary
 ```
 
-Then open:
+If Supabase env vars are not added, the app runs in demo fallback mode.
+If Supabase env vars are added and `schema.sql` has been executed, data persists in Supabase.
 
-```text
-Espace restaurant > Dashboard > Générer rapport
-```
+## Production mode
 
-Expected result: a modal report appears with KPI synthesis, recommendations, operational reading, and 7-day action plan.
-
-## Connect Supabase
-
-1. Create a Supabase project.
-2. Run `supabase/schema.sql` in the SQL editor.
-3. Add these variables in Vercel:
-
-```text
-SUPABASE_URL
-SUPABASE_SERVICE_ROLE_KEY
-```
-
+1. Create Supabase project.
+2. Run `supabase/schema.sql`.
+3. Add Vercel env vars from `.env.example`.
 4. Redeploy.
-5. Open `/api/health` and confirm `supabase.configured = true`.
+5. Use signup to create the first restaurant.
+6. Add the founder email to `PLATFORM_ADMIN_EMAILS` or set `profiles.is_platform_admin = true`.
+7. Validate product/promo persistence.
+8. Start pilot onboarding.
 
-## PayDunya
-
-PayDunya keys are not included yet. Add them only after the Supabase core is stable:
-
-```text
-PAYDUNYA_MASTER_KEY
-PAYDUNYA_PRIVATE_KEY
-PAYDUNYA_PUBLIC_KEY
-PAYDUNYA_TOKEN
-PAYDUNYA_MODE
-```
-
-## Launch recommendation
-
-This is ready for a controlled pilot. For fully autonomous SaaS scale, the next step is real auth/invitations, RBAC enforcement, PayDunya billing, and monitoring.
+PayDunya and WhatsApp are intentionally left for the next sprint.

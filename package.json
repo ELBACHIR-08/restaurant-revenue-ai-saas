@@ -1,14 +1,13 @@
 {
   "name": "restaurant-revenue-ai-saas",
-  "version": "1.2.1-report-kitchen",
+  "version": "2.0.0-supabase-core",
   "private": true,
-  "description": "Restaurant Revenue AI - SaaS Production Core with working report generation and restaurant-inspired UI",
+  "description": "Restaurant Revenue AI - Supabase Production Core V2",
   "scripts": {
     "dev": "vercel dev",
     "check": "node scripts/check.js"
   },
   "engines": {
     "node": "20.x"
-  },
-  "type": "module"
+  }
 }

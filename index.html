@@ -3,949 +3,387 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Restaurant Revenue AI - Production Core</title>
-  <meta name="description" content="Plateforme SaaS IA production-ready core pour restaurants : reservations, commandes, paiements, CRM, promotions, dashboard revenue et administration." />
+  <title>Restaurant Revenue AI — SaaS restaurants Sénégal</title>
+  <meta name="description" content="Plateforme IA pour restaurants : réservation, commande, paiement, CRM, promotions, dashboard et super admin multi-restaurants." />
   <style>
-    :root{
-      --bg:#f5efe4;
-      --paper:#ffffff;
-      --ink:#14110f;
-      --muted:#706a62;
-      --soft:#efe3d0;
-      --line:#dccbb2;
-      --accent:#b9781e;
-      --accent-2:#6f4214;
-      --good:#168a5b;
-      --bad:#b42318;
-      --info:#2b63b8;
-      --dark:#17130f;
-      --dark-2:#241b12;
-      --shadow:0 20px 60px rgba(32,24,15,.10);
-      --radius:24px;
+    :root {
+      --ink:#191612;
+      --muted:#776f64;
+      --paper:#fffaf2;
+      --card:#fffdf8;
+      --line:#eadfce;
+      --charcoal:#191714;
+      --wood:#9b5e2e;
+      --amber:#d99032;
+      --saffron:#f6c15e;
+      --sage:#60775f;
+      --green:#12815f;
+      --red:#c84a31;
+      --shadow:0 22px 80px rgba(56,36,16,.14);
+      --radius:28px;
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      min-height:100vh;
-      overflow-x:hidden;
-      position:relative;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(circle at 12% 4%, rgba(255,239,204,.92) 0, transparent 31%),
-        radial-gradient(circle at 92% 7%, rgba(195,132,52,.20) 0, transparent 28%),
-        linear-gradient(135deg,#fbf7ef 0%,#f2e7d5 45%,#efe2cd 100%);
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        radial-gradient(circle at 10% 10%, rgba(246,193,94,.28), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(96,119,95,.18), transparent 30%),
+        linear-gradient(135deg,#fff8ea 0%,#f7eddd 44%,#fffaf2 100%);
+      min-height:100vh;
+      overflow-x:hidden;
     }
-    body::before{
-      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-      background:
-        radial-gradient(circle at 14% 28%, rgba(255,255,255,.58) 0 0, rgba(255,255,255,.22) 0 18%, transparent 19%),
-        radial-gradient(circle at 83% 21%, rgba(23,19,15,.06) 0 0, rgba(23,19,15,.03) 0 14%, transparent 15%),
-        radial-gradient(circle at 88% 76%, rgba(185,120,30,.13) 0 0, transparent 24%),
-        repeating-linear-gradient(90deg, rgba(84,62,40,.050) 0 1px, transparent 1px 82px),
-        repeating-linear-gradient(0deg, rgba(84,62,40,.038) 0 1px, transparent 1px 82px);
-      mix-blend-mode:multiply;
+    body:before{
+      content:"";
+      position:fixed;inset:0;z-index:-1;opacity:.35;pointer-events:none;
+      background-image:
+        linear-gradient(90deg,rgba(80,55,25,.06) 1px,transparent 1px),
+        linear-gradient(0deg,rgba(80,55,25,.05) 1px,transparent 1px);
+      background-size:48px 48px;
+      mask-image:linear-gradient(to bottom, black, transparent 90%);
     }
-    body::after{
-      content:"";position:fixed;right:-90px;bottom:-110px;width:360px;height:360px;pointer-events:none;z-index:0;opacity:.38;
-      background:
-        radial-gradient(circle, transparent 0 42%, rgba(255,255,255,.72) 43% 52%, transparent 53% 100%),
-        radial-gradient(circle at 48% 48%, rgba(86,54,24,.12) 0 6%, transparent 7%);
-      border-radius:50%;
-      filter:blur(.2px);
-    }
-    header, main, .mobile-bar, .toast, .modal-backdrop{position:relative;z-index:1}
-    button,input,select,textarea{font:inherit}
-    button{cursor:pointer}
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+    button,input,select,textarea{font:inherit}
+    .shell{max-width:1240px;margin:0 auto;padding:22px}
     .topbar{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(18px);
-      background:rgba(249,244,235,.86);
-      border-bottom:1px solid rgba(225,215,198,.78);
+      position:sticky;top:12px;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:12px 14px;border:1px solid rgba(234,223,206,.75);border-radius:22px;
+      background:rgba(255,250,242,.84);backdrop-filter:blur(18px);box-shadow:0 12px 44px rgba(70,45,20,.1)
     }
-    .nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
     .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.03em}
-    .logo{height:42px;width:42px;border-radius:15px;background:linear-gradient(135deg,var(--dark),#3a2918);display:grid;place-items:center;color:#ffe2a5;box-shadow:0 10px 22px rgba(20,17,15,.2)}
-    .brand span:last-child{font-size:18px}
-    .navlinks{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .navlinks button,.pill-btn{
-      border:0;background:transparent;color:#4d463d;padding:10px 13px;border-radius:999px;font-weight:700;font-size:14px;
-    }
-    .navlinks button:hover,.pill-btn:hover{background:rgba(255,255,255,.85);color:var(--ink)}
-    .navlinks .primary,.primary{
-      background:var(--dark);color:#fff;border:0;border-radius:999px;padding:12px 17px;font-weight:900;box-shadow:0 12px 28px rgba(20,17,15,.18);
-    }
-    .primary:hover{background:#2c2117}
-    .secondary{background:#fff;border:1px solid var(--line);border-radius:999px;padding:12px 17px;font-weight:900;color:var(--ink)}
-    .ghost{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:11px 15px;font-weight:850}
-    .page{display:none;animation:fade .22s ease-out}
-    .page.active{display:block}
-    @keyframes fade{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
-    .hero{padding:58px 0 34px}
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:900;font-size:13px;color:#6a4b1f}
-    .hero h1{font-size:clamp(44px,6vw,82px);line-height:.92;margin:18px 0 18px;letter-spacing:-.075em}
-    .lead{font-size:19px;line-height:1.65;color:var(--muted);max-width:720px}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-    .trust-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;color:#5d554b;font-weight:750;font-size:14px}
-    .trust-row span{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.65);border:1px solid rgba(225,215,198,.8);padding:9px 12px;border-radius:999px}
-    .hero-card{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 16px),linear-gradient(180deg,#211811,#11100f);color:#fff;border-radius:34px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-    .hero-card:before{content:"";position:absolute;inset:-120px -60px auto auto;height:270px;width:270px;background:radial-gradient(circle,#d6972a66,transparent 67%)}
-    .hero-card h3{margin:0;font-size:21px}
-    .screen{position:relative;background:linear-gradient(180deg,#fff,#fbf6ed);color:var(--ink);border:1px solid rgba(255,255,255,.75);border-radius:28px;margin-top:20px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
-    .screen-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:13px;margin-bottom:14px}
-    .dots{display:flex;gap:6px}.dots i{height:9px;width:9px;background:#d7c8b0;border-radius:999px;display:block}
-    .metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .metric{background:#f8f4eb;border:1px solid #ede0cf;border-radius:20px;padding:15px}
-    .metric .label{font-size:12px;color:#756c61;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
-    .metric .value{font-size:25px;font-weight:950;margin-top:4px;letter-spacing:-.04em}
-    .metric .delta{font-size:13px;color:var(--good);font-weight:850;margin-top:4px}
-    .ai-box{margin-top:12px;border-radius:20px;background:#17130f;color:#fff;padding:15px;display:flex;gap:12px;align-items:flex-start}
-    .section-title{padding:42px 0 18px;text-align:center}
-    .section-title h2{font-size:clamp(32px,4.5vw,58px);letter-spacing:-.06em;line-height:1;margin:0 auto 14px;max-width:900px}
-    .section-title p{color:var(--muted);line-height:1.6;font-size:18px;max-width:780px;margin:0 auto}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .card{background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border:1px solid rgba(220,203,178,.82);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(31,23,14,.05)}
-    .card h3{margin:0 0 8px;font-size:21px;letter-spacing:-.02em}
-    .card p{margin:0;color:var(--muted);line-height:1.55}
-    .icon{height:44px;width:44px;border-radius:16px;background:#fff0cf;display:grid;place-items:center;font-size:22px;margin-bottom:14px}
-    .dark-section{margin:54px 0;padding:38px 0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 14px),linear-gradient(135deg,#17130f,#2a1c0f);color:#fff;border-radius:36px;overflow:hidden}
-    .dark-section .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);box-shadow:none;color:#fff}
-    .dark-section .card p{color:#d7c8b9}
-    .pricing{padding:16px 0 48px}
-    .price-card{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:18px;min-height:580px}
-    .price-card.featured{background:linear-gradient(180deg,#17130f,#2b1e14);color:#fff;transform:translateY(-10px);box-shadow:0 22px 70px rgba(20,17,15,.22)}
-    .price-card.featured p,.price-card.featured li{color:#e7daca}
-    .badge{display:inline-flex;width:max-content;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:950;background:#fff3d8;color:#70480e;border:1px solid #ecd3a3}
-    .price{font-size:42px;letter-spacing:-.05em;font-weight:950}.price small{font-size:15px;color:var(--muted);font-weight:800}.featured .price small{color:#e4d6c2}
-    .features{list-style:none;margin:0;padding:0;display:grid;gap:10px}.features li{display:flex;gap:10px;color:#5d554b;line-height:1.45}.features li:before{content:"✓";color:var(--good);font-weight:950}.featured .features li:before{color:#ffd175}
-    .price-card .cta{margin-top:auto}
-    .split{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
-    .form-card{background:#fff;border:1px solid var(--line);border-radius:30px;padding:22px;box-shadow:var(--shadow)}
-    .stepper{display:flex;gap:8px;margin:0 0 18px}.step{height:7px;flex:1;border-radius:999px;background:#eee2d1}.step.on{background:var(--accent)}
-    label{display:block;font-weight:850;font-size:13px;color:#564d43;margin:0 0 7px}
-    input,select,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px 14px;outline:none;font-size:16px;color:var(--ink)}
-    textarea{min-height:92px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color:#bd8a32;box-shadow:0 0 0 4px rgba(200,138,29,.13)}
-    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-    .stack{display:grid;gap:14px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{display:flex;justify-content:space-between;gap:16px;align-items:center}.muted{color:var(--muted)}
-    .mini{font-size:13px}.strong{font-weight:950}.center{text-align:center}.mt{margin-top:16px}.mb{margin-bottom:16px}
-    .app-shell{display:grid;grid-template-columns:280px 1fr;gap:18px;padding:24px 0 44px}
-    .sidebar{position:sticky;top:92px;align-self:start;background:#17130f;color:#fff;border-radius:30px;padding:18px;box-shadow:var(--shadow);max-height:calc(100vh - 112px);overflow:auto}
-    .side-head{display:flex;align-items:center;gap:12px;padding:7px 6px 14px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:10px}
-    .side-head .avatar{height:42px;width:42px;border-radius:16px;background:#fff0cf;color:#17130f;display:grid;place-items:center;font-weight:950}
-    .side-nav{display:grid;gap:6px}.side-nav button{border:0;background:transparent;color:#dbcdbd;text-align:left;border-radius:16px;padding:12px 12px;font-weight:850;display:flex;gap:10px;align-items:center}.side-nav button:hover,.side-nav button.active{background:rgba(255,255,255,.10);color:#fff}.side-nav button.locked{opacity:.45;cursor:not-allowed}
-    .app-main{min-width:0}.panel{display:none}.panel.active{display:block}
-    .panel-title{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:3px 0 18px}.panel-title h2{font-size:38px;letter-spacing:-.055em;margin:0}.panel-title p{margin:6px 0 0;color:var(--muted)}
-    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.kpi{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 10px 26px rgba(31,23,14,.05)}.kpi .num{font-size:30px;font-weight:950;letter-spacing:-.04em}.kpi .lab{color:var(--muted);font-weight:800;font-size:13px}.kpi .trend{margin-top:8px;color:var(--good);font-weight:900;font-size:13px}
-    .table-wrap{background:#fff;border:1px solid var(--line);border-radius:26px;overflow:auto;box-shadow:0 10px 26px rgba(31,23,14,.05)}
-    table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:14px 16px;border-bottom:1px solid #eee4d5;font-size:14px}th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#776d60;background:#faf6ef}td{color:#332b24}tr:last-child td{border-bottom:0}
-    .tag{display:inline-flex;align-items:center;border-radius:999px;padding:6px 9px;background:#f5ecdc;color:#64430d;font-size:12px;font-weight:900}.tag.green{background:#e9f8f1;color:#136b47}.tag.blue{background:#eaf1ff;color:#244f9b}.tag.red{background:#fff0ed;color:#a33325}.tag.dark{background:#17130f;color:#fff}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .product-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;display:grid;gap:12px;box-shadow:0 10px 26px rgba(31,23,14,.05)}.product-top{display:flex;justify-content:space-between;gap:14px}.product-name{font-weight:950;font-size:18px}.price-small{font-weight:950;color:#7a4f13}.toggles{display:flex;gap:6px;flex-wrap:wrap}
-    .check-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee4d5}.check-row:last-child{border-bottom:0}.switch{height:28px;width:50px;border-radius:999px;background:#dfd2c0;position:relative;transition:.18s}.switch:after{content:"";position:absolute;top:4px;left:4px;height:20px;width:20px;background:#fff;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.18s}.switch.on{background:var(--good)}.switch.on:after{left:26px}
-    .checkout{position:relative;border-radius:28px;background:linear-gradient(180deg,#fff,#fbf5ea);border:1px solid var(--line);padding:20px;box-shadow:var(--shadow)}
-    .modal-backdrop{display:none;position:fixed;inset:0;z-index:200;background:rgba(18,14,10,.58);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:22px}
-    .modal-backdrop.show{display:flex}
-    .report-modal{width:min(980px,100%);max-height:min(88vh,900px);overflow:auto;background:linear-gradient(180deg,#fff,#fbf6ed);border:1px solid rgba(255,255,255,.72);border-radius:30px;box-shadow:0 28px 90px rgba(0,0,0,.34);padding:22px}
-    .report-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
-    .report-head h2{margin:0;font-size:34px;letter-spacing:-.05em}.report-head p{margin:7px 0 0;color:var(--muted)}
-    .report-actions{display:flex;gap:8px;flex-wrap:wrap}.report-actions button{white-space:nowrap}
-    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.report-kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}.report-kpi .value{font-size:24px;font-weight:950;letter-spacing:-.04em}.report-kpi .label{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
-    .report-section{margin-top:16px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:22px;padding:18px}.report-section h3{margin:0 0 10px}.report-section ul{margin:0;padding-left:20px;line-height:1.65;color:#3f352c}.report-note{background:#17130f;color:#fff;border-radius:22px;padding:18px;line-height:1.6}.report-note strong{color:#ffd175}
-    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(100px);background:#17130f;color:#fff;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 18px 40px rgba(0,0,0,.22);z-index:300;opacity:0;transition:.25s}.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-    .mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:60;padding:8px 10px}.mobile-bar button{flex:1;border:0;background:transparent;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:900;color:#5b5248}.mobile-bar button.active{background:#17130f;color:#fff}
-    .admin-hero{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 14px),linear-gradient(135deg,#101010,#2b2016);color:#fff;border-radius:34px;padding:28px;box-shadow:var(--shadow);margin:24px 0}.admin-shell{display:grid;grid-template-columns:260px 1fr;gap:18px;padding-bottom:44px}
-    .progress{height:9px;background:#eee0ce;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#f1b94d);border-radius:999px}
-    .timeline{display:grid;gap:12px}.timeline .item{display:grid;grid-template-columns:28px 1fr;gap:10px}.timeline .dot{height:26px;width:26px;border-radius:999px;background:#fff0cf;display:grid;place-items:center;color:#70480e;font-weight:950}.timeline .body{border-bottom:1px solid #eee4d5;padding-bottom:12px}.timeline .body b{display:block;margin-bottom:4px}
-    @media (max-width: 1024px){
-      .hero-grid,.split,.app-shell,.admin-shell{grid-template-columns:1fr}.sidebar{position:relative;top:auto;max-height:none}.kpi-grid,.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3,.three-col,.two-col{grid-template-columns:1fr}.hero-card{order:-1}.panel-title{align-items:flex-start;flex-direction:column}.navlinks{display:none}.mobile-bar{display:flex}.wrap{padding:0 16px}.topbar .nav{height:64px}.hero{padding-top:34px}body{padding-bottom:72px}.price-card.featured{transform:none}
-    }
-    @media (max-width:620px){
-      .metric-grid,.kpi-grid,.form-grid,.report-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.panel-title h2{font-size:30px}.card,.form-card,.checkout{border-radius:20px;padding:16px}.price{font-size:36px}.brand span:last-child{font-size:15px}.logo{height:38px;width:38px}.hero-actions .primary,.hero-actions .secondary{width:100%;text-align:center;justify-content:center}.row .primary,.row .secondary{width:100%}.report-modal{padding:16px;border-radius:22px}.report-head{flex-direction:column}.report-head h2{font-size:28px}.report-actions{width:100%}.report-actions button{flex:1}
-    }
+    .logo{width:42px;height:42px;border-radius:16px;background:linear-gradient(135deg,#191714,#7a4c2a 55%,#d99032);display:grid;place-items:center;color:#fff;box-shadow:0 12px 24px rgba(90,54,16,.24)}
+    .nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .nav button,.pill,.btn{border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:10px 14px;cursor:pointer;color:var(--ink);font-weight:700;transition:.18s ease}
+    .nav button:hover,.btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(80,45,20,.11)}
+    .btn.primary{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}
+    .btn.gold{background:linear-gradient(135deg,var(--amber),var(--saffron));border-color:rgba(153,91,37,.35);color:#2a1a0b}
+    .btn.ghost{background:transparent}
+    .btn.danger{background:#fff2ed;color:#a63821;border-color:#f1c6b8}
+    .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center;padding:72px 0 42px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(217,144,50,.28);background:rgba(255,255,255,.58);border-radius:999px;padding:8px 12px;color:#6d4a22;font-weight:800;font-size:13px}
+    h1{font-size:clamp(38px,6.2vw,82px);line-height:.94;letter-spacing:-.075em;margin:18px 0 18px}
+    h2{font-size:clamp(28px,4vw,48px);letter-spacing:-.055em;line-height:1;margin:0 0 14px}
+    h3{margin:0 0 8px;font-size:22px;letter-spacing:-.035em}
+    p{color:var(--muted);line-height:1.65;margin:0}
+    .hero-card{border-radius:36px;background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,246,231,.96));border:1px solid rgba(234,223,206,.84);box-shadow:var(--shadow);padding:24px;position:relative;overflow:hidden}
+    .hero-card:before{content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;background:rgba(217,144,50,.16)}
+    .kitchen-card{border-radius:30px;background:linear-gradient(145deg,#201c17,#3d2a1b);color:#fff;padding:22px;box-shadow:0 30px 80px rgba(32,24,16,.28);position:relative;overflow:hidden}
+    .kitchen-card:after{content:"";position:absolute;inset:auto -30px -60px auto;width:220px;height:220px;border-radius:50%;background:rgba(246,193,94,.18)}
+    .phone{border:9px solid #171512;border-radius:38px;background:#fffdf8;box-shadow:0 26px 80px rgba(0,0,0,.22);overflow:hidden;max-width:360px;margin:0 auto;position:relative;z-index:1}
+    .phone-head{padding:16px;background:#171512;color:#fff;display:flex;align-items:center;justify-content:space-between}
+    .chat{padding:16px;display:grid;gap:12px;min-height:390px;background:linear-gradient(#fffaf2,#f8efdf)}
+    .bubble{max-width:88%;padding:12px 14px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(70,40,15,.08);font-size:14px;line-height:1.45}
+    .bubble.bot{border-bottom-left-radius:6px}.bubble.user{margin-left:auto;background:#191714;color:#fff;border-color:#191714;border-bottom-right-radius:6px}
+    .quick{display:flex;gap:8px;flex-wrap:wrap}.quick span{font-size:12px;border:1px solid #eadfce;background:#fff;border-radius:999px;padding:8px 10px;font-weight:800}
+    .grid{display:grid;gap:16px}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-4{grid-template-columns:repeat(4,1fr)}.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .section{padding:38px 0}.card{background:rgba(255,253,248,.82);border:1px solid rgba(234,223,206,.88);border-radius:var(--radius);box-shadow:0 18px 60px rgba(70,45,20,.08);padding:22px}.card.dark{background:#191714;color:#fff;border-color:#2c2720}.card.dark p{color:#cfc5b6}
+    .metric{padding:18px;border-radius:22px;background:#fff;border:1px solid var(--line)}.metric .label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}.metric .value{font-size:30px;font-weight:950;letter-spacing:-.05em;margin-top:4px}.metric .sub{font-size:13px;color:var(--muted);margin-top:4px}
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.plan{position:relative;overflow:hidden}.plan.featured{border-color:rgba(217,144,50,.55);box-shadow:0 26px 80px rgba(217,144,50,.18)}.price{font-size:34px;font-weight:950;letter-spacing:-.05em}.features{display:grid;gap:10px;margin:18px 0}.feature{display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-size:14px}.check{color:var(--green);font-weight:900}
+    .app{display:none;padding:28px 0}.app.active{display:block}.app-layout{display:grid;grid-template-columns:260px 1fr;gap:18px}.sidebar{position:sticky;top:100px;align-self:start;border-radius:30px;background:#191714;color:#fff;padding:14px;box-shadow:0 28px 80px rgba(20,15,10,.2)}.side-btn{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#d8d0c5;padding:12px;border-radius:18px;text-align:left;cursor:pointer;font-weight:800}.side-btn.active,.side-btn:hover{background:rgba(255,255,255,.1);color:#fff}.content{min-width:0}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;cursor:pointer;font-weight:800}.tab.active{background:#191714;color:#fff;border-color:#191714}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 12px}.table td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 12px}.table td:first-child{border-left:1px solid var(--line);border-radius:16px 0 0 16px}.table td:last-child{border-right:1px solid var(--line);border-radius:0 16px 16px 0}
+    .form{display:grid;gap:12px}.field{display:grid;gap:6px}.field label{font-size:13px;color:var(--muted);font-weight:900}.input,select,textarea{width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px 14px;outline:none}.input:focus,select:focus,textarea:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(217,144,50,.12)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.status{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}.status.green{background:#e9f7ef;color:#0f6c4d}.status.gold{background:#fff2d5;color:#8a540c}.status.red{background:#fff0ea;color:#a63821}.status.gray{background:#efede8;color:#665d52}.modal{position:fixed;inset:0;background:rgba(25,22,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modal.active{display:flex}.modal-panel{background:#fffaf2;border:1px solid var(--line);border-radius:28px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.28)}.report-pre{white-space:pre-wrap;background:#171512;color:#fff;border-radius:22px;padding:18px;line-height:1.55;max-height:55vh;overflow:auto}.notice{border:1px solid rgba(217,144,50,.26);background:rgba(255,246,227,.76);border-radius:20px;padding:14px;color:#6f4a18}.mini{font-size:12px;color:var(--muted)}.hidden{display:none!important}.divider{height:1px;background:var(--line);margin:14px 0}.right{text-align:right}.empty{padding:24px;border:1px dashed var(--line);border-radius:22px;background:rgba(255,255,255,.55);color:var(--muted)}
+    @media(max-width:900px){.hero,.app-layout,.grid.cols-4,.grid.cols-3,.grid.cols-2,.pricing{grid-template-columns:1fr}.sidebar{position:relative;top:auto}.nav{display:none}.form-row{grid-template-columns:1fr}.shell{padding:14px}.topbar{top:8px}.phone{max-width:100%}}
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap nav">
-      <button class="brand" data-page="home" aria-label="Accueil Restaurant Revenue AI" style="border:0;background:transparent;padding:0">
-        <span class="logo">RA</span>
-        <span>Restaurant Revenue AI</span>
-      </button>
-      <nav class="navlinks" aria-label="Navigation principale">
-        <button data-page="home">Accueil</button>
-        <button data-page="features">Fonctionnalités</button>
-        <button data-page="pricing">Tarifs</button>
-        <button data-page="app">Espace restaurant</button>
-        <button data-page="admin">Super admin</button>
-        <button class="primary" data-page="signup">Démarrer 30 jours gratuits</button>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" data-view="home"><span class="logo">🍽️</span><span>Restaurant Revenue AI</span></a>
+      <nav class="nav">
+        <button type="button" data-jump="features">Fonctionnalités</button>
+        <button type="button" data-jump="pricing">Tarifs</button>
+        <button type="button" data-view="signup">30 jours gratuits</button>
+        <button type="button" data-view="login">Connexion</button>
+        <button type="button" class="btn primary" data-view="app">Espace restaurant</button>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main>
-    <section id="home" class="page active">
-      <div class="wrap hero">
-        <div class="hero-grid">
-          <div>
-            <span class="eyebrow">⚡ Nouveau SaaS restaurant · Sénégal ready</span>
-            <h1>Ne digitalisez pas seulement votre menu. Transformez-le en vendeur.</h1>
-            <p class="lead">Restaurant Revenue AI aide les restaurants à capter plus de réservations, commandes directes, paiements wallet et ventes additionnelles depuis leur site, QR code et WhatsApp.</p>
-            <div class="hero-actions">
-              <button class="primary" data-page="signup">Créer mon compte restaurant</button>
-              <button class="secondary" data-page="app">Voir le dashboard directeur</button>
-              <button class="secondary" data-page="pricing">Voir les offres</button>
-            </div>
-            <div class="trust-row">
-              <span>✓ Production Core V1</span>
-              <span>✓ 30 jours gratuits</span>
-              <span>✓ Paiements wallet</span>
-              <span>✓ QR intelligent</span>
-              <span>✓ IA upsell & CRM</span>
-            </div>
-            <div class="card" style="margin-top:18px;background:rgba(255,255,255,.72)">
-              <strong>Statut production :</strong> interface Vercel active, endpoints API prêts, schéma Supabase inclus, CRUD produits/promos préparé et UX Super Admin corrigée sans remontée de page.
-            </div>
-          </div>
-          <div class="hero-card">
-            <div class="between">
-              <div>
-                <p style="margin:0;color:#d8c9b7;font-weight:800">Dashboard directeur</p>
-                <h3>Aujourd'hui, l'IA a généré</h3>
-              </div>
-              <span class="badge">Live demo</span>
-            </div>
-            <div class="screen">
-              <div class="screen-head">
-                <strong>La Fourchette · Revenue Room</strong>
-                <span class="dots"><i></i><i></i><i></i></span>
-              </div>
-              <div class="metric-grid">
-                <div class="metric"><div class="label">CA direct</div><div class="value">1,18M</div><div class="delta">+26% vs hier</div></div>
-                <div class="metric"><div class="label">Upsells</div><div class="value">67%</div><div class="delta">+18 pts</div></div>
-                <div class="metric"><div class="label">Réservations</div><div class="value">42</div><div class="delta">5 acomptes encaissés</div></div>
-                <div class="metric"><div class="label">No-show évités</div><div class="value">8</div><div class="delta">120k FCFA sécurisés</div></div>
-              </div>
-              <div class="ai-box">
-                <div>🤖</div>
-                <div><strong>Recommandation IA</strong><br><span style="color:#d8c9b7">Pousser Chateaubriand + Saint-Julien après 20h. Panier attendu : +75 000 FCFA.</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="wrap">
-        <div class="section-title">
-          <h2>Un canal de vente directe, pas un simple menu QR.</h2>
-          <p>Le produit centralise réservation, commande, livraison, paiement, fidélisation, gestion des produits, promotions et analytics dans une seule plateforme.</p>
-        </div>
-        <div class="grid-3">
-          <div class="card"><div class="icon">💬</div><h3>Chatbot commercial</h3><p>Il qualifie l'intention, recommande les bons plats, propose des upsells et collecte téléphone/email au bon moment.</p></div>
-          <div class="card"><div class="icon">💳</div><h3>Paiements & abonnements</h3><p>Acompte, livraison, à emporter et abonnement SaaS avec essai gratuit de 30 jours.</p></div>
-          <div class="card"><div class="icon">📊</div><h3>Dashboard revenue</h3><p>Le directeur voit le chiffre généré, les no-shows évités, les upsells acceptés et les recommandations IA.</p></div>
-        </div>
-      </div>
-
-      <div class="wrap dark-section">
-        <div class="wrap" style="padding:0 26px">
-          <div class="section-title" style="padding-top:0">
-            <h2>La promesse commerciale</h2>
-            <p>Essayer gratuitement pendant 30 jours. Si la plateforme n'aide pas à vendre plus, le restaurant ne paie rien.</p>
-          </div>
-          <div class="grid-3">
-            <div class="card"><h3>1. Installation</h3><p>Import du menu depuis PDF, photo, site web ou saisie manuelle. QR code généré en quelques minutes.</p></div>
-            <div class="card"><h3>2. Apprentissage</h3><p>Le premier mois collecte les données : produits consultés, paniers, zones, horaires, upsells.</p></div>
-            <div class="card"><h3>3. Version payante</h3><p>Après 30 jours, rapport de performance + proposition Starter, Growth ou Premium AI.</p></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="page">
-      <div class="wrap">
-        <div class="section-title">
-          <span class="eyebrow">Modules SaaS</span>
-          <h2>Tout ce qu'il faut pour scaler sur Dakar, Mbour, Saly puis toute l'Afrique francophone.</h2>
-          <p>Une plateforme pensée pour les restaurants premium, lounges, hôtels, dark kitchens et groupes multi-sites.</p>
-        </div>
-        <div class="grid-3" id="featureGrid"></div>
-      </div>
-    </section>
-
-    <section id="pricing" class="page">
-      <div class="wrap pricing">
-        <div class="section-title">
-          <span class="eyebrow">30 jours gratuits · aucun paiement aujourd'hui</span>
-          <h2>Trois offres simples pour vendre plus.</h2>
-          <p>L'objectif est de convertir la majorité des restaurants vers Growth, puis de vendre Premium AI aux établissements haut de gamme.</p>
-        </div>
-        <div class="grid-3" id="pricingGrid"></div>
-      </div>
-    </section>
-
-    <section id="signup" class="page">
-      <div class="wrap" style="padding:30px 22px 54px">
-        <div class="split">
-          <div>
-            <span class="eyebrow">Onboarding restaurant</span>
-            <h2 style="font-size:52px;line-height:1;letter-spacing:-.06em;margin:18px 0">Démarrez l'essai gratuit en moins de 3 minutes.</h2>
-            <p class="lead">Le restaurant crée son compte, renseigne ses informations, sélectionne son plan cible et configure les modules prioritaires. Aucun paiement le premier mois.</p>
-            <div class="card mt">
-              <h3>Ce que l'on prépare pendant les 30 jours</h3>
-              <div class="timeline mt">
-                <div class="item"><div class="dot">1</div><div class="body"><b>Menu & produits</b><span class="muted">Import ou saisie, catégories, prix, disponibilité, photos.</span></div></div>
-                <div class="item"><div class="dot">2</div><div class="body"><b>Parcours client</b><span class="muted">Réservation, livraison, à emporter, paiement, contacts.</span></div></div>
-                <div class="item"><div class="dot">3</div><div class="body"><b>Mesure revenue</b><span class="muted">Upsell, panier moyen, réservations, no-shows, CRM.</span></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="form-card">
-            <div class="stepper"><span class="step on" id="st1"></span><span class="step" id="st2"></span><span class="step" id="st3"></span></div>
-            <div id="signupContent"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="app" class="page">
-      <div class="wrap app-shell">
-        <aside class="sidebar">
-          <div class="side-head">
-            <div class="avatar">LF</div>
-            <div><strong id="restaurantLabel">La Fourchette</strong><br><span style="color:#bfb0a0;font-size:13px">Plan Growth · J+7/30</span></div>
-          </div>
-          <div style="padding:8px 6px 14px">
-            <label style="color:#d7c8b8">Profil connecté</label>
-            <select id="roleSelect" onchange="changeRole(this.value)">
-              <option value="owner">Owner / Directeur</option>
-              <option value="manager">Manager</option>
-              <option value="server">Serveur</option>
-              <option value="kitchen">Cuisine</option>
-              <option value="marketing">Marketing / CRM</option>
-              <option value="accounting">Comptable</option>
-            </select>
-          </div>
-          <nav class="side-nav" id="appNav"></nav>
-        </aside>
-        <div class="app-main">
-          <section id="app-dashboard" class="panel active"></section>
-          <section id="app-reservations" class="panel"></section>
-          <section id="app-orders" class="panel"></section>
-          <section id="app-products" class="panel"></section>
-          <section id="app-promotions" class="panel"></section>
-          <section id="app-customers" class="panel"></section>
-          <section id="app-payments" class="panel"></section>
-          <section id="app-qrcodes" class="panel"></section>
-          <section id="app-team" class="panel"></section>
-          <section id="app-subscription" class="panel"></section>
-          <section id="app-settings" class="panel"></section>
-        </div>
-      </div>
-    </section>
-
-    <section id="admin" class="page">
-      <div class="wrap">
-        <div class="admin-hero">
-          <span class="badge">Super Admin Plateforme</span>
-          <h2 style="font-size:48px;letter-spacing:-.06em;line-height:1;margin:18px 0 8px">Piloter tous les restaurants, abonnements, onboarding et support.</h2>
-          <p style="color:#d9ccbd;max-width:850px;line-height:1.6">Cet espace est réservé à l'opérateur de la plateforme : activation de comptes, plans, essais gratuits, paiements SaaS, support, templates IA et performance globale.</p>
-        </div>
-        <div class="admin-shell">
-          <aside class="sidebar" style="background:#fff;color:var(--ink)">
-            <div class="side-head" style="border-color:#eee4d5"><div class="avatar" style="background:#17130f;color:#fff">SA</div><div><strong>Admin plateforme</strong><br><span class="muted mini">Bachir · Super Admin</span></div></div>
-            <nav class="side-nav" id="adminNav"></nav>
-          </aside>
-          <div class="app-main">
-            <section id="admin-overview" class="panel active"></section>
-            <section id="admin-restaurants" class="panel"></section>
-            <section id="admin-plans" class="panel"></section>
-            <section id="admin-onboarding" class="panel"></section>
-            <section id="admin-support" class="panel"></section>
-            <section id="admin-analytics" class="panel"></section>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="mobile-bar">
-    <button data-page="home">Accueil</button>
-    <button data-page="pricing">Tarifs</button>
-    <button data-page="signup">Compte</button>
-    <button data-page="app">App</button>
-    <button data-page="admin">Admin</button>
-  </div>
-  <div class="modal-backdrop" id="reportModal" aria-hidden="true" onclick="if(event.target.id==='reportModal') closeReportModal()">
-    <div class="report-modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
-      <div class="report-head">
+    <main id="homeView">
+      <section class="hero">
         <div>
-          <span class="badge">Rapport généré selon les KPI affichés</span>
-          <h2 id="reportTitle">Rapport directeur</h2>
-          <p id="reportSubtitle">Synthèse revenue, recommandations IA et plan d'action.</p>
+          <span class="eyebrow">🚀 Production Core V2 · Supabase ready</span>
+          <h1>Transformez chaque menu en moteur de revenus.</h1>
+          <p style="font-size:18px;max-width:690px">Réservations, commandes, livraison, QR codes, paiements, CRM, promotions, dashboard directeur et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+            <button class="btn gold" type="button" data-view="signup">Démarrer 30 jours gratuits</button>
+            <button class="btn" type="button" data-view="app">Voir l’espace restaurant</button>
+            <button class="btn ghost" type="button" data-view="admin">Super Admin</button>
+          </div>
+          <div class="grid cols-3" style="margin-top:24px">
+            <div class="metric"><div class="label">Promesse</div><div class="value">+CA</div><div class="sub">Upsell IA, commandes directes, réservations captées</div></div>
+            <div class="metric"><div class="label">Essai</div><div class="value">30j</div><div class="sub">Installation accompagnée avant abonnement</div></div>
+            <div class="metric"><div class="label">Plans</div><div class="value">20-50k</div><div class="sub">FCFA / mois selon maturité</div></div>
+          </div>
         </div>
-        <div class="report-actions">
-          <button class="secondary" onclick="copyReport()">Copier</button>
-          <button class="primary" onclick="downloadReport()">Télécharger</button>
-          <button class="secondary" onclick="closeReportModal()">Fermer</button>
+        <div class="hero-card">
+          <div class="phone">
+            <div class="phone-head"><strong>Concierge IA</strong><span class="status green">Live</span></div>
+            <div class="chat">
+              <div class="bubble bot">Bonjour 👋 Je peux vous aider à réserver, commander ou choisir le meilleur accord.</div>
+              <div class="quick"><span>Réserver</span><span>Livraison</span><span>À emporter</span></div>
+              <div class="bubble user">Livraison pour 2 à Almadies</div>
+              <div class="bubble bot">Parfait. Je recommande Daurade royale + crème brûlée + citronnade. Frais estimés : 2 000 FCFA.</div>
+              <div class="bubble bot">Où souhaitez-vous recevoir la confirmation ? WhatsApp, SMS ou email ?</div>
+              <div class="quick"><span>Wave</span><span>Orange Money</span><span>Free Money</span></div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="toolbar"><div><h2>La plateforme qui remplace le menu passif.</h2><p>Tout est organisé autour de la conversion, de la donnée client et du pilotage directeur.</p></div></div>
+        <div class="grid cols-4">
+          <div class="card"><h3>Menu intelligent</h3><p>Produits, photos, tags, disponibilité, livraison, upsells, allergènes et marge estimée.</p></div>
+          <div class="card"><h3>Réservation & acompte</h3><p>Tunnel conversationnel, date/heure, contact subtil, acompte wallet et réduction des no-shows.</p></div>
+          <div class="card"><h3>Commande directe</h3><p>Livraison, à emporter, frais estimés, panier dynamique et paiement local.</p></div>
+          <div class="card"><h3>CRM restaurant</h3><p>Téléphone, email, préférences, historique, consentement marketing et relance.</p></div>
+        </div>
+      </section>
+
+      <section id="pricing" class="section">
+        <div class="toolbar"><div><h2>Tarifs simples pour scaler.</h2><p>30 jours gratuits. Ensuite, le restaurant choisit le plan adapté.</p></div></div>
+        <div class="pricing">
+          <div class="card plan"><h3>Starter</h3><div class="price">20 000 FCFA</div><p>/ mois</p><div class="features"><div class="feature"><span class="check">✓</span>Menu digital + QR</div><div class="feature"><span class="check">✓</span>Réservations simples</div><div class="feature"><span class="check">✓</span>Gestion produits</div><div class="feature"><span class="check">✓</span>Dashboard basique</div></div><button class="btn" type="button" data-plan="starter" data-view="signup">Choisir Starter</button></div>
+          <div class="card plan featured"><span class="eyebrow">Recommandé</span><h3>Growth</h3><div class="price">30 000 FCFA</div><p>/ mois</p><div class="features"><div class="feature"><span class="check">✓</span>Réservation avec acompte</div><div class="feature"><span class="check">✓</span>Livraison + à emporter</div><div class="feature"><span class="check">✓</span>Promotions + CRM</div><div class="feature"><span class="check">✓</span>Paiements wallet ready</div></div><button class="btn gold" type="button" data-plan="growth" data-view="signup">Choisir Growth</button></div>
+          <div class="card plan"><h3>Premium AI</h3><div class="price">50 000 FCFA</div><p>/ mois</p><div class="features"><div class="feature"><span class="check">✓</span>Sommelier IA</div><div class="feature"><span class="check">✓</span>Assistant serveur</div><div class="feature"><span class="check">✓</span>Analytics IA</div><div class="feature"><span class="check">✓</span>Support prioritaire</div></div><button class="btn primary" type="button" data-plan="premium_ai" data-view="signup">Choisir Premium AI</button></div>
+        </div>
+      </section>
+    </main>
+
+    <main id="signupView" class="app">
+      <div class="grid cols-2">
+        <div class="card">
+          <span class="eyebrow">Création restaurant · 30 jours gratuits</span>
+          <h2>Créer un espace restaurant</h2>
+          <p>Le formulaire crée un compte owner, un restaurant, une période d’essai de 30 jours et un abonnement trial dans Supabase si les variables sont configurées.</p>
+          <div class="notice" id="signupNotice" style="margin-top:16px">Mode actuel : détection en cours...</div>
+        </div>
+        <form class="card form" id="signupForm">
+          <div class="form-row"><div class="field"><label>Nom du restaurant</label><input class="input" name="restaurantName" value="La Fourchette Dakar" required></div><div class="field"><label>Ville</label><input class="input" name="city" value="Dakar" required></div></div>
+          <div class="form-row"><div class="field"><label>Quartier</label><input class="input" name="district" value="Plateau"></div><div class="field"><label>Type</label><select name="restaurantType"><option>restaurant</option><option>lounge</option><option>hotel</option><option>traiteur</option><option>fast-food premium</option></select></div></div>
+          <div class="form-row"><div class="field"><label>Nom responsable</label><input class="input" name="ownerName" value="Bachir Thiam" required></div><div class="field"><label>Téléphone WhatsApp</label><input class="input" name="phone" value="+221770000000" required></div></div>
+          <div class="form-row"><div class="field"><label>Email</label><input class="input" type="email" name="email" value="owner@example.com" required></div><div class="field"><label>Mot de passe</label><input class="input" type="password" name="password" value="RestoAI-2026!" required></div></div>
+          <div class="form-row"><div class="field"><label>Menu existant</label><select name="menuSource"><option value="website">Site web</option><option value="pdf">PDF</option><option value="photo">Photo</option><option value="instagram">Instagram</option><option value="none">Aucun</option></select></div><div class="field"><label>Plan après essai</label><select name="selectedPlan" id="selectedPlan"><option value="starter">Starter — 20 000</option><option value="growth" selected>Growth — 30 000</option><option value="premium_ai">Premium AI — 50 000</option></select></div></div>
+          <button class="btn gold" type="submit">Activer l’essai gratuit</button>
+          <pre class="report-pre hidden" id="signupResult"></pre>
+        </form>
       </div>
-      <div id="reportContent"></div>
-    </div>
+    </main>
+
+    <main id="loginView" class="app">
+      <div class="grid cols-2">
+        <div class="card dark"><h2>Connexion</h2><p>Connecte un owner restaurant ou un super admin. Si Supabase n’est pas encore configuré, le mode démo reste disponible.</p><div class="divider"></div><p class="mini">Pour activer un super admin réel : ajoute ton email dans PLATFORM_ADMIN_EMAILS sur Vercel, puis redéploie.</p></div>
+        <form class="card form" id="loginForm"><div class="field"><label>Email</label><input class="input" type="email" name="email" value="owner@example.com" required></div><div class="field"><label>Mot de passe</label><input class="input" type="password" name="password" value="RestoAI-2026!" required></div><button class="btn primary" type="submit">Se connecter</button><pre class="report-pre hidden" id="loginResult"></pre></form>
+      </div>
+    </main>
+
+    <main id="appView" class="app">
+      <div class="app-layout">
+        <aside class="sidebar">
+          <div class="brand" style="margin:6px 8px 16px"><span class="logo">🍳</span><span>Espace restaurant</span></div>
+          <button class="side-btn active" data-section="dashboard">📊 Dashboard</button>
+          <button class="side-btn" data-section="products">🍽️ Produits</button>
+          <button class="side-btn" data-section="promotions">🏷️ Promotions</button>
+          <button class="side-btn" data-section="reservations">📅 Réservations</button>
+          <button class="side-btn" data-section="orders">🛵 Commandes</button>
+          <button class="side-btn" data-section="customers">👥 CRM</button>
+          <button class="side-btn" data-section="subscription">💳 Abonnement</button>
+          <button class="side-btn" data-section="settings">⚙️ Paramètres</button>
+          <div class="divider" style="background:#3a352d"></div>
+          <button class="side-btn" data-view="admin">🛡️ Super Admin</button>
+          <button class="side-btn" data-view="home">← Site public</button>
+        </aside>
+        <section class="content" id="appContent"></section>
+      </div>
+    </main>
+
+    <main id="adminView" class="app">
+      <div class="app-layout">
+        <aside class="sidebar">
+          <div class="brand" style="margin:6px 8px 16px"><span class="logo">🛡️</span><span>Super Admin</span></div>
+          <button class="side-btn active" data-admin-tab="global">Vue globale</button>
+          <button class="side-btn" data-admin-tab="restaurants">Restaurants</button>
+          <button class="side-btn" data-admin-tab="plans">Plans</button>
+          <button class="side-btn" data-admin-tab="onboarding">Onboarding</button>
+          <button class="side-btn" data-admin-tab="support">Support</button>
+          <button class="side-btn" data-admin-tab="analytics">Analytics</button>
+          <div class="divider" style="background:#3a352d"></div>
+          <button class="side-btn" data-view="app">← Espace restaurant</button>
+          <button class="side-btn" data-view="home">← Site public</button>
+        </aside>
+        <section class="content" id="adminContent"></section>
+      </div>
+    </main>
   </div>
-  <div class="toast" id="toast">Action effectuée</div>
 
-<script>
-const plans = [
-  {
-    id: "starter",
-    name: "Starter",
-    price: 20000,
-    target: "Cafés, snacks premium, petits restaurants",
-    badge: "Entrée de gamme",
-    features: ["Menu digital", "QR code unique", "Chatbot basique", "Réservations simples", "Gestion produits", "Dashboard basique", "1 utilisateur admin"],
-    limits: "50 produits · 1 établissement · pas de CRM avancé"
-  },
-  {
-    id: "growth",
-    name: "Growth",
-    price: 30000,
-    target: "Restaurants actifs à Dakar, Mbour et Saly",
-    badge: "Recommandé",
-    features: ["Réservations avec acompte", "Commande livraison", "À emporter", "Paiements wallet", "Promotions", "CRM client", "Dashboard ventes", "QR codes par table", "3 utilisateurs"],
-    limits: "Meilleur rapport valeur/prix pour la majorité du marché",
-    featured: true
-  },
-  {
-    id: "premium",
-    name: "Premium AI",
-    price: 50000,
-    target: "Restaurants premium, lounges, hôtels, groupes",
-    badge: "IA avancée",
-    features: ["Sommelier IA", "Upsell intelligent", "Assistant serveur", "Mémoire client", "Campagnes WhatsApp/SMS", "Fidélité", "Exports comptables", "Support prioritaire", "Optimisation mensuelle"],
-    limits: "Pour établissements qui veulent piloter le revenu en continu"
-  }
-];
+  <div class="modal" id="modal"><div class="modal-panel" id="modalPanel"></div></div>
 
-const featureModules = [
-  ["🧾", "Menu & produits", "Ajout de produits, catégories, prix, photos, allergènes, tags, disponibilité, livraison ou sur place uniquement."],
-  ["🤖", "Chatbot IA", "Réservation, commande, livraison, upsell, mémoire client, collecte subtile téléphone/email."],
-  ["📍", "QR codes intelligents", "QR par table, salle, terrasse, événement ou campagne. Le parcours s'adapte automatiquement."],
-  ["💳", "Paiement local", "Acomptes, commandes et abonnements via wallets ou paiement à la livraison selon configuration."],
-  ["🎁", "Promotions", "Happy hour, anniversaire, menu déjeuner, livraison offerte, dessert offert, paniers abandonnés."],
-  ["👥", "CRM client", "Téléphone, email, préférences, historique, anniversaire, consentement marketing, segmentation."],
-  ["👨‍🍳", "Assistant serveur", "Suggestions d'upsell en salle : vin, dessert, cocktail ou plat signature selon contexte."],
-  ["📊", "Dashboard directeur", "CA généré, panier moyen, no-show évités, produits forts/faibles, recommandations IA."],
-  ["🔐", "Rôles & permissions", "Owner, manager, serveur, cuisine, marketing et comptabilité avec accès séparés."],
-];
+  <script>
+    const STORAGE_KEY = 'rrai_saas_v2_state';
+    const DEMO_RESTAURANT_ID = 'demo-restaurant';
+    const fmt = new Intl.NumberFormat('fr-FR');
+    const money = v => `${fmt.format(Number(v||0))} FCFA`;
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
 
-const appViews = [
-  ["dashboard", "📊", "Dashboard"],
-  ["reservations", "📅", "Réservations"],
-  ["orders", "🛵", "Commandes"],
-  ["products", "🍽️", "Produits"],
-  ["promotions", "🎁", "Promos"],
-  ["customers", "👥", "Clients / CRM"],
-  ["payments", "💳", "Paiements"],
-  ["qrcodes", "▦", "QR Codes"],
-  ["team", "🔐", "Équipe"],
-  ["subscription", "⭐", "Abonnement"],
-  ["settings", "⚙️", "Paramètres"]
-];
+    const state = {
+      view: 'home', appSection: 'dashboard', adminTab: 'global',
+      config: { configured:false, mode:'demo' },
+      token: null, user: null, memberships: [], platformAdmin: false,
+      restaurantId: DEMO_RESTAURANT_ID,
+      selectedPlan: 'growth',
+      products: [], promotions: [], adminSummary: null, adminRestaurants: [], adminSubscriptions: [],
+      mode: 'demo'
+    };
 
-const adminViews = [
-  ["overview", "📊", "Vue globale"],
-  ["restaurants", "🏪", "Restaurants"],
-  ["plans", "💰", "Plans"],
-  ["onboarding", "🚀", "Onboarding"],
-  ["support", "🎧", "Support"],
-  ["analytics", "📈", "Analytics"]
-];
-
-const roleAccess = {
-  owner: appViews.map(v => v[0]),
-  manager: ["dashboard", "reservations", "orders", "products", "promotions", "qrcodes", "settings"],
-  server: ["dashboard", "reservations", "orders", "qrcodes"],
-  kitchen: ["orders", "products"],
-  marketing: ["dashboard", "promotions", "customers", "qrcodes"],
-  accounting: ["dashboard", "payments", "subscription"]
-};
-
-let state = {
-  page: "home",
-  appView: "dashboard",
-  adminView: "overview",
-  role: "owner",
-  signupStep: 1,
-  selectedPlan: "growth",
-  restaurantName: "La Fourchette",
-  city: "Dakar",
-  ownerName: "Bachir",
-  phone: "+221 77 000 00 00",
-  email: "contact@restaurant.sn",
-  latestReport: "",
-  products: [
-    { name: "Chateaubriand 600g", category: "Viande premium", price: 45000, tags: ["Signature", "Sur place"], delivery: false, takeaway: true, margin: 62 },
-    { name: "Filet de daurade royale", category: "Poisson", price: 16500, tags: ["Populaire", "Livrable"], delivery: true, takeaway: true, margin: 48 },
-    { name: "Tiramisù déstructuré", category: "Dessert", price: 7500, tags: ["Upsell", "Livrable"], delivery: true, takeaway: true, margin: 68 },
-    { name: "La Carte Blanche", category: "À partager", price: 75000, tags: ["Groupe", "Précommande"], delivery: false, takeaway: true, margin: 55 }
-  ],
-  promos: [
-    { name: "Menu déjeuner", trigger: "Lun-Ven · 12h-15h", benefit: "Mise en avant automatique", status: "Active" },
-    { name: "Anniversaire", trigger: "Mot-clé anniversaire", benefit: "Dessert bougie + champagne", status: "Active" },
-    { name: "Livraison Almadies", trigger: "Panier > 30 000 FCFA", benefit: "Livraison offerte", status: "Brouillon" }
-  ]
-};
-
-function money(v){ return v.toLocaleString("fr-FR") + " FCFA"; }
-function qs(sel){ return document.querySelector(sel); }
-function qsa(sel){ return [...document.querySelectorAll(sel)]; }
-function loadLocalData(){
-  try{
-    const saved = JSON.parse(localStorage.getItem("rrai-business-data") || "{}");
-    if(Array.isArray(saved.products) && saved.products.length) state.products = saved.products;
-    if(Array.isArray(saved.promos) && saved.promos.length) state.promos = saved.promos;
-  }catch(e){}
-}
-function saveLocalData(){
-  try{ localStorage.setItem("rrai-business-data", JSON.stringify({products:state.products, promos:state.promos})); }catch(e){}
-}
-function normalizeProductFromApi(p){
-  return {
-    name: p.name || "Produit",
-    category: p.category || "Plat",
-    price: Number(p.price || 0),
-    tags: Array.isArray(p.tags) ? p.tags : [],
-    delivery: Boolean(p.delivery_enabled ?? p.delivery ?? true),
-    takeaway: Boolean(p.takeaway_enabled ?? p.takeaway ?? true),
-    margin: Number(p.margin_rate || p.margin || 0)
-  };
-}
-function normalizePromoFromApi(p){
-  return {
-    name: p.name || "Promotion",
-    trigger: p.trigger_rule || p.trigger || "Déclencheur",
-    benefit: p.benefit || "Avantage",
-    status: (p.status || "active").toLowerCase() === "active" ? "Active" : "Brouillon"
-  };
-}
-async function hydrateProductionData(){
-  try{
-    const [productsRes, promosRes] = await Promise.all([
-      fetch('/api/products?restaurant_id=demo-restaurant-id'),
-      fetch('/api/promotions?restaurant_id=demo-restaurant-id')
-    ]);
-    const productsData = await productsRes.json();
-    const promosData = await promosRes.json();
-    if(productsData.ok && productsData.mode === 'supabase' && productsData.products.length){
-      state.products = productsData.products.map(normalizeProductFromApi);
-      saveLocalData();
-      renderProductList();
+    function loadState(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')); }catch(e){} }
+    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ view:state.view, appSection:state.appSection, adminTab:state.adminTab, token:state.token, user:state.user, memberships:state.memberships, platformAdmin:state.platformAdmin, restaurantId:state.restaurantId, selectedPlan:state.selectedPlan, products:state.products, promotions:state.promotions, mode:state.mode })); }
+    async function api(path, options={}){
+      const headers = { 'Content-Type':'application/json', ...(options.headers||{}) };
+      if (state.token) headers.Authorization = `Bearer ${state.token}`;
+      if (state.restaurantId) headers['x-restaurant-id'] = state.restaurantId;
+      const res = await fetch(path, { ...options, headers });
+      const data = await res.json().catch(()=>({ ok:false, error:'Invalid JSON response' }));
+      if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
+      return data;
     }
-    if(promosData.ok && promosData.mode === 'supabase' && promosData.promotions.length){
-      state.promos = promosData.promotions.map(normalizePromoFromApi);
-      saveLocalData();
-      renderPromoList();
+    function show(view){ state.view=view; saveState(); ['home','signup','login','app','admin'].forEach(v=>{ const el = $('#' + v + 'View'); if(el) el.classList.toggle('active', v===view && v!=='home'); }); $('#homeView').style.display = view==='home' ? 'block' : 'none'; if(view==='app') renderApp(); if(view==='admin') renderAdmin(); window.scrollTo({ top:0, behavior:'smooth' }); }
+    function stayRender(fn){ const y=window.scrollY; fn(); requestAnimationFrame(()=>window.scrollTo(0,y)); }
+    function setActiveButtons(){ $$('.side-btn[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===state.appSection)); $$('.side-btn[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===state.adminTab)); }
+    function modal(html){ $('#modalPanel').innerHTML=html; $('#modal').classList.add('active'); }
+    function closeModal(){ $('#modal').classList.remove('active'); $('#modalPanel').innerHTML=''; }
+
+    async function init(){
+      loadState();
+      try { state.config = await api('/api/config'); state.mode = state.config.mode || 'demo'; } catch(e) { state.config = { configured:false, mode:'demo' }; }
+      $('#signupNotice').textContent = state.config.configured ? 'Mode Supabase actif : création de compte réelle avec persistance.' : 'Mode démo : ajoutez SUPABASE_URL, SUPABASE_ANON_KEY et SUPABASE_SERVICE_ROLE_KEY sur Vercel pour passer en réel.';
+      if(state.token){ try{ const me = await api('/api/auth/me'); state.user = me.user; state.memberships = me.memberships || []; state.platformAdmin = me.platformAdmin; if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id; }catch(e){} }
+      await loadBusinessData();
+      bind();
+      show(state.view || 'home');
     }
-  }catch(e){ /* offline/demo mode */ }
-}
-async function syncProductToApi(product){
-  try{
-    await fetch('/api/products', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({restaurant_id:'demo-restaurant-id', name:product.name, category:product.category, price:product.price, tags:product.tags, delivery_enabled:product.delivery, takeaway_enabled:product.takeaway, margin_rate:product.margin})});
-  }catch(e){}
-}
-async function syncPromoToApi(promo){
-  try{
-    await fetch('/api/promotions', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({restaurant_id:'demo-restaurant-id', name:promo.name, trigger_rule:promo.trigger, benefit:promo.benefit, status:promo.status === 'Active' ? 'active' : 'draft'})});
-  }catch(e){}
-}
-function persistUiState(){ try{ localStorage.setItem("rrai-ui-state", JSON.stringify({appView:state.appView, adminView:state.adminView, role:state.role})); }catch(e){} }
-function restoreUiState(){ try{ const saved=JSON.parse(localStorage.getItem("rrai-ui-state")||"{}"); if(saved.appView) state.appView=saved.appView; if(saved.adminView) state.adminView=saved.adminView; if(saved.role) state.role=saved.role; }catch(e){} }
-function applyPanelState(){
-  qsa("#app .panel").forEach(p => p.classList.toggle("active", p.id === "app-" + state.appView));
-  qsa("#admin .panel").forEach(p => p.classList.toggle("active", p.id === "admin-" + state.adminView));
-  renderAppNav();
-  renderAdminNav();
-}
-function showToast(msg){ const t=qs("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
-function showPage(page){
-  state.page = page;
-  qsa(".page").forEach(p => p.classList.toggle("active", p.id === page));
-  qsa(".mobile-bar button").forEach(b => b.classList.toggle("active", b.dataset.page === page));
-  window.scrollTo({top:0, behavior:"smooth"});
-}
+    function bind(){
+      document.addEventListener('click', async (e)=>{
+        const viewBtn = e.target.closest('[data-view]');
+        if(viewBtn){ e.preventDefault(); if(viewBtn.dataset.plan){ state.selectedPlan=viewBtn.dataset.plan; const sp=$('#selectedPlan'); if(sp) sp.value=state.selectedPlan; } show(viewBtn.dataset.view); return; }
+        const jump = e.target.closest('[data-jump]');
+        if(jump){ e.preventDefault(); document.getElementById(jump.dataset.jump)?.scrollIntoView({behavior:'smooth'}); return; }
+        const sec = e.target.closest('[data-section]');
+        if(sec){ e.preventDefault(); stayRender(()=>{ state.appSection=sec.dataset.section; saveState(); setActiveButtons(); renderApp(); }); return; }
+        const tab = e.target.closest('[data-admin-tab]');
+        if(tab){ e.preventDefault(); stayRender(()=>{ state.adminTab=tab.dataset.adminTab; saveState(); setActiveButtons(); renderAdmin(); }); return; }
+        if(e.target.closest('[data-close-modal]')) closeModal();
+        const deleteProduct = e.target.closest('[data-delete-product]');
+        if(deleteProduct){ await deleteProductById(deleteProduct.dataset.deleteProduct); return; }
+        const deletePromo = e.target.closest('[data-delete-promo]');
+        if(deletePromo){ await deletePromoById(deletePromo.dataset.deletePromo); return; }
+        const reportBtn = e.target.closest('[data-generate-report]');
+        if(reportBtn){ await generateReport(); return; }
+        const copyReport = e.target.closest('[data-copy-report]');
+        if(copyReport){ navigator.clipboard.writeText($('#reportText')?.textContent||''); copyReport.textContent='Copié'; return; }
+        const downloadReport = e.target.closest('[data-download-report]');
+        if(downloadReport){ downloadText('rapport-restaurant-revenue-ai.txt', $('#reportText')?.textContent||''); return; }
+        const logout = e.target.closest('[data-logout]');
+        if(logout){ state.token=null; state.user=null; state.memberships=[]; state.platformAdmin=false; saveState(); show('home'); return; }
+      });
+      $('#signupForm').addEventListener('submit', submitSignup);
+      $('#loginForm').addEventListener('submit', submitLogin);
+      $('#modal').addEventListener('click', e => { if(e.target.id==='modal') closeModal(); });
+    }
 
-function renderFeatures(){
-  qs("#featureGrid").innerHTML = featureModules.map(([icon,title,desc]) => `
-    <div class="card"><div class="icon">${icon}</div><h3>${title}</h3><p>${desc}</p></div>
-  `).join("");
-}
+    async function loadBusinessData(){
+      try{ const p=await api('/api/products'); state.products=p.products||[]; }catch(e){ if(!state.products.length) state.products = demoProducts(); }
+      try{ const pr=await api('/api/promotions'); state.promotions=pr.promotions||[]; }catch(e){ if(!state.promotions.length) state.promotions = demoPromotions(); }
+      try{ const s=await api('/api/admin/summary'); state.adminSummary=s.summary; }catch(e){ state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; }
+      saveState();
+    }
 
-function renderPricing(){
-  qs("#pricingGrid").innerHTML = plans.map(plan => `
-    <div class="card price-card ${plan.featured ? "featured" : ""}">
-      <span class="badge">${plan.badge}</span>
-      <div>
-        <h3>${plan.name}</h3>
-        <p>${plan.target}</p>
-      </div>
-      <div class="price">${money(plan.price).replace(" FCFA","")}<small> FCFA / mois</small></div>
-      <p class="mini">30 jours gratuits, activation accompagnée.</p>
-      <ul class="features">${plan.features.map(f => `<li>${f}</li>`).join("")}</ul>
-      <p class="mini"><strong>${plan.limits}</strong></p>
-      <button class="${plan.featured ? "ghost" : "primary"} cta" onclick="selectPlan('${plan.id}')">Choisir ${plan.name}</button>
-    </div>
-  `).join("");
-}
+    function demoProducts(){ return [
+      { id:'demo-prod-1', name:'Chateaubriand 600g', category:'Viandes', price:45000, status:'available', delivery_enabled:false, takeaway_enabled:true, dine_in_enabled:true, tags:['signature','premium'], upsell_notes:'Saint-Julien Petit Caillou, dessert signature' },
+      { id:'demo-prod-2', name:'Filet de daurade royale', category:'Poissons', price:16500, status:'available', delivery_enabled:true, takeaway_enabled:true, dine_in_enabled:true, tags:['léger','livrable'], upsell_notes:'Chablis, crème brûlée' },
+      { id:'demo-prod-3', name:'Tiramisù déstructuré', category:'Desserts', price:7500, status:'available', delivery_enabled:true, takeaway_enabled:true, dine_in_enabled:true, tags:['dessert'], upsell_notes:'Espresso Martini' }
+    ]; }
+    function demoPromotions(){ return [
+      { id:'demo-promo-1', name:'Menu déjeuner intelligent', channel:'site_qr', discount_type:'bundle', value:0, status:'active', rule_summary:'Lundi-vendredi 12h-15h' },
+      { id:'demo-promo-2', name:'Anniversaire Premium', channel:'chatbot', discount_type:'gift', value:0, status:'active', rule_summary:'Dessert bougie + option champagne' }
+    ]; }
 
-function selectPlan(id){
-  state.selectedPlan = id;
-  state.signupStep = 1;
-  renderSignup();
-  showPage("signup");
-  showToast("Offre sélectionnée : " + plans.find(p=>p.id===id).name);
-}
+    async function submitSignup(e){
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
+      body.modules = ['reservations','orders','delivery','payments','crm','promotions'];
+      const result = $('#signupResult'); result.classList.remove('hidden'); result.textContent='Création en cours...';
+      try{ const data = await api('/api/signup',{ method:'POST', body:JSON.stringify(body) }); result.textContent=JSON.stringify(data,null,2); if(data.restaurant) state.restaurantId=data.restaurant.id; if(data.user) state.user=data.user; saveState(); }
+      catch(err){ result.textContent='Erreur: '+err.message; }
+    }
+    async function submitLogin(e){
+      e.preventDefault(); const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries()); const result=$('#loginResult'); result.classList.remove('hidden'); result.textContent='Connexion...';
+      try{ const data = await api('/api/login',{method:'POST', body:JSON.stringify(body)}); state.token = data.session.access_token; state.user = { id:data.session.user.id, email:data.session.user.email }; state.memberships=data.memberships||[]; if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id; saveState(); await loadBusinessData(); result.textContent='Connexion réussie'; show('app'); }
+      catch(err){ result.textContent='Erreur: '+err.message; }
+    }
 
-function renderSignup(){
-  [1,2,3].forEach(n => qs("#st"+n).classList.toggle("on", n <= state.signupStep));
-  const plan = plans.find(p => p.id === state.selectedPlan);
-  const el = qs("#signupContent");
-  if(state.signupStep === 1){
-    el.innerHTML = `
-      <h3>1. Informations restaurant</h3>
-      <p class="muted">Aucun paiement aujourd'hui. L'essai gratuit commence après validation.</p>
-      <div class="form-grid mt">
-        <div><label>Nom du restaurant</label><input id="restaurantName" value="${state.restaurantName}"></div>
-        <div><label>Ville / zone</label><input id="city" value="${state.city}"></div>
-        <div><label>Nom du responsable</label><input id="ownerName" value="${state.ownerName}"></div>
-        <div><label>Téléphone WhatsApp</label><input id="phone" value="${state.phone}"></div>
-        <div><label>Email</label><input id="email" value="${state.email}"></div>
-        <div><label>Type d'établissement</label><select id="type"><option>Restaurant premium</option><option>Lounge</option><option>Hôtel</option><option>Fast-food</option><option>Traiteur</option></select></div>
-      </div>
-      <div class="row mt"><button class="primary" onclick="saveSignupStep1()">Continuer</button><button class="secondary" data-page="pricing">Retour tarifs</button></div>
-    `;
-  }
-  if(state.signupStep === 2){
-    el.innerHTML = `
-      <h3>2. Modules à activer</h3>
-      <p class="muted">On active d'abord les modules utiles. Les autres pourront être ajoutés après le mois gratuit.</p>
-      <div class="stack mt">
-        ${[
-          ["Réservations", true], ["Commandes livraison", true], ["À emporter", true], ["Paiement wallet", true], ["Promotions", true], ["CRM client", true], ["Fidélité", false], ["Campagnes WhatsApp", false]
-        ].map(([name,on]) => `<div class="check-row"><span><strong>${name}</strong><br><span class="muted mini">Disponible dans le plan ${plan.name}</span></span><button class="switch ${on ? "on" : ""}" onclick="this.classList.toggle('on')" aria-label="Activer ${name}"></button></div>`).join("")}
-      </div>
-      <div class="row mt"><button class="secondary" onclick="state.signupStep=1;renderSignup()">Retour</button><button class="primary" onclick="state.signupStep=3;renderSignup()">Continuer</button></div>
-    `;
-  }
-  if(state.signupStep === 3){
-    el.innerHTML = `
-      <h3>3. Démarrage gratuit</h3>
-      <div class="checkout mt">
-        <div class="between"><div><strong>${state.restaurantName}</strong><br><span class="muted mini">${state.city} · Plan cible ${plan.name}</span></div><span class="badge">30 jours gratuits</span></div>
-        <div class="mt"><div class="between"><span>Montant aujourd'hui</span><strong>0 FCFA</strong></div><div class="between"><span>Après 30 jours</span><strong>${money(plan.price)} / mois</strong></div><div class="between"><span>Installation</span><strong>Offerte</strong></div></div>
-        <div class="mt card" style="box-shadow:none"><strong>Prochaine étape</strong><p class="muted mini">Collecte du menu, configuration QR, test chatbot, rapport de performance à J+30.</p></div>
-        <label class="mt">Mode de paiement futur</label>
-        <select><option>Wave Business</option><option>Orange Money</option><option>Carte bancaire</option><option>Virement mensuel</option></select>
-      </div>
-      <div class="row mt"><button class="secondary" onclick="state.signupStep=2;renderSignup()">Retour</button><button class="primary" onclick="finishSignup()">Activer l'essai gratuit</button></div>
-    `;
-  }
-}
-function saveSignupStep1(){
-  state.restaurantName = qs("#restaurantName").value || state.restaurantName;
-  state.city = qs("#city").value || state.city;
-  state.ownerName = qs("#ownerName").value || state.ownerName;
-  state.phone = qs("#phone").value || state.phone;
-  state.email = qs("#email").value || state.email;
-  qs("#restaurantLabel").textContent = state.restaurantName;
-  state.signupStep = 2; renderSignup();
-}
-function finishSignup(){
-  showToast("Essai gratuit activé pour " + state.restaurantName);
-  showPage("app");
-}
+    function dashboardMetrics(){
+      const productValue = state.products.reduce((s,p)=>s+Number(p.price||0),0);
+      const activePromos = state.promotions.filter(p=>p.status==='active').length;
+      return { direct_revenue_xof: 980000 + productValue * 3 + activePromos * 45000, average_basket_xof: Math.max(22000, Math.round(productValue / Math.max(1,state.products.length) * 1.85)), reservations: 27 + activePromos, orders: 13 + state.products.filter(p=>p.delivery_enabled).length, upsell_rate: Math.min(89, 52 + activePromos*6 + state.products.filter(p=>p.upsell_notes).length*3), customers: 142 + activePromos*8 };
+    }
+    function renderApp(){
+      setActiveButtons(); const m=dashboardMetrics();
+      const content = $('#appContent');
+      if(state.appSection==='dashboard') content.innerHTML = renderDashboard(m);
+      if(state.appSection==='products') content.innerHTML = renderProducts();
+      if(state.appSection==='promotions') content.innerHTML = renderPromotions();
+      if(state.appSection==='reservations') content.innerHTML = renderReservations();
+      if(state.appSection==='orders') content.innerHTML = renderOrders();
+      if(state.appSection==='customers') content.innerHTML = renderCustomers();
+      if(state.appSection==='subscription') content.innerHTML = renderSubscription();
+      if(state.appSection==='settings') content.innerHTML = renderSettings();
+      bindInlineForms();
+    }
+    function renderDashboard(m){ return `<div class="toolbar"><div><span class="eyebrow">${state.mode==='supabase'?'Supabase connecté':'Mode démo fallback'}</span><h2>Dashboard directeur</h2><p>Vue business alimentée par les données produits, promotions et commandes.</p></div><div><button class="btn" data-logout>Déconnexion</button> <button class="btn gold" data-generate-report>Générer rapport</button></div></div><div class="grid cols-4"><div class="metric"><div class="label">CA direct estimé</div><div class="value">${money(m.direct_revenue_xof)}</div><div class="sub">Commandes + upsell</div></div><div class="metric"><div class="label">Panier moyen</div><div class="value">${money(m.average_basket_xof)}</div><div class="sub">Simulation dynamique</div></div><div class="metric"><div class="label">Réservations</div><div class="value">${m.reservations}</div><div class="sub">Acomptes activables</div></div><div class="metric"><div class="label">Upsell accepté</div><div class="value">${m.upsell_rate}%</div><div class="sub">IA + promos</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Recommandations IA de la semaine</h3><div class="features"><div class="feature"><span class="check">✓</span>Mettre en avant les plats signature après 19h30.</div><div class="feature"><span class="check">✓</span>Pousser dessert + boisson maison sur livraison.</div><div class="feature"><span class="check">✓</span>Utiliser acompte wallet sur anniversaires et groupes.</div><div class="feature"><span class="check">✓</span>Activer une promo déjeuner en heures creuses.</div></div></div><div class="card dark"><h3>Score production</h3><p>Vercel + API + Supabase schema + endpoints CRUD produits/promos + super admin stable.</p><div class="divider" style="background:#3b342a"></div><div class="grid cols-2"><div><div class="value">${state.products.length}</div><p>produits</p></div><div><div class="value">${state.promotions.length}</div><p>promos</p></div></div></div></div>`; }
+    function renderProducts(){ return `<div class="toolbar"><div><h2>Gestion produits</h2><p>Ajout, disponibilité, livraison, tags, upsell et persistance Supabase.</p></div><button class="btn gold" type="button" onclick="openProductModal()">Ajouter produit</button></div>${state.products.length?`<table class="table"><thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Canaux</th><th>Upsell</th><th></th></tr></thead><tbody>${state.products.map(p=>`<tr><td><strong>${esc(p.name)}</strong><br><span class="mini">${(p.tags||[]).join(', ')}</span></td><td>${esc(p.category||'Carte')}</td><td>${money(p.price)}</td><td>${p.dine_in_enabled?'Sur place ':''}${p.delivery_enabled?'Livraison ':''}${p.takeaway_enabled?'À emporter':''}</td><td>${esc(p.upsell_notes||'')}</td><td class="right"><button class="btn danger" data-delete-product="${p.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun produit. Ajoutez votre première entrée de menu.</div>'}`; }
+    function renderPromotions(){ return `<div class="toolbar"><div><h2>Gestion promotions</h2><p>Créez des offres déclenchées par contexte : midi, anniversaire, livraison, groupe.</p></div><button class="btn gold" type="button" onclick="openPromoModal()">Créer promotion</button></div>${state.promotions.length?`<table class="table"><thead><tr><th>Promo</th><th>Canal</th><th>Règle</th><th>Statut</th><th></th></tr></thead><tbody>${state.promotions.map(p=>`<tr><td><strong>${esc(p.name)}</strong><br><span class="mini">${esc(p.description||'')}</span></td><td>${esc(p.channel||'chatbot')}</td><td>${esc(p.rule_summary||'')}</td><td><span class="status ${p.status==='active'?'green':'gray'}">${esc(p.status||'draft')}</span></td><td class="right"><button class="btn danger" data-delete-promo="${p.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune promotion. Créez une offre ciblée.</div>'}`; }
+    function renderReservations(){ return `<div class="toolbar"><div><h2>Réservations</h2><p>Tunnel conversationnel, acompte wallet, contact WhatsApp et réduction des no-shows.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">Aujourd’hui</div><div class="value">27</div><div class="sub">tables réservées</div></div><div class="metric"><div class="label">Acomptes</div><div class="value">120k</div><div class="sub">FCFA sécurisés</div></div><div class="metric"><div class="label">No-show</div><div class="value">-24%</div><div class="sub">grâce à la confirmation</div></div></div>`; }
+    function renderOrders(){ return `<div class="toolbar"><div><h2>Commandes</h2><p>Livraison, à emporter, panier, frais estimés et paiement wallet-ready.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">Commandes directes</div><div class="value">13</div><div class="sub">hors plateformes tierces</div></div><div class="metric"><div class="label">Livrables</div><div class="value">${state.products.filter(p=>p.delivery_enabled).length}</div><div class="sub">produits activés</div></div><div class="metric"><div class="label">Délai moyen</div><div class="value">42 min</div><div class="sub">simulation opérationnelle</div></div></div>`; }
+    function renderCustomers(){ return `<div class="toolbar"><div><h2>CRM clients</h2><p>Téléphone, email, consentement, historique et préférences.</p></div></div><div class="card"><h3>Segments prêts</h3><div class="grid cols-4"><div class="metric"><div class="label">Clients</div><div class="value">142</div><div class="sub">collectés</div></div><div class="metric"><div class="label">Anniversaire</div><div class="value">18</div><div class="sub">à relancer</div></div><div class="metric"><div class="label">Livraison</div><div class="value">46</div><div class="sub">commandes directes</div></div><div class="metric"><div class="label">Consentement</div><div class="value">62%</div><div class="sub">marketing opt-in</div></div></div></div>`; }
+    function renderSubscription(){ return `<div class="toolbar"><div><h2>Abonnement</h2><p>Trial 30 jours puis conversion vers Starter, Growth ou Premium AI.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div class="price">20 000</div><p>FCFA / mois</p></div><div class="card featured"><h3>Growth</h3><div class="price">30 000</div><p>FCFA / mois · recommandé</p></div><div class="card"><h3>Premium AI</h3><div class="price">50 000</div><p>FCFA / mois</p></div></div><div class="notice" style="margin-top:16px">PayDunya sera branché après validation du Core Supabase : webhook IPN, factures, activation/suspension automatique.</div>`; }
+    function renderSettings(){ return `<div class="toolbar"><div><h2>Paramètres</h2><p>Rôles, canaux, horaires, zones de livraison et moyens de paiement.</p></div></div><div class="grid cols-2"><div class="card"><h3>Rôles</h3><p>Owner, Manager, Serveur, Cuisine, Marketing, Comptable.</p></div><div class="card"><h3>Wallets</h3><p>Wave, Orange Money, Free Money et PayDunya à connecter.</p></div></div>`; }
 
-function renderAppNav(){
-  const access = roleAccess[state.role] || [];
-  qs("#appNav").innerHTML = appViews.map(([id,icon,label]) => {
-    const locked = !access.includes(id);
-    return `<button class="${state.appView===id ? "active" : ""} ${locked ? "locked" : ""}" onclick="openAppView('${id}')">${icon} ${label}${locked ? " 🔒" : ""}</button>`;
-  }).join("");
-}
-function changeRole(role){ state.role = role; renderAppNav(); showToast("Profil : " + qs("#roleSelect").selectedOptions[0].text); }
-function openAppView(view){
-  if(!(roleAccess[state.role] || []).includes(view)){ showToast("Accès non autorisé pour ce profil"); return; }
-  state.appView = view;
-  qsa("#app .panel").forEach(p => p.classList.toggle("active", p.id === "app-" + view));
-  renderAppNav();
-  persistUiState();
-}
-function escapeHtml(value){
-  return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
-}
-function collectDisplayedDashboardData(){
-  const root = qs("#app-dashboard");
-  const kpis = qsa("#app-dashboard .kpi-grid .kpi").map(card => ({
-    label: card.querySelector(".lab")?.textContent.trim() || "KPI",
-    value: card.querySelector(".num")?.textContent.trim() || "-",
-    trend: card.querySelector(".trend")?.textContent.trim() || ""
-  }));
-  const recommendations = qsa("#app-dashboard .timeline .body").map(item => ({
-    title: item.querySelector("b")?.textContent.trim() || "Recommandation",
-    detail: item.querySelector("span")?.textContent.trim() || ""
-  }));
-  const scoreCard = root?.querySelector(".two-col .card:nth-child(2)");
-  const score = scoreCard?.querySelector("p")?.textContent.trim() || "Score Revenue AI non disponible";
-  const assistantSignals = qsa("#app-dashboard .card:last-child .metric").map(item => ({
-    context: item.querySelector(".label")?.textContent.trim() || "Signal",
-    value: item.querySelector(".value")?.textContent.trim() || "-",
-    action: item.querySelector(".delta")?.textContent.trim() || ""
-  }));
-  return { kpis, recommendations, score, assistantSignals, products: state.products, promos: state.promos, generatedAt: new Date().toLocaleString("fr-FR") };
-}
-function buildDashboardReport(data){
-  const byLabel = (keyword) => data.kpis.find(k => k.label.toLowerCase().includes(keyword.toLowerCase())) || {value:"-", trend:""};
-  const revenue = byLabel("CA direct");
-  const basket = byLabel("Panier moyen");
-  const reservations = byLabel("Réservations");
-  const orders = byLabel("Commandes");
-  const promoActive = data.promos.filter(p => (p.status || "").toLowerCase() === "active").length;
-  const deliveryProducts = data.products.filter(p => p.delivery).length;
-  const text = [
-    `Rapport directeur - Restaurant Revenue AI`,
-    `Généré le ${data.generatedAt}`,
-    ``,
-    `Synthèse exécutive`,
-    `Selon les résultats affichés dans le dashboard, le restaurant affiche ${revenue.value} de CA direct aujourd'hui, un panier moyen de ${basket.value}, ${reservations.value} réservations et ${orders.value} commandes directes. ${revenue.trend ? `La tendance principale est : ${revenue.trend}.` : ""}`,
-    ``,
-    `KPI affichés`,
-    ...data.kpis.map(k => `- ${k.label}: ${k.value}${k.trend ? ` (${k.trend})` : ""}`),
-    ``,
-    `Recommandations IA`,
-    ...data.recommendations.map((r,i) => `${i+1}. ${r.title} - ${r.detail}`),
-    ``,
-    `Lecture opérationnelle`,
-    `- Produits configurés: ${data.products.length}, dont ${deliveryProducts} livrables.`,
-    `- Promotions actives: ${promoActive} sur ${data.promos.length}.`,
-    `- Priorité commerciale: pousser les upsells à forte valeur sur les créneaux premium et déclencher les promotions livraison uniquement sur panier minimum.`,
-    ``,
-    `Plan d'action recommandé`,
-    `1. Mettre en avant les produits signature après 20h avec accord boisson.` ,
-    `2. Forcer une proposition dessert après les plats poisson et les commandes duo.` ,
-    `3. Suivre la conversion des promotions actives pendant 7 jours avant scaling.`
-  ].join("\n");
-  return { revenue, basket, reservations, orders, promoActive, deliveryProducts, text };
-}
-function generateDashboardReport(){
-  const data = collectDisplayedDashboardData();
-  const report = buildDashboardReport(data);
-  state.latestReport = report.text;
-  const kpiHtml = data.kpis.map(k => `<div class="report-kpi"><div class="label">${escapeHtml(k.label)}</div><div class="value">${escapeHtml(k.value)}</div><div class="mini muted">${escapeHtml(k.trend)}</div></div>`).join("");
-  const recHtml = data.recommendations.map((r,i) => `<li><strong>${i+1}. ${escapeHtml(r.title)}</strong><br><span class="muted">${escapeHtml(r.detail)}</span></li>`).join("");
-  const assistantHtml = data.assistantSignals.map(s => `<li><strong>${escapeHtml(s.context)} : ${escapeHtml(s.value)}</strong> — ${escapeHtml(s.action)}</li>`).join("");
-  qs("#reportSubtitle").textContent = `Généré le ${data.generatedAt} à partir des chiffres visibles dans le dashboard.`;
-  qs("#reportContent").innerHTML = `
-    <div class="report-note"><strong>Synthèse exécutive.</strong> Selon les KPI affichés, le restaurant génère <strong>${escapeHtml(report.revenue.value)}</strong> de CA direct aujourd'hui, avec un panier moyen de <strong>${escapeHtml(report.basket.value)}</strong>, <strong>${escapeHtml(report.reservations.value)}</strong> réservations et <strong>${escapeHtml(report.orders.value)}</strong> commandes directes.</div>
-    <div class="report-grid mt">${kpiHtml}</div>
-    <div class="report-section"><h3>Recommandations IA à exécuter</h3><ul>${recHtml}</ul></div>
-    <div class="report-section"><h3>Signaux assistant serveur</h3><ul>${assistantHtml}</ul></div>
-    <div class="report-section"><h3>Lecture opérationnelle</h3><ul><li>${data.products.length} produits configurés, dont ${report.deliveryProducts} livrables.</li><li>${report.promoActive} promotions actives sur ${data.promos.length} configurées.</li><li>Priorité : pousser les upsells à forte valeur sur les créneaux premium et mesurer la conversion sur 7 jours.</li></ul></div>
-    <div class="report-section"><h3>Plan d'action 7 jours</h3><ul><li>Mettre en avant les produits signature après 20h avec accord boisson.</li><li>Déclencher dessert ou boisson maison après les commandes poisson et duo.</li><li>Suivre les promotions actives et couper celles qui ne génèrent pas de panier additionnel.</li></ul></div>
-  `;
-  qs("#reportModal").classList.add("show");
-  qs("#reportModal").setAttribute("aria-hidden","false");
-  showToast("Rapport généré selon les KPI affichés");
-}
-function closeReportModal(){
-  qs("#reportModal")?.classList.remove("show");
-  qs("#reportModal")?.setAttribute("aria-hidden","true");
-}
-function copyReport(){
-  if(!state.latestReport) generateDashboardReport();
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(state.latestReport).then(() => showToast("Rapport copié"), () => showToast("Copie non disponible"));
-  } else {
-    showToast("Copie non disponible sur ce navigateur");
-  }
-}
-function downloadReport(){
-  if(!state.latestReport) generateDashboardReport();
-  const blob = new Blob([state.latestReport], { type:"text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "rapport-restaurant-revenue-ai-" + new Date().toISOString().slice(0,10) + ".txt";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  showToast("Téléchargement du rapport lancé");
-}
-function renderDashboard(){
-  qs("#app-dashboard").innerHTML = `
-    <div class="panel-title"><div><h2>Dashboard directeur</h2><p>Vue exécutive : revenus, réservations, commandes, upsell et recommandations IA.</p></div><button class="primary" onclick="generateDashboardReport()">Générer rapport</button></div>
-    <div class="kpi-grid">
-      <div class="kpi"><div class="lab">CA direct aujourd'hui</div><div class="num">1,18M</div><div class="trend">+26% vs hier</div></div>
-      <div class="kpi"><div class="lab">Panier moyen</div><div class="num">42,3k</div><div class="trend">+18% grâce aux upsells</div></div>
-      <div class="kpi"><div class="lab">Réservations</div><div class="num">42</div><div class="trend">8 acomptes sécurisés</div></div>
-      <div class="kpi"><div class="lab">Commandes directes</div><div class="num">31</div><div class="trend">13 livraisons · 18 take-away</div></div>
-    </div>
-    <div class="two-col mt">
-      <div class="card"><h3>Recommandations IA du jour</h3><div class="timeline mt">
-        <div class="item"><div class="dot">1</div><div class="body"><b>Pousser Chateaubriand après 20h</b><span class="muted">Probabilité upsell vin : 74 %. Recommandation : Saint-Julien.</span></div></div>
-        <div class="item"><div class="dot">2</div><div class="body"><b>Activer dessert après poisson</b><span class="muted">La crème brûlée convertit mieux après Daurade : +21 %.</span></div></div>
-        <div class="item"><div class="dot">3</div><div class="body"><b>Offre livraison Almadies</b><span class="muted">Panier moyen élevé sur la zone, proposer livraison offerte > 30k.</span></div></div>
-      </div></div>
-      <div class="card"><h3>Score Revenue AI</h3><p>Votre restaurant exploite 78 % du potentiel de vente directe.</p><div class="progress mt"><i style="width:78%"></i></div><div class="three-col mt"><div><strong>67%</strong><br><span class="muted mini">Upsell accepté</span></div><div><strong>5</strong><br><span class="muted mini">No-show évités</span></div><div><strong>120k</strong><br><span class="muted mini">Acomptes</span></div></div></div>
-    </div>
-    <div class="card mt"><h3>Assistant serveur</h3><p>Suggestions instantanées pour l'équipe en salle.</p><div class="grid-3 mt"><div class="metric"><div class="label">Client choisit</div><div class="value" style="font-size:20px">Chateaubriand</div><div class="delta">Proposer Saint-Julien</div></div><div class="metric"><div class="label">Client dit</div><div class="value" style="font-size:20px">Anniversaire</div><div class="delta">Proposer champagne</div></div><div class="metric"><div class="label">Client commande</div><div class="value" style="font-size:20px">Daurade</div><div class="delta">Proposer crème brûlée</div></div></div></div>
-  `;
-}
-function renderReservations(){
-  qs("#app-reservations").innerHTML = `
-    <div class="panel-title"><div><h2>Réservations</h2><p>Suivi des tables, acomptes, confirmations et no-shows évités.</p></div><button class="primary" onclick="showToast('Nouvelle réservation créée')">+ Réservation</button></div>
-    <div class="table-wrap"><table><thead><tr><th>Client</th><th>Type</th><th>Date</th><th>Heure</th><th>Personnes</th><th>Acompte</th><th>Statut</th></tr></thead><tbody>
-      ${[["A. Diop","Anniversaire","Ce soir","20h30","8","30 000","Confirmée"],["M. Ba","Couple","Demain","21h00","2","20 000","Payée"],["Entreprise X","Business","Vendredi","13h00","12","50 000","À rappeler"],["N. Fall","Amis","Samedi","20h00","5","0","Sans acompte"]].map(r=>`<tr>${r.map((c,i)=>`<td>${i===6?`<span class='tag ${c==='Payée'?'green':c==='À rappeler'?'red':'blue'}'>${c}</span>`:c}</td>`).join("")}</tr>`).join("")}
-    </tbody></table></div>
-  `;
-}
-function renderOrders(){
-  qs("#app-orders").innerHTML = `
-    <div class="panel-title"><div><h2>Commandes</h2><p>Livraison, à emporter, paiement et suivi cuisine.</p></div><button class="primary" onclick="showToast('Commande demo ajoutée')">+ Commande</button></div>
-    <div class="grid-3">
-      ${[["#1048","Livraison","Almadies","Daurade + Tiramisu","26 000","En préparation"],["#1049","À emporter","20h15","Plateau Asia","16 500","Prête"],["#1050","Livraison","Mermoz","Tagliatelles saumon + dessert","28 000","En route"]].map(o=>`<div class="card"><div class="between"><span class="badge">${o[1]}</span><strong>${o[0]}</strong></div><h3>${o[3]}</h3><p>${o[2]}</p><div class="between mt"><strong>${o[4]} FCFA</strong><span class="tag green">${o[5]}</span></div></div>`).join("")}
-    </div>
-  `;
-}
-function renderProducts(){
-  qs("#app-products").innerHTML = `
-    <div class="panel-title"><div><h2>Produits & menu</h2><p>Le coeur du SaaS : chaque produit peut déclencher des upsells, règles livraison et promos.</p></div><button class="primary" onclick="addProduct()">+ Ajouter produit demo</button></div>
-    <div class="two-col">
-      <div class="stack" id="productList"></div>
-      <div class="form-card">
-        <h3>Ajouter un produit</h3>
-        <div class="stack mt">
-          <div><label>Nom</label><input id="newProductName" placeholder="Ex : Burger signature"></div>
-          <div class="form-grid"><div><label>Prix</label><input id="newProductPrice" type="number" value="12000"></div><div><label>Catégorie</label><input id="newProductCategory" value="Plat"></div></div>
-          <div><label>Description IA</label><textarea placeholder="Description courte, allergènes, conseil d'upsell..."></textarea></div>
-          <div class="check-row"><span><strong>Livrable</strong><br><span class="muted mini">Disponible en livraison</span></span><button class="switch on" onclick="this.classList.toggle('on')"></button></div>
-          <div class="check-row"><span><strong>Sur place uniquement</strong><br><span class="muted mini">Protège l'expérience culinaire</span></span><button class="switch" onclick="this.classList.toggle('on')"></button></div>
-          <button class="primary" onclick="addProduct()">Enregistrer produit</button>
-        </div>
-      </div>
-    </div>
-  `;
-  renderProductList();
-}
-function renderProductList(){
-  const list = qs("#productList");
-  if(!list) return;
-  list.innerHTML = state.products.map((p,i)=>`
-    <div class="product-card">
-      <div class="product-top"><div><div class="product-name">${p.name}</div><span class="muted mini">${p.category}</span></div><div class="price-small">${money(p.price)}</div></div>
-      <div class="toggles">${p.tags.map(t=>`<span class="tag">${t}</span>`).join("")}<span class="tag ${p.delivery?'green':'red'}">${p.delivery?'Livraison OK':'Pas livraison'}</span><span class="tag blue">Marge ${p.margin}%</span></div>
-      <div class="between"><span class="muted mini">Upsell recommandé</span><strong>${i===0?'Saint-Julien':i===1?'Crème brûlée':i===2?'Espresso Martini':'Champagne'}</strong></div>
-    </div>
-  `).join("");
-}
-function addProduct(){
-  const name = (qs("#newProductName") && qs("#newProductName").value) || "Produit signature demo";
-  const price = Number((qs("#newProductPrice") && qs("#newProductPrice").value) || 12000);
-  const category = (qs("#newProductCategory") && qs("#newProductCategory").value) || "Plat";
-  const product = {name, category, price, tags:["Nouveau","IA ready"], delivery:true, takeaway:true, margin:52};
-  state.products.unshift(product); saveLocalData(); syncProductToApi(product);
-  renderProductList(); showToast("Produit ajouté : " + name);
-}
-function renderPromotions(){
-  qs("#app-promotions").innerHTML = `
-    <div class="panel-title"><div><h2>Promotions</h2><p>Promos déclenchées automatiquement selon heure, canal, panier, occasion ou zone.</p></div><button class="primary" onclick="addPromo()">+ Créer promo</button></div>
-    <div class="two-col">
-      <div class="stack" id="promoList"></div>
-      <div class="form-card"><h3>Promo intelligente</h3><div class="stack mt"><div><label>Type</label><select id="promoType"><option>Happy hour</option><option>Menu déjeuner</option><option>Anniversaire</option><option>Livraison offerte</option><option>Première commande</option><option>Panier abandonné</option></select></div><div><label>Déclencheur</label><input id="promoTrigger" value="Vendredi 19h-23h"></div><div><label>Avantage</label><input id="promoBenefit" value="Cocktail offert après 35 000 FCFA"></div><button class="primary" onclick="addPromo()">Activer promotion</button></div></div>
-    </div>
-  `;
-  renderPromoList();
-}
-function renderPromoList(){
-  const el = qs("#promoList"); if(!el) return;
-  el.innerHTML = state.promos.map(p=>`<div class="card"><div class="between"><h3>${p.name}</h3><span class="tag ${p.status==='Active'?'green':'blue'}">${p.status}</span></div><p><strong>Déclencheur :</strong> ${p.trigger}</p><p><strong>Avantage :</strong> ${p.benefit}</p></div>`).join("");
-}
-function addPromo(){
-  const type = (qs("#promoType") && qs("#promoType").value) || "Promo demo";
-  const trigger = (qs("#promoTrigger") && qs("#promoTrigger").value) || "Déclencheur demo";
-  const benefit = (qs("#promoBenefit") && qs("#promoBenefit").value) || "Avantage demo";
-  const promo = {name:type, trigger, benefit, status:"Active"}; state.promos.unshift(promo); saveLocalData(); syncPromoToApi(promo); renderPromoList(); showToast("Promotion activée");
-}
-function renderCustomers(){
-  qs("#app-customers").innerHTML = `
-    <div class="panel-title"><div><h2>Clients / CRM</h2><p>Base client propriétaire : téléphone, email, préférences, historique, consentement.</p></div><button class="primary" onclick="showToast('Segment exporté')">Exporter segment</button></div>
-    <div class="grid-4"><div class="kpi"><div class="lab">Clients connus</div><div class="num">1 284</div><div class="trend">+94 ce mois</div></div><div class="kpi"><div class="lab">Opt-in marketing</div><div class="num">61%</div><div class="trend">WhatsApp prioritaire</div></div><div class="kpi"><div class="lab">Paniers abandonnés</div><div class="num">48</div><div class="trend">Relance possible</div></div><div class="kpi"><div class="lab">Anniversaires</div><div class="num">23</div><div class="trend">7 jours à venir</div></div></div>
-    <div class="table-wrap mt"><table><thead><tr><th>Segment</th><th>Volume</th><th>Panier moyen</th><th>Action recommandée</th></tr></thead><tbody><tr><td>Couples premium</td><td>214</td><td>58 000</td><td>Offre dîner + vin</td></tr><tr><td>Livraison Almadies</td><td>189</td><td>32 000</td><td>Livraison offerte > 30k</td></tr><tr><td>Clients anniversaire</td><td>76</td><td>64 000</td><td>Dessert + champagne</td></tr><tr><td>Clients dormants</td><td>312</td><td>24 000</td><td>Relance WhatsApp</td></tr></tbody></table></div>
-  `;
-}
-function renderPayments(){
-  qs("#app-payments").innerHTML = `
-    <div class="panel-title"><div><h2>Paiements</h2><p>Deux flux : paiements clients finaux et abonnement SaaS du restaurant.</p></div><button class="primary" onclick="showToast('Lien de paiement généré')">Générer lien</button></div>
-    <div class="two-col"><div class="card"><h3>Paiements clients</h3><ul class="features mt"><li>Acompte réservation</li><li>Commande livraison</li><li>Commande à emporter</li><li>Wallets : Wave, Orange Money, Free Money</li><li>Paiement à la livraison optionnel</li></ul></div><div class="card"><h3>Abonnement SaaS</h3><p>Essai gratuit : J+7 sur 30.</p><div class="progress mt"><i style="width:23%"></i></div><div class="between mt"><span>Plan cible</span><strong>Growth · 30 000 FCFA/mois</strong></div><div class="between"><span>Prochain paiement</span><strong>0 FCFA aujourd'hui</strong></div><button class="primary mt" onclick="openAppView('subscription')">Gérer abonnement</button></div></div>
-  `;
-}
-function renderQRCodes(){
-  qs("#app-qrcodes").innerHTML = `
-    <div class="panel-title"><div><h2>QR Codes</h2><p>QR unique, par table, par salle, par campagne ou par événement.</p></div><button class="primary" onclick="showToast('QR code généré')">+ Générer QR</button></div>
-    <div class="grid-3"><div class="card center"><div style="font-size:80px">▦</div><h3>Table 4</h3><p>Ouvre directement le chatbot de commande sur place.</p></div><div class="card center"><div style="font-size:80px">▦</div><h3>Terrasse</h3><p>Met en avant cocktails et plats à partager.</p></div><div class="card center"><div style="font-size:80px">▦</div><h3>Livraison</h3><p>Ouvre directement le tunnel commande/livraison.</p></div></div>
-  `;
-}
-function renderTeam(){
-  qs("#app-team").innerHTML = `
-    <div class="panel-title"><div><h2>Équipe & permissions</h2><p>Donner le bon niveau d'accès à chaque profil.</p></div><button class="primary" onclick="showToast('Invitation envoyée')">Inviter utilisateur</button></div>
-    <div class="table-wrap"><table><thead><tr><th>Profil</th><th>Dashboard</th><th>Commandes</th><th>Produits</th><th>Clients</th><th>Paiements</th><th>Abonnement</th></tr></thead><tbody>
-      ${[["Owner / Directeur","✓","✓","✓","✓","✓","✓"],["Manager","✓","✓","✓","-","-","-"],["Serveur","✓","✓","-","-","-","-"],["Cuisine","-","✓","✓","-","-","-"],["Marketing","✓","-","-","✓","-","-"],["Comptable","✓","-","-","-","✓","✓"]].map(r=>`<tr>${r.map(c=>`<td>${c==='✓'?'<span class="tag green">✓</span>':c==='-'?'<span class="tag red">-</span>':c}</td>`).join("")}</tr>`).join("")}
-    </tbody></table></div>
-  `;
-}
-function renderSubscription(){
-  const plan = plans.find(p=>p.id===state.selectedPlan);
-  qs("#app-subscription").innerHTML = `
-    <div class="panel-title"><div><h2>Abonnement</h2><p>Essai gratuit, choix de plan, paiement et facturation.</p></div><button class="primary" onclick="showToast('Abonnement activé en demo')">Activer maintenant</button></div>
-    <div class="checkout"><div class="between"><div><span class="badge">Essai gratuit</span><h3 style="margin:12px 0 4px">${plan.name}</h3><p class="muted">J+7 sur 30 · aucun paiement aujourd'hui</p></div><div class="price">${money(plan.price).replace(" FCFA","")}<small> FCFA/mois</small></div></div><div class="progress mt"><i style="width:23%"></i></div><div class="grid-3 mt">${plans.map(p=>`<div class="card" style="box-shadow:none"><span class="badge">${p.name}</span><h3>${money(p.price)}/mois</h3><p>${p.target}</p><button class="secondary mt" onclick="state.selectedPlan='${p.id}';renderSubscription();showToast('Plan cible modifié')">Choisir</button></div>`).join("")}</div></div>
-  `;
-}
-function renderSettings(){
-  qs("#app-settings").innerHTML = `
-    <div class="panel-title"><div><h2>Paramètres</h2><p>Identité restaurant, horaires, zones, confidentialité et modules actifs.</p></div><button class="primary" onclick="showToast('Paramètres sauvegardés')">Sauvegarder</button></div>
-    <div class="two-col"><div class="form-card"><h3>Profil restaurant</h3><div class="stack mt"><div><label>Nom</label><input value="${state.restaurantName}"></div><div><label>Ville</label><input value="${state.city}"></div><div><label>WhatsApp</label><input value="${state.phone}"></div><div><label>Email</label><input value="${state.email}"></div></div></div><div class="form-card"><h3>Zones de livraison</h3><div class="stack mt"><div><label>Zones actives</label><textarea>Plateau, Almadies, Ngor, Mermoz, Sacré-Coeur, Saly</textarea></div><div><label>Frais par défaut</label><input value="2 000 FCFA"></div><div><label>Délai estimé</label><input value="35-55 minutes"></div></div></div></div>
-  `;
-}
-function renderAllAppPanels(){
-  renderDashboard(); renderReservations(); renderOrders(); renderProducts(); renderPromotions(); renderCustomers(); renderPayments(); renderQRCodes(); renderTeam(); renderSubscription(); renderSettings();
-}
+    function renderAdmin(){
+      setActiveButtons(); const s=state.adminSummary||{}; const c=$('#adminContent');
+      if(state.adminTab==='global') c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Super Admin · sans remontée de page</span><h2>Vue globale plateforme</h2><p>Les onglets changent uniquement le contenu, sans scroll automatique.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Actions admin</h3><div class="features"><div class="feature"><span class="check">✓</span>Activer / suspendre restaurant</div><div class="feature"><span class="check">✓</span>Changer plan et statut abonnement</div><div class="feature"><span class="check">✓</span>Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
+      if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin/restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
+      if(state.adminTab==='plans') c.innerHTML = `<div class="toolbar"><div><h2>Plans</h2><p>Starter, Growth, Premium AI et Enterprise.</p></div></div><div class="pricing"><div class="card"><h3>Starter</h3><div class="price">20k</div><p>Menu, QR, réservations simples.</p></div><div class="card featured"><h3>Growth</h3><div class="price">30k</div><p>Commandes, livraison, CRM, paiements.</p></div><div class="card"><h3>Premium AI</h3><div class="price">50k</div><p>Sommelier, assistant serveur, analytics.</p></div></div>`;
+      if(state.adminTab==='onboarding') c.innerHTML = `<div class="toolbar"><div><h2>Onboarding</h2><p>Suivi des restaurants en période gratuite.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">À configurer</div><div class="value">5</div><div class="sub">menus à importer</div></div><div class="metric"><div class="label">Prêts à lancer</div><div class="value">4</div><div class="sub">QR + produits OK</div></div><div class="metric"><div class="label">À relancer</div><div class="value">2</div><div class="sub">trial J-5</div></div></div>`;
+      if(state.adminTab==='support') c.innerHTML = `<div class="toolbar"><div><h2>Support</h2><p>Tickets, demandes d’intégration, incidents paiement et demandes restaurants.</p></div></div><div class="card"><table class="table"><tbody><tr><td><strong>La Fourchette</strong></td><td>Importer photos menu</td><td><span class="status gold">En cours</span></td></tr><tr><td><strong>Saly Beach Kitchen</strong></td><td>Activer livraison</td><td><span class="status green">Prêt</span></td></tr></tbody></table></div>`;
+      if(state.adminTab==='analytics') c.innerHTML = `<div class="toolbar"><div><h2>Analytics plateforme</h2><p>MRR, activation, conversion trial, utilisation modules.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Conversion trial</div><div class="value">38%</div><div class="sub">objectif 45%</div></div><div class="metric"><div class="label">ARPA</div><div class="value">37k</div><div class="sub">FCFA / mois</div></div><div class="metric"><div class="label">Modules actifs</div><div class="value">4.8</div><div class="sub">par restaurant</div></div><div class="metric"><div class="label">Churn risk</div><div class="value">${s.churn_risk||2}</div><div class="sub">à traiter</div></div></div>`;
+    }
+    function renderAdminRestaurantsTable(){ const rows = state.adminRestaurants.length ? state.adminRestaurants : [{ name:'La Fourchette Dakar', city:'Dakar', status:'trial', owner_email:'owner@example.com' },{ name:'Saly Beach Kitchen', city:'Saly', status:'active', owner_email:'manager@example.com' }]; return `<table class="table"><thead><tr><th>Restaurant</th><th>Ville</th><th>Owner</th><th>Statut</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.city||'')}</td><td>${esc(r.owner_email||'')}</td><td><span class="status ${r.status==='active'?'green':r.status==='trial'?'gold':'gray'}">${esc(r.status||'trial')}</span></td></tr>`).join('')}</tbody></table>`; }
+    async function loadAdminRestaurants(){ try{ const data=await api('/api/admin/restaurants'); state.adminRestaurants=data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
 
-function renderAdminNav(){
-  qs("#adminNav").innerHTML = adminViews.map(([id,icon,label]) => `<button class="${state.adminView===id?'active':''}" onclick="openAdminView('${id}')" style="color:${state.adminView===id?'#fff':'#4e453d'};background:${state.adminView===id?'#17130f':'transparent'}">${icon} ${label}</button>`).join("");
-}
-function openAdminView(view){ state.adminView=view; qsa("#admin .panel").forEach(p=>p.classList.toggle("active",p.id==="admin-"+view)); renderAdminNav(); persistUiState(); }
-function renderAdminPanels(){
-  qs("#admin-overview").innerHTML = `<div class="panel-title"><div><h2>Vue globale plateforme</h2><p>Performance SaaS multi-restaurants.</p></div><button class="primary" onclick="showToast('Export global généré')">Exporter</button></div><div class="kpi-grid"><div class="kpi"><div class="lab">Restaurants</div><div class="num">38</div><div class="trend">12 en essai</div></div><div class="kpi"><div class="lab">MRR potentiel</div><div class="num">1,21M</div><div class="trend">FCFA/mois</div></div><div class="kpi"><div class="lab">Conversion trial</div><div class="num">64%</div><div class="trend">Objectif 70%</div></div><div class="kpi"><div class="lab">Support ouvert</div><div class="num">7</div><div class="trend">3 urgents</div></div></div><div class="two-col mt"><div class="card"><h3>Actions prioritaires</h3><div class="timeline mt"><div class="item"><div class="dot">1</div><div class="body"><b>Relancer 5 essais J+25</b><span class="muted">Proposer Growth à 30 000 FCFA.</span></div></div><div class="item"><div class="dot">2</div><div class="body"><b>Activer paiement wallet</b><span class="muted">8 restaurants prêts à encaisser.</span></div></div><div class="item"><div class="dot">3</div><div class="body"><b>Importer 12 menus</b><span class="muted">Onboarding à finaliser avant vendredi.</span></div></div></div></div><div class="card"><h3>Répartition plans</h3><div class="progress mt"><i style="width:52%"></i></div><p class="muted mt">Growth représente 52 % des comptes actifs. Premium AI doit devenir l'offre phare pour restaurants premium.</p></div></div>`;
-  qs("#admin-restaurants").innerHTML = `<div class="panel-title"><div><h2>Restaurants</h2><p>Gestion des comptes, activation, suspension et suivi d'essai.</p></div><button class="primary" onclick="showToast('Restaurant créé')">+ Restaurant</button></div><div class="table-wrap"><table><thead><tr><th>Restaurant</th><th>Ville</th><th>Plan</th><th>Essai</th><th>Statut</th><th>MRR</th></tr></thead><tbody><tr><td>La Fourchette</td><td>Dakar</td><td>Premium AI</td><td>J+7/30</td><td><span class="tag green">Actif</span></td><td>50 000</td></tr><tr><td>Lounge Saly</td><td>Saly</td><td>Growth</td><td>J+25/30</td><td><span class="tag blue">À convertir</span></td><td>30 000</td></tr><tr><td>Café Plateau</td><td>Dakar</td><td>Starter</td><td>Terminé</td><td><span class="tag green">Payant</span></td><td>20 000</td></tr><tr><td>Hôtel Mbour</td><td>Mbour</td><td>Enterprise</td><td>Setup</td><td><span class="tag red">En attente</span></td><td>Devis</td></tr></tbody></table></div>`;
-  qs("#admin-plans").innerHTML = `<div class="panel-title"><div><h2>Plans & pricing</h2><p>Configuration des offres SaaS.</p></div><button class="primary" onclick="showToast('Plan sauvegardé')">Sauvegarder plans</button></div><div class="grid-3">${plans.map(p=>`<div class="card"><span class="badge">${p.name}</span><h3>${money(p.price)}/mois</h3><p>${p.target}</p><ul class="features mt">${p.features.slice(0,5).map(f=>`<li>${f}</li>`).join("")}</ul></div>`).join("")}</div>`;
-  qs("#admin-onboarding").innerHTML = `<div class="panel-title"><div><h2>Onboarding</h2><p>Suivi des menus, configurations, QR codes et go-live.</p></div><button class="primary" onclick="showToast('Tâche créée')">+ Tâche</button></div><div class="table-wrap"><table><thead><tr><th>Restaurant</th><th>Menu</th><th>QR</th><th>Chatbot</th><th>Paiement</th><th>Go-live</th></tr></thead><tbody><tr><td>La Fourchette</td><td><span class="tag green">OK</span></td><td><span class="tag green">OK</span></td><td><span class="tag green">OK</span></td><td><span class="tag blue">Test</span></td><td>Cette semaine</td></tr><tr><td>Lounge Saly</td><td><span class="tag blue">En cours</span></td><td><span class="tag red">À faire</span></td><td><span class="tag red">À faire</span></td><td><span class="tag red">À faire</span></td><td>+10 jours</td></tr></tbody></table></div>`;
-  qs("#admin-support").innerHTML = `<div class="panel-title"><div><h2>Support</h2><p>Tickets et demandes clients restaurants.</p></div><button class="primary" onclick="showToast('Ticket assigné')">Assigner</button></div><div class="grid-3"><div class="card"><span class="tag red">Urgent</span><h3>Paiement Wave</h3><p>Le restaurant ne voit pas la confirmation de paiement.</p></div><div class="card"><span class="tag blue">Normal</span><h3>Modifier menu</h3><p>Ajouter nouvelle catégorie brunch du dimanche.</p></div><div class="card"><span class="tag green">Résolu</span><h3>QR table 8</h3><p>QR remplacé et testé.</p></div></div>`;
-  qs("#admin-analytics").innerHTML = `<div class="panel-title"><div><h2>Analytics plateforme</h2><p>Suivi de croissance, MRR, churn et usage modules.</p></div><button class="primary" onclick="showToast('Analyse IA lancée')">Analyser</button></div><div class="kpi-grid"><div class="kpi"><div class="lab">MRR actif</div><div class="num">860k</div><div class="trend">FCFA/mois</div></div><div class="kpi"><div class="lab">ARR potentiel</div><div class="num">10,3M</div><div class="trend">FCFA/an</div></div><div class="kpi"><div class="lab">Churn</div><div class="num">2,8%</div><div class="trend">Bas</div></div><div class="kpi"><div class="lab">ARPA</div><div class="num">31,8k</div><div class="trend">Growth tire la moyenne</div></div></div><div class="card mt"><h3>Usage modules</h3><div class="grid-3 mt"><div><strong>92%</strong><br><span class="muted mini">Menu digital</span></div><div><strong>71%</strong><br><span class="muted mini">Réservation</span></div><div><strong>58%</strong><br><span class="muted mini">Livraison</span></div><div><strong>44%</strong><br><span class="muted mini">CRM</span></div><div><strong>37%</strong><br><span class="muted mini">Promos</span></div><div><strong>22%</strong><br><span class="muted mini">Premium AI</span></div></div></div>`;
-}
+    function bindInlineForms(){ }
+    window.openProductModal = function(){ modal(`<h2>Ajouter produit</h2><p>Produit sauvegardé dans Supabase si configuré, sinon en local pour la démo.</p><form class="form" id="productForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Gambas flambées au Pastis"></div><div class="field"><label>Prix FCFA</label><input class="input" name="price" type="number" required value="22500"></div></div><div class="form-row"><div class="field"><label>Catégorie</label><input class="input" name="category" value="Poissons"></div><div class="field"><label>Tags</label><input class="input" name="tags" value="premium,livrable"></div></div><div class="field"><label>Notes upsell</label><input class="input" name="upsell_notes" value="Chablis, dessert signature"></div><div class="quick"><label><input type="checkbox" name="dine_in_enabled" checked> Sur place</label><label><input type="checkbox" name="delivery_enabled" checked> Livraison</label><label><input type="checkbox" name="takeaway_enabled" checked> À emporter</label></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Sauvegarder</button></div></form>`); $('#productForm').addEventListener('submit', submitProduct); };
+    async function submitProduct(e){ e.preventDefault(); const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries()); body.dine_in_enabled=fd.has('dine_in_enabled'); body.delivery_enabled=fd.has('delivery_enabled'); body.takeaway_enabled=fd.has('takeaway_enabled'); body.price=Number(body.price); try{ const data=await api('/api/products',{method:'POST',body:JSON.stringify(body)}); state.products.unshift(data.product); saveState(); closeModal(); renderApp(); }catch(err){ alert(err.message); } }
+    async function deleteProductById(id){ if(!confirm('Supprimer ce produit ?')) return; try{ await api('/api/products',{method:'DELETE',body:JSON.stringify({id})}); }catch(e){} state.products=state.products.filter(p=>String(p.id)!==String(id)); saveState(); renderApp(); }
+    window.openPromoModal = function(){ modal(`<h2>Créer promotion</h2><p>Définissez une règle commerciale simple, déclenchable dans le chatbot.</p><form class="form" id="promoForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Livraison offerte soir"></div><div class="field"><label>Canal</label><select name="channel"><option value="chatbot">Chatbot</option><option value="site_qr">QR / Site</option><option value="delivery">Livraison</option><option value="whatsapp">WhatsApp</option></select></div></div><div class="form-row"><div class="field"><label>Type</label><select name="discount_type"><option value="gift">Cadeau</option><option value="percentage">Pourcentage</option><option value="fixed">Montant fixe</option><option value="bundle">Bundle</option></select></div><div class="field"><label>Valeur</label><input class="input" name="value" type="number" value="0"></div></div><div class="field"><label>Règle</label><input class="input" name="rule_summary" value="Livraison offerte dès 30 000 FCFA entre 19h et 22h"></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Créer</button></div></form>`); $('#promoForm').addEventListener('submit', submitPromo); };
+    async function submitPromo(e){ e.preventDefault(); const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries()); body.value=Number(body.value); body.status='active'; try{ const data=await api('/api/promotions',{method:'POST',body:JSON.stringify(body)}); state.promotions.unshift(data.promotion); saveState(); closeModal(); renderApp(); }catch(err){ alert(err.message); } }
+    async function deletePromoById(id){ if(!confirm('Supprimer cette promotion ?')) return; try{ await api('/api/promotions',{method:'DELETE',body:JSON.stringify({id})}); }catch(e){} state.promotions=state.promotions.filter(p=>String(p.id)!==String(id)); saveState(); renderApp(); }
 
-function init(){
-  qsa("[data-page]").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
-  restoreUiState(); loadLocalData(); renderFeatures(); renderPricing(); renderSignup(); renderAllAppPanels(); renderAdminPanels(); applyPanelState(); hydrateProductionData();
-  qsa(".mobile-bar button").forEach(b => b.classList.toggle("active", b.dataset.page === "home"));
-}
-document.addEventListener("keydown", (event) => { if(event.key === "Escape") closeReportModal(); });
-document.addEventListener("DOMContentLoaded", init);
-</script>
+    async function generateReport(){
+      const metrics=dashboardMetrics();
+      const payload={ restaurant_id:state.restaurantId, restaurantName:(state.memberships[0]&&state.memberships[0].restaurants&&state.memberships[0].restaurants.name)||'Restaurant pilote', metrics, products:state.products, promotions:state.promotions };
+      try{ const data=await api('/api/reports/generate',{method:'POST',body:JSON.stringify(payload)}); openReport(data.report.content); }
+      catch(err){ openReport(localReport(payload)); }
+    }
+    function localReport(payload){ const m=payload.metrics; return [`Rapport performance - ${payload.restaurantName}`,`Date: ${new Date().toLocaleString('fr-FR')}`,'',`CA direct estimé: ${money(m.direct_revenue_xof)}`,`Panier moyen: ${money(m.average_basket_xof)}`,`Réservations: ${m.reservations}`,`Commandes directes: ${m.orders}`,`Taux upsell: ${m.upsell_rate}%`,`Clients collectés: ${m.customers}`,'',`Produits configurés: ${payload.products.length}`,`Promotions actives: ${payload.promotions.filter(p=>p.status==='active').length}`,'','Recommandations:', '- Activer les upsells sur les produits signature.', '- Protéger les plats premium non adaptés à la livraison.', '- Relancer les clients anniversaires via WhatsApp.', '- Suivre conversion trial vers Growth/Premium AI.'].join('\n'); }
+    function openReport(text){ modal(`<div class="toolbar"><div><h2>Rapport généré</h2><p>Basé sur les résultats affichés dans le dashboard.</p></div><button class="btn" data-close-modal>Fermer</button></div><pre class="report-pre" id="reportText">${esc(text)}</pre><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button class="btn" data-copy-report>Copier</button><button class="btn gold" data-download-report>Télécharger</button></div>`); }
+    function downloadText(filename, text){ const blob=new Blob([text],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
+    function esc(v){ return String(v??'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+    init();
+  </script>
 </body>
 </html>
