@@ -84,6 +84,131 @@
     .app{display:none;padding:28px 0}.app.active{display:block}.app-layout{display:grid;grid-template-columns:260px 1fr;gap:24px}.sidebar{position:sticky;top:22px;align-self:start;border-radius:0px;background:var(--nuit);color:var(--ecume);padding:20px;box-shadow:var(--shadow);border:1px solid var(--nuit-2)}.side-btn{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--sable);padding:12px 14px;border-radius:0px;text-align:left;cursor:pointer;font-family:'Inter', sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;transition:.18s ease}.side-btn.active,.side-btn:hover{background:rgba(232,220,196,0.08);color:var(--ecume)}.content{min-width:0}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:24px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid var(--line-dark);background:#fff;border-radius:0px;padding:10px 16px;cursor:pointer;font-family:'Inter', sans-serif;font-size:12px;text-transform:uppercase;font-weight:600;letter-spacing:.05em}.tab.active{background:var(--nuit);color:var(--ecume);border-color:var(--nuit)}.table{width:100%;border-collapse:separate;border-spacing:0 8px}.table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);padding:0 12px;font-weight:600}.table td{background:#fff;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);padding:14px 12px}.table td:first-child{border-left:1px solid var(--line-dark);border-radius:0px}.table td:last-child{border-right:1px solid var(--line-dark);border-radius:0px}
     .form{display:grid;gap:18px}.field{display:grid;gap:6px}.field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600}.input,select,textarea{width:100%;border:none;border-bottom:1px solid var(--line-dark);background:transparent;padding:10px 2px;font-family:'Inter',sans-serif;font-size:15px;color:var(--encre-text);transition:border-color var(--ease-fast)}.input:focus,select:focus,textarea:focus{border-color:var(--or);outline:none}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}.status{display:inline-flex;align-items:center;border-radius:0px;padding:6px 10px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600}.status.green{background:#e9f7ef;color:#0f6c4d}.status.gold{background:#fff2d5;color:#8a540c}.status.red{background:#fff0ea;color:#a63821}.status.gray{background:#efede8;color:#665d52}.modal{position:fixed;inset:0;background:rgba(16,29,51,.65);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modal.active{display:flex}.modal-panel{background:var(--ecume);border:1px solid var(--line-dark);border-radius:0px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:32px;box-shadow:var(--shadow)}.report-pre{white-space:pre-wrap;background:var(--nuit);color:var(--ecume);border-radius:0px;padding:24px;line-height:1.6;max-height:55vh;overflow:auto}.notice{border:1px solid var(--or);background:var(--sable-2);border-radius:0px;padding:16px;color:#6f4a18;font-size:13.5px}.mini{font-size:12px;color:var(--text-faint)}.hidden{display:none!important}.divider{height:1px;background:var(--line-dark);margin:14px 0}.right{text-align:right}.empty{padding:32px;border:1px dashed var(--line-dark);border-radius:0px;background:rgba(255,255,255,.5);color:var(--text-muted);text-align:center}
     @media(max-width:900px){.app-layout,.grid.cols-4,.grid.cols-3,.grid.cols-2,.pricing{grid-template-columns:1fr}.sidebar{position:relative;top:auto}.form-row{grid-template-columns:1fr}.shell{padding:14px}}
+    /* ══ ONBOARDING WIZARD ══════════════════════════════ */
+    .ob-overlay{
+      position:fixed;inset:0;background:var(--ecume);z-index:200;
+      display:none;align-items:center;justify-content:center;
+      padding:20px;overflow-y:auto;
+    }
+    .ob-overlay.active{display:flex;}
+    .ob-box{
+      width:100%;max-width:680px;
+      background:#fff;border:1px solid var(--line-dark);
+      box-shadow:0 24px 80px rgba(16,29,51,.1);
+      padding:48px;
+    }
+    @media(max-width:600px){.ob-box{padding:28px 20px;}}
+    .ob-progress{
+      display:flex;gap:6px;margin-bottom:40px;
+    }
+    .ob-bar{
+      height:3px;flex:1;background:var(--line-dark);
+      transition:background .4s ease;
+    }
+    .ob-bar.done{background:var(--or);}
+    .ob-bar.active{background:var(--or-clair);}
+    .ob-step{display:none;}
+    .ob-step.active{display:block;}
+    .ob-eyebrow{
+      font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--or);font-weight:600;margin-bottom:14px;
+    }
+    .ob-title{font-family:'Fraunces',serif;font-size:clamp(22px,4vw,32px);font-weight:300;line-height:1.15;margin-bottom:8px;color:var(--nuit-2);}
+    .ob-sub{font-size:14px;color:var(--text-faint);line-height:1.6;margin-bottom:28px;}
+    .ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;}
+    @media(max-width:520px){.ob-grid{grid-template-columns:1fr;}}
+    .ob-choice{
+      border:1.5px solid var(--line-dark);padding:18px 16px;
+      cursor:pointer;display:flex;align-items:center;gap:12px;
+      transition:border-color .18s,background .18s;
+      background:#fff;
+    }
+    .ob-choice:hover{border-color:var(--or);background:rgba(185,138,79,.04);}
+    .ob-choice.selected{border-color:var(--or);background:rgba(185,138,79,.08);}
+    .ob-choice .ico{font-size:22px;flex-shrink:0;}
+    .ob-choice .txt .t{font-size:14px;font-weight:600;color:var(--nuit-2);}
+    .ob-choice .txt .s{font-size:12px;color:var(--text-faint);margin-top:2px;}
+    .ob-field{margin-bottom:18px;}
+    .ob-field label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:8px;}
+    .ob-field input,.ob-field select{
+      width:100%;border:none;border-bottom:1.5px solid var(--line-dark);
+      background:transparent;padding:10px 2px;font-family:'Inter',sans-serif;
+      font-size:15px;color:var(--nuit-2);transition:border-color .18s;
+    }
+    .ob-field input:focus,.ob-field select:focus{outline:none;border-color:var(--or);}
+    .ob-field input::placeholder{color:var(--text-faint);}
+    .ob-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    @media(max-width:520px){.ob-row{grid-template-columns:1fr;}}
+    .ob-upload{
+      border:1.5px dashed var(--line-dark);padding:36px 20px;
+      text-align:center;cursor:pointer;transition:border-color .18s,background .18s;
+      position:relative;
+    }
+    .ob-upload:hover{border-color:var(--or);background:rgba(185,138,79,.03);}
+    .ob-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .ob-upload .ico{font-size:32px;margin-bottom:10px;}
+    .ob-upload .t{font-size:14px;color:var(--text-muted);}
+    .ob-upload .s{font-size:12px;color:var(--text-faint);margin-top:4px;}
+    .ob-processing{
+      display:none;background:var(--nuit-2);padding:24px;
+      margin-top:16px;
+    }
+    .ob-processing.active{display:block;}
+    .ob-processing-step{
+      display:flex;align-items:center;gap:10px;
+      font-size:13px;color:rgba(232,220,196,.7);padding:6px 0;
+    }
+    .ob-processing-step .ic{font-size:14px;width:18px;text-align:center;}
+    .ob-processing-step.done{color:var(--or-clair);}
+    .ob-processing-step.active{color:#fff;}
+    .ob-pay-row{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line-dark);margin-bottom:10px;}
+    .ob-pay-row .logo{font-size:20px;width:32px;text-align:center;}
+    .ob-pay-row label{flex:1;font-size:14px;font-weight:500;}
+    .ob-pay-row input[type=text]{flex:1.5;border:none;border-bottom:1px solid var(--line-dark);padding:6px 2px;font-size:14px;color:var(--nuit-2);background:transparent;outline:none;}
+    .ob-pay-row input:focus{border-color:var(--or);}
+    .ob-success{
+      text-align:center;padding:20px 0;
+    }
+    .ob-success .big-check{
+      width:64px;height:64px;background:linear-gradient(135deg,var(--nuit-2),var(--or));
+      display:grid;place-items:center;font-size:28px;margin:0 auto 24px;
+    }
+    .ob-qr{
+      width:140px;height:140px;margin:20px auto;
+      background:var(--nuit-2);display:grid;place-items:center;
+      font-size:11px;color:rgba(232,220,196,.5);text-align:center;
+      padding:10px;
+    }
+    .ob-link{
+      background:var(--ecume);border:1px solid var(--line-dark);
+      padding:12px 16px;display:flex;align-items:center;gap:10px;
+      margin-bottom:20px;font-size:13px;color:var(--nuit-2);
+    }
+    .ob-link span{flex:1;word-break:break-all;}
+    .ob-link button{
+      flex-shrink:0;background:var(--nuit-2);color:#fff;border:none;
+      padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;
+      letter-spacing:.06em;text-transform:uppercase;
+    }
+    .ob-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;}
+    .ob-btn{
+      font-family:'Inter',sans-serif;font-size:12.5px;letter-spacing:.08em;
+      text-transform:uppercase;font-weight:600;padding:14px 28px;
+      border:none;cursor:pointer;transition:background .18s,transform .1s;
+    }
+    .ob-btn:active{transform:scale(.98);}
+    .ob-btn.primary{background:var(--or);color:var(--nuit-2);}
+    .ob-btn.primary:hover{background:var(--corail);color:#fff;}
+    .ob-btn.skip{background:transparent;color:var(--text-faint);font-weight:400;padding:14px 0;}
+    .ob-btn.skip:hover{color:var(--nuit-2);}
+    .eyebrow{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--or);}
+    .check,.feature{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:14px;}
+    .check{color:var(--text-muted)}
+    .price{font-family:'Fraunces',serif;font-size:32px;font-weight:300;color:var(--nuit-2);margin:10px 0 4px;}
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+    .featured{background:var(--nuit-2)!important;color:var(--ecume)!important;border-color:var(--nuit-2)!important;}
+    .featured h3{color:var(--ecume)!important;}
+    .featured p{color:rgba(232,220,196,.7)!important;}
   </style>
 </head>
 <body>
@@ -127,6 +252,155 @@
         <section class="content" id="adminContent"></section>
       </div>
     </main>
+  </div>
+
+  <!-- ══ ONBOARDING WIZARD OVERLAY ════════════════════════ -->
+  <div class="ob-overlay" id="obOverlay">
+    <div class="ob-box">
+      <!-- Progress bar -->
+      <div class="ob-progress">
+        <div class="ob-bar active" id="obBar1"></div>
+        <div class="ob-bar" id="obBar2"></div>
+        <div class="ob-bar" id="obBar3"></div>
+        <div class="ob-bar" id="obBar4"></div>
+      </div>
+
+      <!-- STEP 1 — Restaurant info -->
+      <div class="ob-step active" id="obStep1">
+        <div class="ob-eyebrow">Étape 1 sur 4</div>
+        <h2 class="ob-title">Bienvenue ! 👋<br>Parlons de votre restaurant.</h2>
+        <p class="ob-sub">Ça prend 3 minutes. On configure tout pour vous.</p>
+        <div class="ob-row">
+          <div class="ob-field"><label>Nom du restaurant</label><input id="ob_name" placeholder="Le Baobab Doré" required></div>
+          <div class="ob-field"><label>Votre ville</label><select id="ob_city"><option>Dakar</option><option>Mbour</option><option>Saly</option><option>Saint-Louis</option><option>Ziguinchor</option><option>Autre</option></select></div>
+        </div>
+        <div class="ob-field"><label>Type d'établissement</label></div>
+        <div class="ob-grid">
+          <div class="ob-choice selected" data-obchoice="type" data-val="restaurant"><span class="ico">🍽️</span><div class="txt"><div class="t">Restaurant</div><div class="s">Cuisine, service à table</div></div></div>
+          <div class="ob-choice" data-obchoice="type" data-val="lounge"><span class="ico">🍸</span><div class="txt"><div class="t">Lounge / Bar</div><div class="s">Cocktails, ambiance</div></div></div>
+          <div class="ob-choice" data-obchoice="type" data-val="hotel"><span class="ico">🏨</span><div class="txt"><div class="t">Hôtel-restaurant</div><div class="s">Hébergement + restauration</div></div></div>
+          <div class="ob-choice" data-obchoice="type" data-val="fast"><span class="ico">🥡</span><div class="txt"><div class="t">Fast-food / À emporter</div><div class="s">Rapidité, volume</div></div></div>
+        </div>
+        <div class="ob-nav">
+          <span></span>
+          <button class="ob-btn primary" onclick="obNext(1)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 — Menu import -->
+      <div class="ob-step" id="obStep2">
+        <div class="ob-eyebrow">Étape 2 sur 4</div>
+        <h2 class="ob-title">Votre menu 🍴<br>L'IA s'occupe de tout.</h2>
+        <p class="ob-sub">Choisissez comment ajouter votre menu. Notre IA le lit et crée tout automatiquement.</p>
+        <div class="ob-grid" id="obMenuChoices">
+          <div class="ob-choice selected" data-obchoice="menu" data-val="pdf" onclick="obSelectMenu(this)">
+            <span class="ico">📎</span><div class="txt"><div class="t">Fichier PDF</div><div class="s">Votre menu en PDF</div></div>
+          </div>
+          <div class="ob-choice" data-obchoice="menu" data-val="photo" onclick="obSelectMenu(this)">
+            <span class="ico">📸</span><div class="txt"><div class="t">Photo</div><div class="s">Photo de votre menu</div></div>
+          </div>
+          <div class="ob-choice" data-obchoice="menu" data-val="instagram" onclick="obSelectMenu(this)">
+            <span class="ico">📱</span><div class="txt"><div class="t">Instagram / site</div><div class="s">Lien vers votre page</div></div>
+          </div>
+          <div class="ob-choice" data-obchoice="menu" data-val="manual" onclick="obSelectMenu(this)">
+            <span class="ico">✍️</span><div class="txt"><div class="t">Je vais l'écrire</div><div class="s">Ajouter plat par plat</div></div>
+          </div>
+        </div>
+
+        <!-- Upload zone (PDF/photo) -->
+        <div class="ob-upload" id="obUploadZone">
+          <input type="file" accept=".pdf,image/*" onchange="obHandleFile(this)">
+          <div class="ico">📎</div>
+          <div class="t">Glissez votre fichier ici, ou cliquez pour choisir</div>
+          <div class="s" id="obFileName">PDF, JPG, PNG — 10 Mo maximum</div>
+        </div>
+
+        <!-- Instagram/URL input -->
+        <div id="obUrlZone" style="display:none">
+          <div class="ob-field"><label>Lien Instagram ou site</label><input id="ob_url" placeholder="https://instagram.com/monresto"></div>
+        </div>
+
+        <!-- Processing animation -->
+        <div class="ob-processing" id="obProcessing">
+          <div class="ob-processing-step active" id="obProc1"><span class="ic">⏳</span>Lecture du fichier en cours...</div>
+          <div class="ob-processing-step" id="obProc2"><span class="ic">⏳</span>Extraction des plats et catégories...</div>
+          <div class="ob-processing-step" id="obProc3"><span class="ic">⏳</span>Création de votre chatbot...</div>
+          <div class="ob-processing-step" id="obProc4"><span class="ic">⏳</span>Génération du QR code...</div>
+        </div>
+
+        <!-- Result after processing -->
+        <div id="obMenuResult" style="display:none;margin-top:16px;padding:16px;background:rgba(185,138,79,.08);border:1px solid rgba(185,138,79,.2)">
+          <div style="font-weight:600;color:var(--nuit-2);margin-bottom:10px;">🎉 Votre menu a été créé !</div>
+          <div id="obMenuStats" style="font-size:13px;color:var(--text-muted);line-height:1.8;"></div>
+        </div>
+
+        <div class="ob-nav">
+          <button class="ob-btn skip" onclick="obBack(2)">← Retour</button>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="ob-btn skip" onclick="obNext(2)">Passer cette étape</button>
+            <button class="ob-btn primary" id="obMenuNextBtn" onclick="obStartProcessing()">Importer →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — Payments -->
+      <div class="ob-step" id="obStep3">
+        <div class="ob-eyebrow">Étape 3 sur 4</div>
+        <h2 class="ob-title">Vos paiements 💳<br>Vos clients paient comment ?</h2>
+        <p class="ob-sub">Configurez vos numéros de paiement. Vos clients pourront payer directement — l'argent va sur votre compte.</p>
+        <div class="ob-pay-row">
+          <span class="logo">🟦</span>
+          <label>Wave</label>
+          <input type="text" id="ob_wave" placeholder="+221 77 000 00 00">
+        </div>
+        <div class="ob-pay-row">
+          <span class="logo">🟠</span>
+          <label>Orange Money</label>
+          <input type="text" id="ob_om" placeholder="+221 77 000 00 00">
+        </div>
+        <div class="ob-pay-row">
+          <span class="logo">💚</span>
+          <label>Free Money</label>
+          <input type="text" id="ob_free" placeholder="+221 77 000 00 00">
+        </div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-muted)">
+          <input type="checkbox" id="ob_cash" style="width:16px;height:16px;">
+          <label for="ob_cash">J'accepte aussi le paiement en espèces sur place</label>
+        </div>
+        <div class="ob-nav">
+          <button class="ob-btn skip" onclick="obBack(3)">← Retour</button>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="ob-btn skip" onclick="obNext(3)">Passer</button>
+            <button class="ob-btn primary" onclick="obNext(3)">Enregistrer →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — Success + QR code -->
+      <div class="ob-step" id="obStep4">
+        <div class="ob-success">
+          <div class="big-check">🎊</div>
+          <h2 class="ob-title" style="text-align:center">Votre restaurant est<br><em style="font-style:italic;color:var(--or)">en ligne !</em></h2>
+          <p class="ob-sub" style="text-align:center;max-width:400px;margin:0 auto 24px">Partagez votre lien sur WhatsApp ou imprimez votre QR code et posez-le sur les tables.</p>
+          <div class="ob-qr" id="obQrDisplay">
+            <div>🔲</div>
+            <div style="margin-top:8px">Votre QR Code</div>
+            <div style="font-size:9px;margin-top:4px" id="obQrLabel">rrai.app/votre-resto</div>
+          </div>
+          <div class="ob-link">
+            <span id="obLinkDisplay">https://rrai.app/votre-resto</span>
+            <button onclick="obCopyLink()">Copier</button>
+          </div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px">
+            <button class="ob-btn primary" onclick="obShareWhatsApp()">📱 Partager sur WhatsApp</button>
+            <button class="ob-btn" style="background:var(--nuit-2);color:#fff;" onclick="obDownloadQR()">⬇️ Télécharger QR</button>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <button class="ob-btn primary" style="width:100%;font-size:14px;padding:18px;" onclick="obFinish()">🚀 Aller sur mon tableau de bord →</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="modal" id="modal"><div class="modal-panel" id="modalPanel"></div></div>
@@ -256,6 +530,14 @@
       updateAdminVisibility();
       await loadBusinessData();
       bind();
+
+      // ── Detect new user (no products = first time) ─────
+      const isNewUser = !state.products.length && !localStorage.getItem('rrai_onboarding_done');
+      if (isNewUser && state.view !== 'admin') {
+        obStart();
+        return;
+      }
+
       show(state.view === 'admin' ? 'admin' : 'app');
     }
 
@@ -391,6 +673,134 @@
     function esc(v){ return String(v??'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 
     init();
+
+    /* ════════════════════════════════════════════════════
+       ONBOARDING WIZARD
+    ═══════════════════════════════════════════════════ */
+    let obCurrentStep = 1;
+    let obData = { type:'restaurant', menuMethod:'pdf', restaurantName:'', city:'Dakar' };
+
+    function obStart(){
+      document.getElementById('obOverlay').classList.add('active');
+    }
+    function obSetStep(n){
+      for(let i=1;i<=4;i++){
+        document.getElementById('obStep'+i).classList.toggle('active',i===n);
+        const bar = document.getElementById('obBar'+i);
+        bar.classList.toggle('done', i < n);
+        bar.classList.toggle('active', i === n);
+      }
+      obCurrentStep = n;
+    }
+    function obNext(from){
+      if(from===1){
+        const name = document.getElementById('ob_name').value.trim();
+        if(name) obData.restaurantName = name;
+        obData.city = document.getElementById('ob_city').value;
+        const slug = (obData.restaurantName||'mon-resto').toLowerCase().replace(/[^a-z0-9]/g,'-');
+        document.getElementById('obLinkDisplay').textContent = 'https://rrai.app/' + slug;
+        document.getElementById('obQrLabel').textContent = 'rrai.app/' + slug;
+      }
+      if(from===3){
+        const wave = document.getElementById('ob_wave').value.trim();
+        const om = document.getElementById('ob_om').value.trim();
+        obData.wave = wave; obData.om = om;
+      }
+      obSetStep(from + 1);
+    }
+    function obBack(from){ obSetStep(from - 1); }
+
+    function obSelectMenu(el){
+      document.querySelectorAll('[data-obchoice="menu"]').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      obData.menuMethod = el.dataset.val;
+      const isUrl = obData.menuMethod === 'instagram';
+      const isManual = obData.menuMethod === 'manual';
+      document.getElementById('obUploadZone').style.display = (isUrl||isManual) ? 'none' : 'block';
+      document.getElementById('obUrlZone').style.display = isUrl ? 'block' : 'none';
+      const btn = document.getElementById('obMenuNextBtn');
+      btn.textContent = isManual ? 'Passer — je le ferai plus tard →' : 'Importer →';
+      if(isManual) btn.setAttribute('onclick','obNext(2)');
+      else btn.setAttribute('onclick','obStartProcessing()');
+    }
+    function obHandleFile(input){
+      const file = input.files[0];
+      if(file) document.getElementById('obFileName').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' Ko)';
+    }
+    function obStartProcessing(){
+      const proc = document.getElementById('obProcessing');
+      const res = document.getElementById('obMenuResult');
+      proc.classList.add('active');
+      res.style.display = 'none';
+      document.getElementById('obMenuNextBtn').disabled = true;
+
+      const steps = ['obProc1','obProc2','obProc3','obProc4'];
+      const labels = ['✅ Lecture du fichier...','✅ Extraction des plats et catégories...','✅ Création de votre chatbot...','✅ QR code généré !'];
+      let i = 0;
+      const interval = setInterval(() => {
+        if(i < steps.length){
+          const el = document.getElementById(steps[i]);
+          el.classList.add('done'); el.classList.remove('active');
+          el.querySelector('.ic').textContent = '✅';
+          el.textContent = labels[i];
+          i++;
+          if(i < steps.length){
+            const next = document.getElementById(steps[i]);
+            next.classList.add('active');
+          }
+        } else {
+          clearInterval(interval);
+          // Simulate extracted products
+          const demoExtracted = [
+            {id:'ob-1',name:'Thiéboudienne royale',category:'Plats',price:4500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['signature'],upsell_notes:'Jus bissap'},
+            {id:'ob-2',name:'Yassa poulet fermier',category:'Plats',price:3800,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['populaire'],upsell_notes:'Thiakry'},
+            {id:'ob-3',name:'Mafé bœuf',category:'Plats',price:3500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['traditionnel'],upsell_notes:'Jus gingembre'},
+            {id:'ob-4',name:'Salade de crudités',category:'Entrées',price:1500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:[],upsell_notes:''},
+            {id:'ob-5',name:'Jus bissap maison',category:'Boissons',price:800,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['fait-maison'],upsell_notes:''},
+            {id:'ob-6',name:'Thiakry crémeux',category:'Desserts',price:1200,status:'available',delivery_enabled:false,takeaway_enabled:true,dine_in_enabled:true,tags:['dessert'],upsell_notes:''},
+          ];
+          state.products = demoExtracted;
+          saveState();
+          document.getElementById('obMenuStats').innerHTML = `
+            ✅ <strong>${demoExtracted.length} plats</strong> importés<br>
+            ✅ <strong>4 catégories</strong> créées (Entrées, Plats, Desserts, Boissons)<br>
+            ✅ Votre chatbot est prêt<br>
+            ✅ QR code généré
+          `;
+          res.style.display = 'block';
+          document.getElementById('obMenuNextBtn').disabled = false;
+          document.getElementById('obMenuNextBtn').textContent = 'Continuer →';
+          document.getElementById('obMenuNextBtn').setAttribute('onclick','obNext(2)');
+        }
+      }, 900);
+    }
+    function obCopyLink(){
+      const link = document.getElementById('obLinkDisplay').textContent;
+      navigator.clipboard.writeText(link).then(() => { alert('Lien copié ! 📋'); }).catch(() => {});
+    }
+    function obShareWhatsApp(){
+      const link = document.getElementById('obLinkDisplay').textContent;
+      const msg = encodeURIComponent('🍽️ Commandez chez ' + (obData.restaurantName||'nous') + ' directement en ligne ! ' + link);
+      window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+    function obDownloadQR(){
+      alert('QR Code téléchargé ! Imprimez-le et posez-le sur vos tables. 🖨️');
+    }
+    function obFinish(){
+      localStorage.setItem('rrai_onboarding_done','1');
+      document.getElementById('obOverlay').classList.remove('active');
+      show('app');
+    }
+
+    // Choices (type selection)
+    document.addEventListener('click', e => {
+      const choice = e.target.closest('[data-obchoice="type"]');
+      if(choice){
+        document.querySelectorAll('[data-obchoice="type"]').forEach(c => c.classList.remove('selected'));
+        choice.classList.add('selected');
+        obData.type = choice.dataset.val;
+      }
+    });
   </script>
 </body>
 </html>

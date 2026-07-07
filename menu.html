@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Commander — Restaurant Revenue AI</title>
+  <meta name="description" content="Commandez en ligne directement depuis votre table. Paiement Wave, Orange Money ou espèces." />
+  <meta name="theme-color" content="#070f1e" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap');
+
+    /* ══ TOKENS ══ */
+    :root{
+      --nuit:#070f1e;--nuit-2:#101d33;
+      --or:#b98a4f;--or-clair:#d3ac74;
+      --ecume:#faf7f0;--sable:#e8dcc4;
+      --encre:#1a1d1f;--muted:#4a4e52;
+      --line:rgba(16,29,51,.1);
+      --green:#0f6c4d;--green-bg:#e9f7ef;
+      --r:0px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;background:var(--ecume);font-family:'Inter',sans-serif;color:var(--encre);}
+    body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;min-height:100vh;position:relative;}
+
+    /* ══ HEADER ══ */
+    .app-header{
+      background:var(--nuit-2);color:var(--ecume);
+      padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:50;
+    }
+    .resto-info .name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;}
+    .resto-info .city{font-size:11px;color:rgba(232,220,196,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+    .cart-btn{
+      background:var(--or);border:none;cursor:pointer;
+      padding:10px 16px;display:flex;align-items:center;gap:6px;
+      font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;
+      color:var(--nuit-2);position:relative;
+      transition:background .18s;
+    }
+    .cart-btn:hover{background:var(--or-clair);}
+    .cart-count{
+      background:var(--nuit-2);color:var(--or-clair);
+      width:18px;height:18px;border-radius:50%;
+      display:grid;place-items:center;font-size:11px;font-weight:700;
+    }
+
+    /* ══ BOT WELCOME ══ */
+    .bot-welcome{
+      background:var(--nuit);padding:20px;
+      display:flex;gap:12px;align-items:flex-start;
+    }
+    .bot-avatar{width:36px;height:36px;background:var(--or);display:grid;place-items:center;font-size:18px;flex-shrink:0;}
+    .bot-bubble-w{
+      background:rgba(232,220,196,.1);border:1px solid rgba(232,220,196,.15);
+      padding:12px 14px;font-size:14px;color:var(--ecume);line-height:1.55;
+      animation:fadeUp .4s ease both;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+    /* ══ CATEGORIES ══ */
+    .categories{
+      display:flex;gap:8px;padding:14px 20px;overflow-x:auto;
+      background:#fff;border-bottom:1px solid var(--line);
+      scrollbar-width:none;position:sticky;top:72px;z-index:40;
+    }
+    .categories::-webkit-scrollbar{display:none;}
+    .cat-btn{
+      flex-shrink:0;border:1.5px solid var(--line);background:#fff;
+      padding:8px 16px;cursor:pointer;font-size:12.5px;font-weight:600;
+      color:var(--muted);white-space:nowrap;
+      transition:border-color .15s,color .15s,background .15s;
+    }
+    .cat-btn.active{border-color:var(--nuit-2);background:var(--nuit-2);color:#fff;}
+
+    /* ══ MENU ITEMS ══ */
+    .menu-section{padding:20px;}
+    .section-title{
+      font-family:'Fraunces',serif;font-size:20px;font-weight:400;
+      margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);
+      color:var(--nuit-2);
+    }
+    .item-card{
+      background:#fff;border:1px solid var(--line);
+      padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center;
+      transition:box-shadow .18s;cursor:pointer;
+    }
+    .item-card:hover{box-shadow:0 4px 20px rgba(16,29,51,.08);}
+    .item-card.in-cart{border-left:3px solid var(--or);}
+    .item-emoji{font-size:28px;flex-shrink:0;width:42px;text-align:center;}
+    .item-info{flex:1;min-width:0;}
+    .item-name{font-size:15px;font-weight:600;color:var(--encre);margin-bottom:4px;}
+    .item-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:6px;}
+    .item-tags{display:flex;gap:4px;flex-wrap:wrap;}
+    .item-tag{font-size:10px;padding:2px 7px;background:rgba(185,138,79,.1);color:var(--or);font-weight:600;}
+    .item-right{text-align:right;flex-shrink:0;}
+    .item-price{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--nuit-2);}
+    .item-price-sub{font-size:10px;color:var(--muted);}
+    .item-add{
+      margin-top:6px;background:var(--or);border:none;cursor:pointer;
+      padding:8px 12px;font-size:11.5px;font-weight:700;color:var(--nuit-2);
+      letter-spacing:.05em;text-transform:uppercase;
+      transition:background .15s,transform .1s;
+    }
+    .item-add:hover{background:var(--or-clair);}
+    .item-add:active{transform:scale(.96);}
+    .item-add.added{background:var(--green);color:#fff;}
+
+    /* ══ CART PANEL ══ */
+    .cart-panel{
+      position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);
+      width:100%;max-width:480px;
+      background:#fff;border-top:2px solid var(--nuit-2);
+      z-index:100;transition:transform .35s cubic-bezier(.16,1,.3,1);
+      max-height:85vh;display:flex;flex-direction:column;
+    }
+    .cart-panel.open{transform:translateX(-50%) translateY(0);}
+    .cart-header{
+      padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--line);
+    }
+    .cart-header h3{font-family:'Fraunces',serif;font-size:20px;font-weight:400;}
+    .cart-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:4px;}
+    .cart-items{padding:16px 20px;overflow-y:auto;flex:1;}
+    .cart-item{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 0;border-bottom:1px solid var(--line);
+    }
+    .cart-item:last-child{border-bottom:none;}
+    .cart-item-name{flex:1;font-size:14px;font-weight:600;}
+    .cart-item-qty{display:flex;align-items:center;gap:8px;}
+    .qty-btn{
+      width:28px;height:28px;border:1px solid var(--line);
+      background:none;cursor:pointer;font-size:16px;font-weight:600;
+      display:grid;place-items:center;transition:background .15s;
+    }
+    .qty-btn:hover{background:var(--ecume);}
+    .qty-val{font-size:14px;font-weight:700;min-width:18px;text-align:center;}
+    .cart-item-price{font-family:'Fraunces',serif;font-size:15px;color:var(--or);flex-shrink:0;}
+    .cart-footer{padding:20px;border-top:1px solid var(--line);}
+    .cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+    .cart-total .label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;}
+    .cart-total .amount{font-family:'Fraunces',serif;font-size:26px;color:var(--nuit-2);}
+    .cart-empty{text-align:center;padding:32px;color:var(--muted);font-size:14px;}
+
+    /* ══ PAYMENT SCREEN ══ */
+    .payment-screen{display:none;position:fixed;inset:0;background:var(--ecume);z-index:200;overflow-y:auto;}
+    .payment-screen.active{display:block;}
+    .pay-header{background:var(--nuit-2);padding:18px 20px;display:flex;align-items:center;gap:12px;}
+    .pay-header button{background:none;border:none;color:rgba(232,220,196,.6);font-size:20px;cursor:pointer;padding:0;}
+    .pay-header h3{font-family:'Fraunces',serif;font-size:18px;color:var(--ecume);}
+    .pay-body{padding:24px 20px;max-width:480px;margin:0 auto;}
+    .pay-summary{background:#fff;border:1px solid var(--line);padding:18px;margin-bottom:24px;}
+    .pay-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;}
+    .pay-row.total{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;font-weight:700;}
+    .pay-row.total .v{font-family:'Fraunces',serif;font-size:20px;color:var(--or);}
+    .pay-section-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--muted);margin-bottom:12px;}
+    .pay-field{margin-bottom:16px;}
+    .pay-field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px;}
+    .pay-field input,.pay-field select{
+      width:100%;border:none;border-bottom:1.5px solid var(--line);
+      padding:10px 2px;font-size:15px;color:var(--encre);background:transparent;
+    }
+    .pay-field input:focus,.pay-field select:focus{outline:none;border-color:var(--or);}
+    .pay-method{
+      border:1.5px solid var(--line);padding:16px;margin-bottom:10px;
+      display:flex;align-items:center;gap:12px;cursor:pointer;
+      transition:border-color .15s,background .15s;
+    }
+    .pay-method:hover{border-color:var(--or);background:rgba(185,138,79,.04);}
+    .pay-method.selected{border-color:var(--or);background:rgba(185,138,79,.08);}
+    .pay-method .ico{font-size:24px;}
+    .pay-method .info .t{font-size:14px;font-weight:600;}
+    .pay-method .info .s{font-size:12px;color:var(--muted);}
+    .pay-btn{
+      width:100%;background:var(--or);border:none;cursor:pointer;
+      padding:18px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
+      color:var(--nuit-2);letter-spacing:.06em;text-transform:uppercase;
+      transition:background .18s;margin-top:20px;
+    }
+    .pay-btn:hover{background:var(--or-clair);}
+    .pay-btn:active{transform:scale(.99);}
+
+    /* ══ SUCCESS SCREEN ══ */
+    .success-screen{display:none;position:fixed;inset:0;background:var(--nuit-2);z-index:300;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:32px;}
+    .success-screen.active{display:flex;}
+    .success-check{width:80px;height:80px;background:var(--or);display:grid;place-items:center;font-size:36px;margin:0 auto 28px;animation:pop .5s cubic-bezier(.16,1,.3,1) both;}
+    @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+    .success-screen h2{font-family:'Fraunces',serif;font-size:28px;color:var(--ecume);margin-bottom:12px;}
+    .success-screen p{font-size:14px;color:rgba(232,220,196,.65);line-height:1.7;max-width:340px;margin:0 auto 28px;}
+    .success-order{background:rgba(185,138,79,.1);border:1px solid rgba(185,138,79,.25);padding:14px 20px;margin-bottom:24px;font-size:13px;color:var(--or-clair);}
+
+    /* ══ STICKY ORDER BTN ══ */
+    .sticky-order{
+      position:sticky;bottom:0;background:#fff;
+      border-top:1px solid var(--line);padding:14px 20px;
+      display:none;
+    }
+    .sticky-order.visible{display:block;}
+    .sticky-order button{
+      width:100%;background:var(--nuit-2);border:none;cursor:pointer;
+      padding:16px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
+      color:var(--ecume);letter-spacing:.05em;text-transform:uppercase;
+      display:flex;align-items:center;justify-content:space-between;
+      transition:background .18s;
+    }
+    .sticky-order button:hover{background:var(--nuit);}
+    .sticky-order button:active{transform:scale(.99);}
+    .sticky-order .sticky-total{font-family:'Fraunces',serif;font-size:18px;color:var(--or-clair);}
+
+    /* ══ OVERLAY for cart ══ */
+    .overlay{position:fixed;inset:0;background:rgba(7,15,30,.5);z-index:99;display:none;}
+    .overlay.active{display:block;}
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="resto-info">
+      <div class="name" id="restoName">Le Baobab Doré</div>
+      <div class="city" id="restoCity">Dakar · Sénégal</div>
+    </div>
+    <button class="cart-btn" id="cartToggle">
+      🛒 Panier <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <!-- ══ BOT WELCOME ═════════════════════════════════════ -->
+  <div class="bot-welcome">
+    <div class="bot-avatar">🍽️</div>
+    <div class="bot-bubble-w" id="botWelcome">
+      Bonsoir ! Je suis <strong>Ami</strong>, votre concierge. Regardez le menu ci-dessous et ajoutez vos plats préférés. Je gère votre commande ! 😊
+    </div>
+  </div>
+
+  <!-- ══ CATEGORIES ══════════════════════════════════════ -->
+  <div class="categories" id="categoriesBar">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- ══ MENU ════════════════════════════════════════════ -->
+  <div id="menuContainer">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- ══ STICKY ORDER BUTTON ═════════════════════════════ -->
+  <div class="sticky-order" id="stickyOrder">
+    <button onclick="openPayment()">
+      <span>Valider ma commande →</span>
+      <span class="sticky-total" id="stickyTotal">0 FCFA</span>
+    </button>
+  </div>
+
+  <!-- ══ CART OVERLAY ════════════════════════════════════ -->
+  <div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+  <!-- ══ CART PANEL ══════════════════════════════════════ -->
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>Votre panier 🛒</h3>
+      <button class="cart-close" onclick="closeCart()">×</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">Votre panier est vide.<br>Ajoutez des plats pour commencer !</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="label">Total</span>
+        <span class="amount" id="cartTotal">0 FCFA</span>
+      </div>
+      <button class="pay-btn" onclick="openPayment()">
+        Commander &amp; Payer →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ PAYMENT SCREEN ══════════════════════════════════ -->
+  <div class="payment-screen" id="paymentScreen">
+    <div class="pay-header">
+      <button onclick="closePayment()">←</button>
+      <h3>Votre commande</h3>
+    </div>
+    <div class="pay-body">
+      <!-- Order summary -->
+      <div class="pay-section-title" style="margin-bottom:8px">Récapitulatif</div>
+      <div class="pay-summary" id="paySummary"></div>
+
+      <!-- Contact -->
+      <div class="pay-section-title" style="margin-top:24px">Vos informations</div>
+      <div class="pay-field"><label>Votre prénom</label><input id="payName" placeholder="Ex : Moussa"></div>
+      <div class="pay-field"><label>Votre WhatsApp</label><input type="tel" id="payPhone" placeholder="+221 77 000 00 00"></div>
+      <div class="pay-field">
+        <label>Comment récupérer votre commande ?</label>
+        <select id="payMode">
+          <option value="dine_in">Je mange sur place</option>
+          <option value="takeaway">À emporter</option>
+          <option value="delivery">Livraison</option>
+        </select>
+      </div>
+
+      <!-- Payment method -->
+      <div class="pay-section-title" style="margin-top:24px">Comment voulez-vous payer ?</div>
+      <div class="pay-method selected" onclick="selectPay(this,'wave')">
+        <span class="ico">🟦</span>
+        <div class="info"><div class="t">Payer avec Wave</div><div class="s">Rapide, sécurisé, instantané</div></div>
+      </div>
+      <div class="pay-method" onclick="selectPay(this,'orange')">
+        <span class="ico">🟠</span>
+        <div class="info"><div class="t">Orange Money</div><div class="s">Paiement mobile Orange</div></div>
+      </div>
+      <div class="pay-method" onclick="selectPay(this,'free')">
+        <span class="ico">💚</span>
+        <div class="info"><div class="t">Free Money</div><div class="s">Paiement mobile Free</div></div>
+      </div>
+      <div class="pay-method" onclick="selectPay(this,'cash')">
+        <span class="ico">💵</span>
+        <div class="info"><div class="t">Je paie sur place</div><div class="s">En espèces à la livraison/réception</div></div>
+      </div>
+
+      <button class="pay-btn" onclick="submitOrder()">
+        ✅ Confirmer ma commande →
+      </button>
+      <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6">
+        En confirmant, vous recevrez une notification WhatsApp de confirmation.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS SCREEN ══════════════════════════════════ -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-check">✅</div>
+    <h2>Commande confirmée !</h2>
+    <p>Votre commande a bien été reçue. Vous allez recevoir une confirmation sur WhatsApp dans quelques secondes.</p>
+    <div class="success-order" id="successOrderNum">Commande #RR2024-001</div>
+    <button onclick="resetOrder()" style="background:var(--or);border:none;padding:16px 32px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--nuit-2);cursor:pointer;letter-spacing:.05em;text-transform:uppercase;">
+      Retour au menu
+    </button>
+  </div>
+
+  <script>
+  /* ════════════════════════════════════════════════════════
+     DEMO MENU DATA
+     (In production this would be fetched from /api/menu?r=RESTAURANT_ID)
+  ═══════════════════════════════════════════════════════ */
+  const RESTAURANT = {
+    name: 'Le Baobab Doré',
+    city: 'Dakar · Plateau',
+    chatbot_name: 'Ami'
+  };
+
+  const MENU = [
+    { id:1, name:'Thiéboudienne royale', category:'🍖 Plats', price:4500, emoji:'🍚', desc:'Le plat national sénégalais, riz au poisson frais, légumes de saison.', tags:['signature','populaire'], available:true },
+    { id:2, name:'Yassa poulet fermier', category:'🍖 Plats', price:3800, emoji:'🍗', desc:'Poulet mariné au citron et oignons caramélisés, servi avec riz parfumé.', tags:['populaire'], available:true },
+    { id:3, name:'Mafé bœuf', category:'🍖 Plats', price:3500, emoji:'🥘', desc:'Ragoût de bœuf à la pâte d\'arachide, légumes et épices.', tags:['traditionnel'], available:true },
+    { id:4, name:'Poisson braisé entier', category:'🍖 Plats', price:5500, emoji:'🐟', desc:'Poisson du jour grillé, sauce tomate maison, attiéké.', tags:['premium','du moment'], available:true },
+    { id:5, name:'Salade de crudités', category:'🥗 Entrées', price:1500, emoji:'🥗', desc:'Légumes frais de saison, vinaigrette maison.', tags:[], available:true },
+    { id:6, name:'Accra de niébé', category:'🥗 Entrées', price:1200, emoji:'🥙', desc:'Beignets croustillants de haricots, sauce pimentée.', tags:['traditionnel'], available:true },
+    { id:7, name:'Jus de bissap maison', category:'🥤 Boissons', price:800, emoji:'🍹', desc:'Fleurs d\'hibiscus, sucre de canne, menthe fraîche.', tags:['fait-maison'], available:true },
+    { id:8, name:'Jus de gingembre', category:'🥤 Boissons', price:800, emoji:'🫚', desc:'Gingembre frais pressé, citron, miel.', tags:['fait-maison'], available:true },
+    { id:9, name:'Eau minérale', category:'🥤 Boissons', price:400, emoji:'💧', desc:'Kirène 1.5L fraîche.', tags:[], available:true },
+    { id:10, name:'Thiakry crémeux', category:'🍰 Desserts', price:1200, emoji:'🍮', desc:'Couscous de mil, lait caillé, raisins secs.', tags:['dessert'], available:true },
+    { id:11, name:'Pastèque fraîche', category:'🍰 Desserts', price:600, emoji:'🍉', desc:'Pastèque du jour, servie glacée.', tags:[], available:true },
+  ];
+
+  /* ════════════════════════════════════════════════════════
+     STATE
+  ═══════════════════════════════════════════════════════ */
+  const fmt = new Intl.NumberFormat('fr-FR');
+  const money = v => fmt.format(v) + ' FCFA';
+  let cart = []; // { id, name, price, qty }
+  let selectedPayMethod = 'wave';
+  let activeCategory = 'all';
+
+  /* ════════════════════════════════════════════════════════
+     INIT
+  ═══════════════════════════════════════════════════════ */
+  function init(){
+    document.getElementById('restoName').textContent = RESTAURANT.name;
+    document.getElementById('restoCity').textContent = RESTAURANT.city;
+    buildCategories();
+    renderMenu();
+  }
+
+  function buildCategories(){
+    const cats = ['Tout', ...new Set(MENU.map(i=>i.category))];
+    const bar = document.getElementById('categoriesBar');
+    bar.innerHTML = cats.map((c,i) => `
+      <button class="cat-btn ${i===0?'active':''}" onclick="filterCat(this,'${c}')">${c}</button>
+    `).join('');
+  }
+
+  function filterCat(btn, cat){
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = cat;
+    renderMenu();
+  }
+
+  function renderMenu(){
+    const container = document.getElementById('menuContainer');
+    const filtered = activeCategory === 'Tout' ? MENU : MENU.filter(i=>i.category===activeCategory);
+    
+    // Group by category
+    const groups = {};
+    filtered.forEach(item => {
+      if(!groups[item.category]) groups[item.category] = [];
+      groups[item.category].push(item);
+    });
+
+    container.innerHTML = Object.entries(groups).map(([cat, items]) => `
+      <div class="menu-section">
+        <div class="section-title">${cat}</div>
+        ${items.map(item => renderItem(item)).join('')}
+      </div>
+    `).join('');
+  }
+
+  function renderItem(item){
+    const inCart = cart.find(c=>c.id===item.id);
+    const qty = inCart ? inCart.qty : 0;
+    return `
+      <div class="item-card ${inCart?'in-cart':''}" id="item-${item.id}">
+        <div class="item-emoji">${item.emoji}</div>
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+          ${item.tags.length ? `<div class="item-tags">${item.tags.map(t=>`<span class="item-tag">${t}</span>`).join('')}</div>` : ''}
+        </div>
+        <div class="item-right">
+          <div class="item-price">${fmt.format(item.price)}</div>
+          <div class="item-price-sub">FCFA</div>
+          <button class="item-add ${inCart?'added':''}" onclick="addToCart(${item.id})">
+            ${inCart ? `✓ (${qty})` : '+ Ajouter'}
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     CART LOGIC
+  ═══════════════════════════════════════════════════════ */
+  function addToCart(id){
+    const item = MENU.find(i=>i.id===id);
+    if(!item) return;
+    const existing = cart.find(c=>c.id===id);
+    if(existing){ existing.qty++; }
+    else { cart.push({id, name:item.name, price:item.price, qty:1}); }
+    updateCartUI();
+    // Quick visual feedback
+    const card = document.getElementById('item-' + id);
+    if(card){ card.classList.add('in-cart'); }
+    renderMenu();
+  }
+
+  function updateQty(id, delta){
+    const idx = cart.findIndex(c=>c.id===id);
+    if(idx<0) return;
+    cart[idx].qty += delta;
+    if(cart[idx].qty <= 0) cart.splice(idx,1);
+    updateCartUI();
+    renderMenu();
+    renderCartItems();
+  }
+
+  function updateCartUI(){
+    const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+    const count = cart.reduce((s,c)=>s+c.qty,0);
+    document.getElementById('cartCount').textContent = count;
+    document.getElementById('cartTotal').textContent = money(total);
+    document.getElementById('stickyTotal').textContent = money(total);
+    const sticky = document.getElementById('stickyOrder');
+    sticky.classList.toggle('visible', cart.length > 0);
+  }
+
+  function renderCartItems(){
+    const el = document.getElementById('cartItems');
+    if(!cart.length){
+      el.innerHTML = '<div class="cart-empty">Votre panier est vide.<br>Ajoutez des plats !</div>';
+      return;
+    }
+    el.innerHTML = cart.map(c=>`
+      <div class="cart-item">
+        <div class="cart-item-name">${c.name}</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="updateQty(${c.id},-1)">−</button>
+          <span class="qty-val">${c.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${c.id},+1)">+</button>
+        </div>
+        <div class="cart-item-price">${money(c.price*c.qty)}</div>
+      </div>
+    `).join('');
+  }
+
+  function openCart(){
+    renderCartItems();
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart(){
+    document.getElementById('cartPanel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('cartToggle').addEventListener('click', openCart);
+
+  /* ════════════════════════════════════════════════════════
+     PAYMENT
+  ═══════════════════════════════════════════════════════ */
+  function openPayment(){
+    closeCart();
+    if(!cart.length){ alert('Votre panier est vide !'); return; }
+    const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+    document.getElementById('paySummary').innerHTML = `
+      ${cart.map(c=>`<div class="pay-row"><span>${c.name} ×${c.qty}</span><span>${money(c.price*c.qty)}</span></div>`).join('')}
+      <div class="pay-row total"><span>TOTAL</span><span class="v">${money(total)}</span></div>
+    `;
+    document.getElementById('paymentScreen').classList.add('active');
+    window.scrollTo(0,0);
+  }
+  function closePayment(){
+    document.getElementById('paymentScreen').classList.remove('active');
+  }
+  function selectPay(el, method){
+    document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayMethod = method;
+  }
+  function submitOrder(){
+    const name = document.getElementById('payName').value.trim();
+    const phone = document.getElementById('payPhone').value.trim();
+    if(!name){ alert('Entrez votre prénom !'); document.getElementById('payName').focus(); return; }
+    if(!phone){ alert('Entrez votre numéro WhatsApp !'); document.getElementById('payPhone').focus(); return; }
+
+    const orderNum = 'RR' + Date.now().toString().slice(-6);
+    document.getElementById('successOrderNum').textContent = 'Commande #' + orderNum;
+    document.getElementById('paymentScreen').classList.remove('active');
+    document.getElementById('successScreen').classList.add('active');
+
+    // Simulate WhatsApp notification
+    setTimeout(() => {
+      const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+      const items = cart.map(c=>`${c.name} ×${c.qty}`).join(', ');
+      const msg = `🍽️ Nouvelle commande #${orderNum}!\n👤 ${name} (${phone})\n📋 ${items}\n💰 ${money(total)}\n💳 ${selectedPayMethod.toUpperCase()}`;
+      console.log('WhatsApp notification:', msg);
+    }, 1000);
+  }
+  function resetOrder(){
+    cart = [];
+    updateCartUI();
+    renderMenu();
+    document.getElementById('successScreen').classList.remove('active');
+  }
+
+  init();
+  </script>
+</body>
+</html>
