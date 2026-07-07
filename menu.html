@@ -226,6 +226,25 @@
     /* ══ OVERLAY for cart ══ */
     .overlay{position:fixed;inset:0;background:rgba(7,15,30,.5);z-index:99;display:none;}
     .overlay.active{display:block;}
+
+    /* ══ TOAST NOTIFICATION ══ */
+    .custom-toast {
+      position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+      background: var(--nuit-2); color: var(--ecume); padding: 14px 20px;
+      border-radius: 50px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999;
+      transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+      opacity: 0; width: max-content; max-width: 90%; pointer-events: none;
+    }
+    .custom-toast.show { bottom: 40px; opacity: 1; pointer-events: auto; }
+    .toast-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--or); color: var(--nuit-2);
+      display: grid; place-items: center; font-size: 14px; flex-shrink: 0;
+    }
+    .toast-msg {
+      font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 500; line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -609,7 +628,7 @@
   ═══════════════════════════════════════════════════════ */
   function openPayment(){
     closeCart();
-    if(!cart.length){ alert('Votre panier est vide !'); return; }
+    if(!cart.length){ showToast('Votre panier est vide !', true); return; }
     const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
     document.getElementById('paySummary').innerHTML = `
       ${cart.map(c=>`<div class="pay-row"><span>${c.name} ×${c.qty}</span><span>${money(c.price*c.qty)}</span></div>`).join('')}
@@ -629,8 +648,8 @@
   async function submitOrder(){
     const name = document.getElementById('payName').value.trim();
     const phone = document.getElementById('payPhone').value.trim();
-    if(!name){ alert('Entrez votre prénom !'); document.getElementById('payName').focus(); return; }
-    if(!phone){ alert('Entrez votre numéro WhatsApp !'); document.getElementById('payPhone').focus(); return; }
+    if(!name){ showToast('Entrez votre prénom !', true); document.getElementById('payName').focus(); return; }
+    if(!phone){ showToast('Entrez votre numéro WhatsApp !', true); document.getElementById('payPhone').focus(); return; }
 
     const btn = document.querySelector('.pay-btn');
     btn.textContent = 'Envoi en cours...';
@@ -678,7 +697,7 @@
       ss.classList.add('active');
 
     } catch(err) {
-      alert('Erreur: ' + err.message);
+      showToast('Erreur: ' + err.message, true);
       btn.textContent = '✅ Confirmer ma commande →';
       btn.disabled = false;
     }
@@ -721,7 +740,7 @@
       const occasion = document.getElementById('res_occasion').value;
 
       if(!name || !phone || !date || !time) {
-        alert("Veuillez remplir tous les champs obligatoires.");
+        showToast("Veuillez remplir tous les champs obligatoires.", true);
         return;
       }
 
@@ -749,16 +768,46 @@
         const data = await res.json();
         
         closeReservation();
-        alert("✅ Votre demande de réservation a été envoyée au restaurant. Ils vous contacteront pour confirmer.");
+        showToast("Votre demande de réservation a été envoyée. Ils vous contacteront pour confirmer.");
         
       } catch(e) {
-        alert("Erreur lors de l'envoi.");
+        showToast("Erreur lors de l'envoi.", true);
       } finally {
         btn.textContent = 'Confirmer la demande';
         btn.disabled = false;
       }
     }
 
+    // --- TOAST NOTIFICATION ---
+    let toastTimeout;
+    function showToast(msg, isError=false) {
+      const toast = document.getElementById('customToast');
+      const msgEl = toast.querySelector('.toast-msg');
+      const iconEl = toast.querySelector('.toast-icon');
+      
+      msgEl.textContent = msg;
+      iconEl.innerHTML = isError ? '⚠️' : '✨';
+      if (isError) {
+        iconEl.style.background = '#e74c3c';
+        iconEl.style.color = '#fff';
+      } else {
+        iconEl.style.background = 'var(--or)';
+        iconEl.style.color = 'var(--nuit-2)';
+      }
+      
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4500);
+    }
+
   </script>
+
+  <!-- Custom Toast Notification -->
+  <div id="customToast" class="custom-toast">
+    <div class="toast-icon">✨</div>
+    <div class="toast-msg">Message</div>
+  </div>
 </body>
 </html>
