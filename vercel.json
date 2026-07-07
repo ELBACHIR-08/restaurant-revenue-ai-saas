@@ -4,6 +4,8 @@
   "rewrites": [
     { "source": "/health", "destination": "/api/index.js?_path=health" },
     { "source": "/api/:path*", "destination": "/api/index.js?_path=:path*" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/app", "destination": "/app.html" },
+    { "source": "/app.html", "destination": "/app.html" },
+    { "source": "/((?!api/|app\\.html|app$).*)", "destination": "/index.html" }
   ]
 }
