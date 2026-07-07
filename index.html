@@ -3,350 +3,314 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
-  <!-- ═══ SEO PRIMARY ════════════════════════════════════════ -->
   <title>Restaurant Revenue AI — Doublez vos revenus. Zéro effort supplémentaire.</title>
   <meta name="description" content="La plateforme IA pour restaurants au Sénégal : réservations automatiques, commandes en ligne, paiements Wave & Orange Money, CRM et analytics. Installation en 48h. 30 jours gratuits." />
   <link rel="canonical" href="https://restaurant-revenue-ai-saas.vercel.app/" />
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="Restaurant Revenue AI" />
-  <meta name="theme-color" content="#101d33" />
-
-  <!-- ═══ OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ═════════ -->
+  <meta name="theme-color" content="#070f1e" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://restaurant-revenue-ai-saas.vercel.app/" />
-  <meta property="og:title" content="Restaurant Revenue AI — Doublez vos revenus. Zéro effort." />
-  <meta property="og:description" content="Réservations, commandes, paiements Wave/OM, CRM. Votre restaurant tourne en automatique. Installation en 48h, 30 jours gratuits." />
+  <meta property="og:title" content="Restaurant Revenue AI — Doublez vos revenus." />
+  <meta property="og:description" content="Réservations, commandes, paiements Wave/OM, CRM. Installation en 48h, 30 jours gratuits." />
   <meta property="og:image" content="https://restaurant-revenue-ai-saas.vercel.app/og.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="fr_SN" />
-  <meta property="og:site_name" content="Restaurant Revenue AI" />
-
-  <!-- ═══ TWITTER CARD ══════════════════════════════════════ -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Restaurant Revenue AI — Doublez vos revenus." />
-  <meta name="twitter:description" content="Réservations, commandes, paiements Wave/OM, CRM. 30 jours gratuits." />
   <meta name="twitter:image" content="https://restaurant-revenue-ai-saas.vercel.app/og.jpg" />
-
-  <!-- ═══ STRUCTURED DATA (JSON-LD) ════════════════════════ -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Restaurant Revenue AI",
-    "description": "Plateforme SaaS IA pour restaurants au Sénégal : réservations, commandes, paiements mobiles, CRM et analytics.",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "20000",
-      "priceCurrency": "XOF",
-      "priceValidUntil": "2027-12-31"
-    },
-    "url": "https://restaurant-revenue-ai-saas.vercel.app/",
-    "inLanguage": "fr"
-  }
-  </script>
-
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Restaurant Revenue AI","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"20000","priceCurrency":"XOF"},"url":"https://restaurant-revenue-ai-saas.vercel.app/","inLanguage":"fr"}</script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
     /* ══ TOKENS ══════════════════════════════════════════ */
     :root{
-      --nuit:       #101d33;
-      --nuit-2:     #182946;
-      --sable:      #e8dcc4;
-      --sable-2:    #f4ede0;
-      --ecume:      #faf7f0;
-      --or:         #b98a4f;
-      --or-clair:   #d3ac74;
-      --corail:     #b4593a;
-      --encre-text: #1a1d1f;
-      --text-muted: #4a4e52;
-      --text-faint: #7a7e82;
-      --line:       rgba(232,220,196,0.18);
-      --line-dark:  rgba(16,29,51,0.12);
-      --max-width:  1160px;
-      --gutter:     6vw;
-      --ease-fast:  .2s ease;
-      --ease-base:  .32s ease;
-      --ease-slow:  .5s cubic-bezier(.16,1,.3,1);
+      --nuit:#070f1e; --nuit-2:#101d33; --nuit-3:#182946;
+      --sable:#e8dcc4; --sable-2:#f4ede0;
+      --ecume:#faf7f0;
+      --or:#b98a4f; --or-clair:#d3ac74; --or-glow:rgba(185,138,79,0.18);
+      --corail:#b4593a;
+      --encre:#1a1d1f; --muted:#4a4e52; --faint:#7a7e82;
+      --line:rgba(232,220,196,0.14); --line-dark:rgba(16,29,51,0.12);
+      --max-w:1160px; --g:6vw;
+      --ef:.2s ease; --eb:.32s ease; --es:.5s cubic-bezier(.16,1,.3,1);
     }
 
     /* ══ RESET ═══════════════════════════════════════════ */
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    html{ scroll-behavior:smooth; }
-    body{ font-family:'Inter',sans-serif; font-size:15.5px; color:var(--encre-text); background:var(--ecume); min-height:100vh; overflow-x:hidden; }
-    a{ color:inherit; text-decoration:none; }
-    button,input,select,textarea{ font:inherit; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;font-size:15.5px;color:var(--encre);background:var(--ecume);overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+    button,input,select,textarea{font:inherit;}
 
     /* ══ LAYOUT ══════════════════════════════════════════ */
-    .container{ max-width:var(--max-width); margin:0 auto; padding:0 var(--gutter); }
-    .section{ padding:130px var(--gutter); position:relative; }
-    .section-dark{ background:var(--nuit); color:var(--ecume); }
-    .section-light{ background:var(--ecume); }
-    .section-alt{ background:var(--sable-2); }
-    @media(max-width:860px){ .section{ padding:90px var(--gutter); } }
+    .container{max-width:var(--max-w);margin:0 auto;padding:0 var(--g);}
+    .section{padding:130px var(--g);position:relative;}
+    .s-dark{background:var(--nuit);color:var(--ecume);}
+    .s-light{background:var(--ecume);}
+    .s-alt{background:var(--sable-2);}
+    .s-black{background:var(--nuit-2);color:var(--ecume);}
+    @media(max-width:860px){.section{padding:90px var(--g);}}
 
     /* ══ TYPOGRAPHY ══════════════════════════════════════ */
-    .eyebrow{
-      font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.24em;
-      text-transform:uppercase; font-weight:500; color:var(--or); display:block;
-    }
-    .eyebrow-light{ color:var(--or-clair); }
-    h1{ font-family:'Fraunces',serif; font-size:clamp(42px,7vw,104px); font-weight:300; line-height:0.95; letter-spacing:-0.025em; }
-    h2{ font-family:'Fraunces',serif; font-size:clamp(26px,3.5vw,44px); font-weight:400; line-height:1.15; letter-spacing:-0.01em; }
-    h3{ font-family:'Fraunces',serif; font-size:clamp(18px,2vw,22px); font-weight:400; line-height:1.3; }
-    h4{ font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
-    p{ font-weight:400; line-height:1.78; color:var(--text-muted); font-size:15.5px; }
-    .p-light{ color:rgba(232,220,196,0.75); }
-    .p-lg{ font-size:17.5px; line-height:1.8; font-weight:300; }
-    .p-sm{ font-size:13.5px; line-height:1.65; }
-    .em-accent{ font-style:italic; font-weight:400; }
+    .eyebrow{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--or);display:block;}
+    .eyebrow-light{color:var(--or-clair);}
+    h1{font-family:'Fraunces',serif;font-size:clamp(44px,7vw,108px);font-weight:300;line-height:.95;letter-spacing:-.025em;}
+    h2{font-family:'Fraunces',serif;font-size:clamp(26px,3.5vw,46px);font-weight:400;line-height:1.15;letter-spacing:-.01em;}
+    h3{font-family:'Fraunces',serif;font-size:clamp(18px,2vw,22px);font-weight:400;line-height:1.3;}
+    h4{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    p{font-weight:400;line-height:1.78;color:var(--muted);font-size:15.5px;}
+    .p-light{color:rgba(232,220,196,.75);}
+    .p-lg{font-size:17.5px;line-height:1.8;font-weight:300;}
+    .em-accent{font-style:italic;font-weight:400;}
 
     /* ══ NAV ═════════════════════════════════════════════ */
     .ds-nav{
-      position:fixed; top:0; left:0; right:0; z-index:100;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:24px var(--gutter);
-      transition:background var(--ease-slow), padding var(--ease-base), box-shadow var(--ease-base);
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:22px var(--g);
+      transition:background var(--es),padding var(--eb),box-shadow var(--eb);
     }
-    .ds-nav.scrolled{
-      background:rgba(250,247,240,0.94); backdrop-filter:blur(12px);
-      padding:14px var(--gutter); box-shadow:0 1px 0 var(--line-dark);
-    }
-    /* Logo */
-    .brand{ display:flex; align-items:center; gap:12px; }
-    .brand-logo{
-      width:36px; height:36px; background:var(--or);
-      display:grid; place-items:center; flex-shrink:0;
-    }
-    .brand-logo svg{ width:20px; height:20px; fill:var(--ecume); }
-    .brand-name{
-      font-family:'Fraunces',serif; font-size:17px; font-weight:400;
-      color:var(--ecume); letter-spacing:0.01em; transition:color var(--ease-base);
-    }
-    .brand-name span{ font-style:italic; color:var(--or-clair); }
-    .ds-nav.scrolled .brand-name{ color:var(--nuit); }
-    .ds-nav-links{ display:flex; gap:36px; font-size:13px; align-items:center; }
-    .ds-nav-links a{
-      color:rgba(250,247,240,0.82); position:relative; padding-bottom:4px;
-      transition:color var(--ease-base), opacity var(--ease-fast);
-    }
-    .ds-nav.scrolled .ds-nav-links a{ color:var(--text-muted); }
-    .ds-nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:currentColor; transition:width var(--ease-fast); }
-    .ds-nav-links a:hover::after{ width:100%; }
-    .ds-nav-links a:hover{ color:var(--ecume); }
-    .ds-nav.scrolled .ds-nav-links a:hover{ color:var(--nuit); }
-    .nav-cta{
-      font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-      padding:10px 20px; border:1px solid rgba(250,247,240,0.45); background:none; color:var(--ecume);
-      cursor:pointer; transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base);
-    }
-    .nav-cta:hover{ background:var(--or); border-color:var(--or); color:var(--nuit); }
-    .nav-cta:active{ background:var(--corail); border-color:var(--corail); color:var(--ecume); transform:scale(.98); }
-    .nav-cta:focus-visible{ outline:2px solid var(--or); outline-offset:3px; }
-    .nav-cta.accent{ background:var(--or); border-color:var(--or); color:var(--nuit); }
-    .nav-cta.accent:hover{ background:var(--corail); border-color:var(--corail); color:var(--ecume); }
-    .ds-nav.scrolled .nav-cta{ border-color:var(--line-dark); color:var(--nuit); }
-    .ds-nav.scrolled .nav-cta:hover{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .ds-nav.scrolled .nav-cta.accent{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .ds-nav.scrolled .nav-cta.accent:hover{ background:var(--corail); border-color:var(--corail); }
-    @media(max-width:860px){ .ds-nav-links{ display:none; } }
+    .ds-nav.scrolled{background:rgba(7,15,30,.88);backdrop-filter:blur(14px);padding:14px var(--g);box-shadow:0 1px 0 rgba(232,220,196,.08);}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand-logo{width:34px;height:34px;background:var(--or);display:grid;place-items:center;flex-shrink:0;}
+    .brand-logo svg{width:18px;height:18px;fill:var(--nuit);}
+    .brand-name{font-family:'Fraunces',serif;font-size:16px;font-weight:400;color:var(--ecume);letter-spacing:.01em;}
+    .brand-name span{font-style:italic;color:var(--or-clair);}
+    .nav-links{display:flex;gap:34px;font-size:13px;align-items:center;}
+    .nav-links a{color:rgba(250,247,240,.75);position:relative;padding-bottom:4px;transition:color var(--eb);}
+    .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--or-clair);transition:width var(--ef);}
+    .nav-links a:hover{color:var(--ecume);}
+    .nav-links a:hover::after{width:100%;}
+    .nav-cta{font-family:'Inter',sans-serif;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:10px 20px;border:1px solid rgba(250,247,240,.35);background:none;color:rgba(250,247,240,.85);cursor:pointer;transition:background var(--eb),color var(--eb),border-color var(--eb);}
+    .nav-cta:hover{background:rgba(250,247,240,.08);border-color:rgba(250,247,240,.6);}
+    .nav-cta:active{transform:scale(.98);}
+    .nav-cta.accent{background:var(--or);border-color:var(--or);color:var(--nuit);font-weight:600;}
+    .nav-cta.accent:hover{background:var(--corail);border-color:var(--corail);color:var(--ecume);}
+    @media(max-width:860px){.nav-links{display:none;}}
 
     /* ══ BUTTONS ═════════════════════════════════════════ */
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
-      padding:15px 30px; border:1px solid currentColor; cursor:pointer; background:none;
-      transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base), transform var(--ease-fast);
-      position:relative; overflow:hidden;
-    }
-    .btn:active{ transform:scale(.98); }
-    .btn:focus-visible{ outline:2px solid var(--or); outline-offset:3px; }
-    .btn-primary{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .btn-primary:hover{ background:var(--corail); border-color:var(--corail); }
-    .btn-primary:active{ background:#8f3e28; border-color:#8f3e28; }
-    .btn-or{ background:var(--or); color:var(--nuit); border-color:var(--or); font-weight:600; }
-    .btn-or:hover{ background:var(--corail); border-color:var(--corail); color:var(--ecume); }
-    .btn-or:active{ background:#8f3e28; border-color:#8f3e28; color:var(--ecume); }
-    .btn-ghost-dark{ color:var(--ecume); border-color:rgba(250,247,240,0.4); }
-    .btn-ghost-dark:hover{ background:rgba(250,247,240,0.08); border-color:rgba(250,247,240,0.7); }
-    .btn-ghost-dark:active{ background:rgba(250,247,240,0.15); }
-    .btn-ghost-light{ color:var(--nuit); border-color:var(--line-dark); }
-    .btn-ghost-light:hover{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .btn-full{ width:100%; padding:17px; }
-    .btn-lg{ padding:18px 38px; font-size:13px; }
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:15px 30px;border:1px solid currentColor;cursor:pointer;background:none;transition:background var(--eb),color var(--eb),border-color var(--eb),transform var(--ef);}
+    .btn:active{transform:scale(.98);}
+    .btn:focus-visible{outline:2px solid var(--or);outline-offset:3px;}
+    .btn-or{background:var(--or);color:var(--nuit);border-color:var(--or);font-weight:600;}
+    .btn-or:hover{background:var(--corail);border-color:var(--corail);color:var(--ecume);}
+    .btn-primary{background:var(--nuit-2);color:var(--ecume);border-color:var(--nuit-2);}
+    .btn-primary:hover{background:var(--corail);border-color:var(--corail);}
+    .btn-ghost-dark{color:var(--ecume);border-color:rgba(250,247,240,.4);}
+    .btn-ghost-dark:hover{background:rgba(250,247,240,.08);border-color:rgba(250,247,240,.65);}
+    .btn-ghost-light{color:var(--nuit-2);border-color:var(--line-dark);}
+    .btn-ghost-light:hover{background:var(--nuit-2);color:var(--ecume);}
+    .btn-full{width:100%;padding:17px;}
+    .btn-lg{padding:18px 38px;font-size:13px;}
 
-    /* ══ HERO ════════════════════════════════════════════ */
+    /* ══ HERO — CANVAS SKY ═══════════════════════════════ */
     .hero{
-      position:relative; min-height:100vh;
-      display:flex; flex-direction:column; justify-content:flex-end;
-      padding:0 var(--gutter) 110px; color:var(--ecume); overflow:hidden;
+      position:relative;min-height:100vh;
+      display:flex;flex-direction:column;justify-content:center;
+      padding:120px var(--g) 80px;
+      color:var(--ecume);overflow:hidden;
+      background:var(--nuit);
     }
-    .hero-bg{ position:absolute; inset:0; z-index:0; }
-    .hero-bg svg{ width:100%; height:100%; display:block; }
-    .cloud-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-    .cloud-wisp{
-      position:absolute; border-radius:50% 60% 55% 45% / 40% 50% 60% 45%;
-      background:rgba(255,255,255,0.032); filter:blur(44px);
-      animation:cloudDrift linear infinite;
+    #starCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+    .hero-gradient{
+      position:absolute;inset:0;z-index:1;
+      background:linear-gradient(180deg,transparent 40%,rgba(7,15,30,.7) 100%);
     }
-    .cloud-wisp:nth-child(1){ width:620px; height:210px; top:8%;  left:-12%; animation-duration:58s; }
-    .cloud-wisp:nth-child(2){ width:920px; height:270px; top:21%; left:-22%; animation-duration:84s; animation-delay:-22s; opacity:.65; filter:blur(60px); }
-    .cloud-wisp:nth-child(3){ width:520px; height:170px; top:54%; left:-6%;  animation-duration:68s; animation-delay:-36s; opacity:.75; }
-    .cloud-wisp:nth-child(4){ width:720px; height:230px; top:34%; left:-16%; animation-duration:98s; animation-delay:-12s; opacity:.5; filter:blur(72px); }
-    .cloud-wisp:nth-child(5){ width:420px; height:140px; top:72%; left:8%;   animation-duration:50s; animation-delay:-6s; }
-    @keyframes cloudDrift{
-      0%   { transform:translateX(0)   translateY(0)   scale(1); }
-      33%  { transform:translateX(22%) translateY(-3%) scale(1.03); }
-      66%  { transform:translateX(55%) translateY(2%)  scale(1.02); }
-      100% { transform:translateX(118%) translateY(0)  scale(1); }
-    }
-    .cloud-gold{
-      position:absolute; border-radius:50%;
-      background:radial-gradient(ellipse at center, rgba(185,138,79,0.13) 0%, transparent 70%);
-      filter:blur(64px); animation:goldPulse 18s ease-in-out infinite alternate;
-    }
-    .cloud-gold:nth-child(1){ width:520px; height:520px; top:-12%; right:-4%; }
-    .cloud-gold:nth-child(2){ width:380px; height:380px; bottom:4%; left:14%; animation-delay:-9s; }
-    @keyframes goldPulse{
-      0%  { opacity:.4; transform:scale(1)    translateY(0); }
-      50% { opacity:.7; transform:scale(1.1)  translateY(-22px); }
-      100%{ opacity:.3; transform:scale(0.94) translateY(12px); }
-    }
-    .hero-content{ position:relative; z-index:1; max-width:860px; }
-    .hero-eyebrow{ margin-bottom:20px; }
-    .hero-content h1{ color:var(--ecume); margin-bottom:28px; }
-    .hero-content .p-lg{ color:rgba(232,220,196,0.82); max-width:560px; margin-bottom:42px; }
-    .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:72px; }
-    .hero-badge{
-      display:inline-flex; align-items:center; gap:8px;
-      font-size:12px; color:rgba(232,220,196,0.55); font-weight:300;
-    }
-    .hero-badge::before{ content:''; display:block; width:5px; height:5px; border-radius:50%; background:var(--or-clair); flex-shrink:0; }
-    .hero-stats{ display:flex; gap:52px; padding-top:36px; border-top:1px solid var(--line); flex-wrap:wrap; }
-    .hero-stat .num{ font-family:'Fraunces',serif; font-size:clamp(26px,4vw,38px); font-weight:300; color:var(--ecume); line-height:1; letter-spacing:-0.02em; }
-    .hero-stat .label{ font-size:11px; letter-spacing:0.24em; text-transform:uppercase; font-weight:500; color:var(--or-clair); margin-bottom:7px; font-family:'Inter',sans-serif; display:block; }
-    .hero-stat .desc{ font-size:12px; font-weight:400; color:rgba(232,220,196,0.5); margin-top:5px; font-family:'Inter',sans-serif; }
+    .hero-content{position:relative;z-index:2;max-width:750px;}
+    .hero-headline{margin:0 0 28px;}
+    .hero-headline h1{color:var(--ecume);}
+    .hero-sub{color:rgba(232,220,196,.78);font-size:17px;font-weight:300;line-height:1.75;max-width:520px;margin-bottom:52px;}
 
-    /* Scroll hint */
-    .scroll-hint{
-      position:absolute; bottom:38px; left:50%; transform:translateX(-50%);
-      z-index:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-      font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(232,220,196,0.4);
-      animation:scrollBob 2.5s ease-in-out infinite;
+    /* ══ BOT CONCIERGE ═══════════════════════════════════ */
+    .bot-frame{
+      max-width:580px;
+      background:rgba(16,29,51,.7);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(232,220,196,.12);
+      overflow:hidden;
     }
-    .scroll-hint::after{ content:''; display:block; width:1px; height:28px; background:rgba(232,220,196,0.25); }
-    @keyframes scrollBob{ 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+    .bot-header{
+      padding:14px 20px;border-bottom:1px solid rgba(232,220,196,.08);
+      display:flex;align-items:center;gap:10px;
+    }
+    .bot-avatar{
+      width:30px;height:30px;background:var(--or);
+      display:grid;place-items:center;flex-shrink:0;
+      font-size:14px;
+    }
+    .bot-header-text .name{font-size:13px;font-weight:600;color:var(--ecume);}
+    .bot-header-text .status{font-size:11px;color:var(--or-clair);display:flex;align-items:center;gap:5px;}
+    .bot-header-text .status::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--or-clair);animation:blink 2s ease infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+    .bot-messages{padding:20px;display:flex;flex-direction:column;gap:12px;min-height:90px;}
+    .bot-bubble{
+      max-width:88%;padding:11px 15px;
+      background:rgba(232,220,196,.07);border:1px solid rgba(232,220,196,.1);
+      font-size:14px;line-height:1.55;color:var(--ecume);
+      animation:bubbleIn .3s var(--es) both;
+    }
+    @keyframes bubbleIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    .bot-bubble.user{
+      align-self:flex-end;
+      background:rgba(185,138,79,.2);border-color:rgba(185,138,79,.3);
+      color:var(--or-clair);
+    }
+    .bot-options{padding:0 20px 20px;display:flex;flex-wrap:wrap;gap:8px;}
+    .bot-opt{
+      font-size:12.5px;padding:8px 14px;
+      border:1px solid rgba(232,220,196,.2);background:none;color:rgba(232,220,196,.8);
+      cursor:pointer;transition:all var(--ef);text-align:left;
+    }
+    .bot-opt:hover{background:rgba(232,220,196,.08);border-color:rgba(232,220,196,.45);color:var(--ecume);}
+    .bot-opt:active{transform:scale(.97);}
+    .bot-typing{display:flex;gap:4px;padding:11px 15px;background:rgba(232,220,196,.05);border:1px solid rgba(232,220,196,.08);width:fit-content;}
+    .bot-typing span{width:5px;height:5px;border-radius:50%;background:var(--or-clair);animation:typeDot 1.2s ease infinite;}
+    .bot-typing span:nth-child(2){animation-delay:.2s;}
+    .bot-typing span:nth-child(3){animation-delay:.4s;}
+    @keyframes typeDot{0%,80%,100%{opacity:.3;transform:translateY(0);}40%{opacity:1;transform:translateY(-4px);}}
+    .bot-result{padding:20px;border-top:1px solid rgba(232,220,196,.08);display:none;}
+    .bot-result.visible{display:block;}
+    .bot-result-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-clair);margin-bottom:12px;}
+    .bot-plan-rec{
+      background:linear-gradient(135deg,rgba(185,138,79,.15),rgba(185,138,79,.05));
+      border:1px solid rgba(185,138,79,.3);padding:16px 18px;
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    }
+    .bot-plan-name{font-family:'Fraunces',serif;font-size:20px;color:var(--ecume);}
+    .bot-plan-price{font-family:'Fraunces',serif;font-size:24px;color:var(--or-clair);}
 
-    /* ══ SOCIAL PROOF ════════════════════════════════════ */
-    .proof-strip{
-      background:var(--nuit-2); padding:36px var(--gutter);
-      display:flex; align-items:center; justify-content:center; gap:60px; flex-wrap:wrap;
-    }
-    .proof-stat{ text-align:center; }
-    .proof-stat .n{ font-family:'Fraunces',serif; font-size:32px; font-weight:300; color:var(--or-clair); letter-spacing:-0.02em; line-height:1; }
-    .proof-stat .l{ font-size:11px; color:rgba(232,220,196,0.5); text-transform:uppercase; letter-spacing:0.16em; margin-top:4px; }
+    /* ══ PROOF STRIP ═════════════════════════════════════ */
+    .proof-strip{background:var(--nuit-3);padding:38px var(--g);display:flex;align-items:center;justify-content:center;gap:60px;flex-wrap:wrap;}
+    .proof-stat .n{font-family:'Fraunces',serif;font-size:32px;font-weight:300;color:var(--or-clair);letter-spacing:-.02em;line-height:1;}
+    .proof-stat .l{font-size:11px;color:rgba(232,220,196,.5);text-transform:uppercase;letter-spacing:.16em;margin-top:4px;}
 
     /* ══ HOW IT WORKS ════════════════════════════════════ */
-    .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; background:var(--line-dark); margin-top:64px; }
-    .step{ background:var(--ecume); padding:44px 36px; position:relative; }
-    .step-num{ font-family:'Fraunces',serif; font-size:56px; font-weight:300; color:var(--sable); line-height:1; margin-bottom:20px; }
-    .step h3{ margin-bottom:10px; }
-    .step p{ font-size:14.5px; }
-    .step-arrow{ position:absolute; top:50%; right:-1px; transform:translateY(-50%); color:var(--or); font-size:18px; z-index:1; }
-    @media(max-width:860px){ .steps{ grid-template-columns:1fr; } .step-arrow{ display:none; } }
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-dark);margin-top:64px;}
+    .step{background:var(--ecume);padding:44px 36px;position:relative;}
+    .step-num{font-family:'Fraunces',serif;font-size:52px;font-weight:300;color:var(--sable);line-height:1;margin-bottom:20px;}
+    .step h3{margin-bottom:10px;}
+    .step p{font-size:14.5px;}
+    .step-arrow{position:absolute;top:50%;right:-1px;transform:translateY(-50%);color:var(--or);font-size:18px;z-index:1;}
+    @media(max-width:860px){.steps{grid-template-columns:1fr;}.step-arrow{display:none;}}
+
+    /* ══ TABLE INTELLIGENCE — VIP SECTION ═══════════════ */
+    .vip-section{
+      background:var(--nuit);padding:130px var(--g);
+      position:relative;overflow:hidden;
+    }
+    .vip-bg-glow{
+      position:absolute;width:800px;height:800px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(185,138,79,.06) 0%,transparent 70%);
+      top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+    }
+    .vip-label{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--or-clair);
+      border:1px solid rgba(185,138,79,.3);padding:6px 14px;margin-bottom:48px;
+    }
+    .vip-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--or-clair);animation:blink 2s ease infinite;}
+    .vip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(232,220,196,.06);margin-top:64px;}
+    .vip-card{
+      background:rgba(16,29,51,.6);padding:48px 36px;
+      border-top:2px solid transparent;
+      transition:background var(--eb),border-color var(--eb);
+      backdrop-filter:blur(4px);
+    }
+    .vip-card:hover{background:rgba(16,29,51,.9);border-top-color:var(--or);}
+    .vip-icon{
+      width:52px;height:52px;background:rgba(185,138,79,.12);
+      border:1px solid rgba(185,138,79,.25);display:grid;place-items:center;
+      margin-bottom:28px;font-size:22px;
+      transition:background var(--eb);
+    }
+    .vip-card:hover .vip-icon{background:rgba(185,138,79,.22);}
+    .vip-card h3{color:var(--ecume);margin-bottom:14px;font-size:20px;}
+    .vip-card p{color:rgba(232,220,196,.65);font-size:14px;line-height:1.7;}
+    .vip-tag{
+      margin-top:24px;display:inline-block;
+      font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--or-clair);border-bottom:1px solid rgba(185,138,79,.35);padding-bottom:2px;
+    }
+    @media(max-width:860px){.vip-grid{grid-template-columns:1fr;}}
 
     /* ══ FEATURES (ds-row) ═══════════════════════════════ */
-    .ds-row{
-      display:grid; grid-template-columns:70px 1fr 1.2fr 130px; gap:28px; align-items:center;
-      padding:28px 0; border-top:1px solid var(--line); cursor:default;
-      transition:background var(--ease-base), padding-left var(--ease-base);
-    }
-    .ds-row:last-child{ border-bottom:1px solid var(--line); }
-    .ds-row:hover{ background:rgba(232,220,196,0.05); padding-left:12px; }
-    .ds-row-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--or-clair); font-size:14px; }
-    .ds-row-title{ font-family:'Fraunces',serif; font-size:22px; color:var(--ecume); }
-    .ds-row-desc{ font-size:13px; line-height:1.65; font-weight:300; color:rgba(232,220,196,0.72); }
-    .ds-row-tag{ font-size:11px; text-align:right; color:var(--or-clair); display:flex; align-items:center; justify-content:flex-end; gap:6px; letter-spacing:0.06em; text-transform:uppercase; }
-    .ds-row-tag .dot{ width:4px; height:4px; border-radius:50%; background:var(--or-clair); flex-shrink:0; }
-    @media(max-width:860px){ .ds-row{ grid-template-columns:36px 1fr; row-gap:6px; } .ds-row-tag,.ds-row-desc{ grid-column:2/3; text-align:left; justify-content:flex-start; } }
+    .ds-row{display:grid;grid-template-columns:64px 1fr 1.2fr 120px;gap:26px;align-items:center;padding:26px 0;border-top:1px solid var(--line);transition:background var(--eb),padding-left var(--eb);}
+    .ds-row:last-child{border-bottom:1px solid var(--line);}
+    .ds-row:hover{background:rgba(232,220,196,.05);padding-left:10px;}
+    .ds-row-num{font-family:'Fraunces',serif;font-style:italic;color:var(--or-clair);font-size:14px;}
+    .ds-row-title{font-family:'Fraunces',serif;font-size:21px;color:var(--ecume);}
+    .ds-row-desc{font-size:13px;line-height:1.65;font-weight:300;color:rgba(232,220,196,.72);}
+    .ds-row-tag{font-size:11px;text-align:right;color:var(--or-clair);display:flex;align-items:center;justify-content:flex-end;gap:6px;letter-spacing:.06em;text-transform:uppercase;}
+    .ds-row-tag .dot{width:4px;height:4px;border-radius:50%;background:var(--or-clair);flex-shrink:0;}
+    @media(max-width:860px){.ds-row{grid-template-columns:36px 1fr;row-gap:6px;}.ds-row-tag,.ds-row-desc{grid-column:2/3;text-align:left;justify-content:flex-start;}}
 
     /* ══ PRICING ═════════════════════════════════════════ */
-    .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-dark); margin-top:64px; }
-    .plan-cell{ background:var(--sable-2); padding:44px 36px; display:flex; flex-direction:column; transition:background var(--ease-base); }
-    .plan-cell:hover{ background:var(--ecume); }
-    .plan-cell.featured{ background:var(--nuit); color:var(--ecume); }
-    .plan-cell.featured:hover{ background:var(--nuit-2); }
-    .plan-cell h3{ margin-bottom:6px; }
-    .plan-cell.featured h3{ color:var(--ecume); }
-    .plan-price{ font-family:'Fraunces',serif; font-size:44px; font-weight:300; margin:22px 0 4px; line-height:1; letter-spacing:-0.02em; }
-    .plan-cell.featured .plan-price{ color:var(--or-clair); }
-    .plan-period{ font-size:12px; color:var(--text-faint); margin-bottom:32px; text-transform:uppercase; letter-spacing:0.1em; }
-    .plan-cell.featured .plan-period{ color:rgba(232,220,196,0.5); }
-    .plan-features{ list-style:none; display:grid; gap:11px; margin-bottom:36px; flex:1; }
-    .plan-features li{ font-size:14px; font-weight:400; display:flex; gap:10px; align-items:flex-start; color:var(--text-muted); }
-    .plan-features li::before{ content:'—'; color:var(--or); flex-shrink:0; }
-    .plan-cell.featured .plan-features li{ color:rgba(232,220,196,0.82); }
-    .plan-cell.featured .plan-features li::before{ color:var(--or-clair); }
-    @media(max-width:860px){ .pricing-grid{ grid-template-columns:1fr; } }
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-dark);margin-top:64px;}
+    .plan-cell{background:var(--sable-2);padding:44px 36px;display:flex;flex-direction:column;transition:background var(--eb);}
+    .plan-cell:hover{background:var(--ecume);}
+    .plan-cell.featured{background:var(--nuit-2);color:var(--ecume);}
+    .plan-cell.featured:hover{background:var(--nuit-3);}
+    .plan-cell h3{margin-bottom:6px;}
+    .plan-cell.featured h3{color:var(--ecume);}
+    .plan-price{font-family:'Fraunces',serif;font-size:44px;font-weight:300;margin:22px 0 4px;line-height:1;letter-spacing:-.02em;}
+    .plan-cell.featured .plan-price{color:var(--or-clair);}
+    .plan-period{font-size:11px;color:var(--faint);margin-bottom:32px;text-transform:uppercase;letter-spacing:.1em;}
+    .plan-cell.featured .plan-period{color:rgba(232,220,196,.45);}
+    .plan-features{list-style:none;display:grid;gap:11px;margin-bottom:36px;flex:1;}
+    .plan-features li{font-size:14px;font-weight:400;display:flex;gap:10px;align-items:flex-start;color:var(--muted);}
+    .plan-features li::before{content:'—';color:var(--or);flex-shrink:0;}
+    .plan-cell.featured .plan-features li{color:rgba(232,220,196,.8);}
+    .plan-cell.featured .plan-features li::before{color:var(--or-clair);}
+    @media(max-width:860px){.pricing-grid{grid-template-columns:1fr;}}
 
-    /* ══ FINAL CTA STRIP ═════════════════════════════════ */
-    .cta-strip{
-      background:var(--nuit); padding:120px var(--gutter); text-align:center;
-      position:relative; overflow:hidden;
-    }
-    .cta-strip h2{ color:var(--ecume); margin-bottom:16px; }
-    .cta-strip p{ color:rgba(232,220,196,0.65); max-width:520px; margin:0 auto 44px; }
-    .cta-strip-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
-    .cta-glow{ position:absolute; width:600px; height:600px; border-radius:50%; background:radial-gradient(ellipse,rgba(185,138,79,0.10) 0%,transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+    /* ══ CTA STRIP ═══════════════════════════════════════ */
+    .cta-strip{background:var(--nuit);padding:120px var(--g);text-align:center;position:relative;overflow:hidden;}
+    .cta-glow{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(ellipse,rgba(185,138,79,.09) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+    .cta-strip h2{color:var(--ecume);margin-bottom:16px;}
+    .cta-strip p{color:rgba(232,220,196,.6);max-width:500px;margin:0 auto 44px;}
+    .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
 
     /* ══ FOOTER ══════════════════════════════════════════ */
-    footer{
-      background:var(--nuit); border-top:1px solid rgba(232,220,196,0.08);
-      padding:56px var(--gutter) 40px; display:grid;
-      grid-template-columns:1.5fr 1fr 1fr; gap:48px;
-    }
-    .footer-brand .brand-name{ color:var(--ecume); font-size:18px; }
-    .footer-brand p{ font-size:13px; color:rgba(232,220,196,0.45); margin-top:14px; max-width:280px; line-height:1.7; }
-    .footer-col h4{ color:var(--or-clair); margin-bottom:16px; font-size:11px; letter-spacing:0.16em; }
-    .footer-col ul{ list-style:none; display:grid; gap:10px; }
-    .footer-col ul li a{ font-size:13px; color:rgba(232,220,196,0.5); transition:color var(--ease-fast); }
-    .footer-col ul li a:hover{ color:var(--ecume); }
-    .footer-bottom{ border-top:1px solid rgba(232,220,196,0.08); padding:20px var(--gutter); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-    .footer-bottom p{ font-size:12px; color:rgba(232,220,196,0.3); }
-    @media(max-width:860px){ footer{ grid-template-columns:1fr; gap:32px; } }
+    footer{background:var(--nuit);border-top:1px solid rgba(232,220,196,.07);padding:56px var(--g) 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;}
+    .footer-brand p{font-size:13px;color:rgba(232,220,196,.4);margin-top:14px;max-width:280px;line-height:1.7;}
+    .footer-col h4{color:var(--or-clair);margin-bottom:16px;}
+    .footer-col ul{list-style:none;display:grid;gap:10px;}
+    .footer-col ul li a{font-size:13px;color:rgba(232,220,196,.45);transition:color var(--ef);}
+    .footer-col ul li a:hover{color:var(--ecume);}
+    .footer-bottom{background:var(--nuit);border-top:1px solid rgba(232,220,196,.07);padding:20px var(--g);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .footer-bottom p{font-size:12px;color:rgba(232,220,196,.28);}
+    @media(max-width:860px){footer{grid-template-columns:1fr;gap:32px;}}
 
     /* ══ FORMS ═══════════════════════════════════════════ */
-    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; background:var(--line-dark); }
-    @media(max-width:860px){ .form-grid{ grid-template-columns:1fr; } }
-    .form-panel{ padding:64px 56px; }
-    .form-panel.dark{ background:var(--nuit); color:var(--ecume); }
-    .form-panel.light{ background:var(--ecume); }
-    .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
-    @media(max-width:640px){ .form-row{ grid-template-columns:1fr; } }
-    .ds-field{ margin-bottom:20px; }
-    .ds-field label{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin-bottom:10px; font-weight:500; }
-    .ds-field input,.ds-field select{ width:100%; border:none; border-bottom:1.5px solid var(--line-dark); background:transparent; padding:10px 2px; font-family:'Inter',sans-serif; font-size:15px; color:var(--encre-text); transition:border-color var(--ease-fast); }
-    .ds-field input:focus,.ds-field select:focus{ outline:none; border-color:var(--or); }
-    .ds-field input::placeholder{ color:var(--text-faint); }
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--line-dark);}
+    @media(max-width:860px){.form-grid{grid-template-columns:1fr;}}
+    .form-panel{padding:64px 56px;}
+    .form-panel.dark{background:var(--nuit-2);color:var(--ecume);}
+    .form-panel.light{background:var(--ecume);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    @media(max-width:640px){.form-row{grid-template-columns:1fr;}}
+    .ds-field{margin-bottom:20px;}
+    .ds-field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;font-weight:500;}
+    .ds-field input,.ds-field select{width:100%;border:none;border-bottom:1.5px solid var(--line-dark);background:transparent;padding:10px 2px;font-family:'Inter',sans-serif;font-size:15px;color:var(--encre);transition:border-color var(--ef);}
+    .ds-field input:focus,.ds-field select:focus{outline:none;border-color:var(--or);}
+    .ds-field input::placeholder{color:var(--faint);}
 
-    /* ══ UTILITIES ═══════════════════════════════════════ */
-    .hidden{ display:none!important; }
-    .app{ display:none; } .app.active{ display:block; }
-    .report-pre{ white-space:pre-wrap; background:var(--nuit); color:var(--ecume); padding:20px; line-height:1.6; max-height:50vh; overflow:auto; font-size:13px; margin-top:16px; font-family:'Inter',monospace; }
-    .notice{ border-left:3px solid var(--or); padding:14px 18px; font-size:13px; }
-    .notice-gold{ background:rgba(185,138,79,0.1); border-left-color:var(--or-clair); color:var(--or-clair); }
-    .divider{ height:1px; background:var(--line-dark); margin:24px 0; }
+    /* ══ UTILS ═══════════════════════════════════════════ */
+    .hidden{display:none!important;}
+    .app{display:none;}.app.active{display:block;}
+    .report-pre{white-space:pre-wrap;background:var(--nuit-2);color:var(--ecume);padding:20px;line-height:1.6;max-height:50vh;overflow:auto;font-size:13px;margin-top:16px;}
+    .notice-gold{background:rgba(185,138,79,.1);border-left:3px solid var(--or-clair);color:var(--or-clair);padding:14px 18px;font-size:13px;}
+    .divider{height:1px;background:var(--line-dark);margin:24px 0;}
 
     /* ══ REVEAL ══════════════════════════════════════════ */
-    .reveal{ opacity:0; transform:translateY(26px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
-    .reveal.in{ opacity:1; transform:translateY(0); }
-    .reveal-d1{ transition-delay:.1s; }
-    .reveal-d2{ transition-delay:.2s; }
-    .reveal-d3{ transition-delay:.3s; }
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+    .reveal.in{opacity:1;transform:translateY(0);}
+    .reveal-d1{transition-delay:.1s;}.reveal-d2{transition-delay:.2s;}.reveal-d3{transition-delay:.3s;}
+
+    /* ══ HERO SCROLL HINT ════════════════════════════════ */
+    .scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,220,196,.35);animation:scrollBob 2.5s ease-in-out infinite;}
+    .scroll-hint::after{content:'';display:block;width:1px;height:28px;background:rgba(232,220,196,.2);}
+    @keyframes scrollBob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
   </style>
 </head>
 <body>
@@ -355,13 +319,13 @@
   <nav class="ds-nav" id="mainNav">
     <a class="brand" href="#" data-view="home">
       <div class="brand-logo">
-        <svg viewBox="0 0 24 24"><path d="M12 2C7 2 3 6 3 11c0 3.9 2.4 7.2 5.8 8.6L8 22h8l-.8-2.4C18.6 18.2 21 14.9 21 11c0-5-4-9-9-9zm0 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm-1 3v5l4 2.4-.7 1.2-4.8-2.9V7h1.5z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-5.5-6.76-5.68-7.52-5.68H6.5c-.56 0-1 .45-1 1v3.19H1v2.49h15.03v-1zm-5.95-4.09c.39 0 .7.31.7.7s-.31.7-.7.7-.7-.31-.7-.7.31-.7.7-.7z"/></svg>
       </div>
       <span class="brand-name">Revenue<span>AI</span></span>
     </a>
-    <div class="ds-nav-links">
+    <div class="nav-links">
       <a href="#how" data-jump="how">Comment ça marche</a>
-      <a href="#features" data-jump="features">Fonctionnalités</a>
+      <a href="#intelligence" data-jump="intelligence">Table Intelligence</a>
       <a href="#pricing" data-jump="pricing">Tarifs</a>
       <button class="nav-cta" type="button" data-view="login">Connexion</button>
       <button class="nav-cta accent" type="button" data-view="signup">Essai gratuit</button>
@@ -371,80 +335,44 @@
   <!-- ═══ HOME ════════════════════════════════════════════ -->
   <main id="homeView">
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-bg">
-        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
-          <defs>
-            <filter id="cloud-deep" x="-30%" y="-30%" width="160%" height="160%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.006 0.010" numOctaves="4" seed="3" result="noise">
-                <animate attributeName="baseFrequency" values="0.006 0.010;0.009 0.006;0.006 0.010" dur="34s" repeatCount="indefinite"/>
-              </feTurbulence>
-              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.08  0 0 0 0 0.13  0 0 0 0 0.25  0 0 0 0.85 0"/>
-            </filter>
-            <filter id="cloud-mid" x="-30%" y="-30%" width="160%" height="160%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.013 0.020" numOctaves="5" seed="12" result="noise">
-                <animate attributeName="baseFrequency" values="0.013 0.020;0.018 0.014;0.013 0.020" dur="22s" repeatCount="indefinite"/>
-              </feTurbulence>
-              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.18  0 0 0 0 0.32  0 0 0 0.55 0"/>
-            </filter>
-            <filter id="cloud-light" x="-30%" y="-30%" width="160%" height="160%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.022 0.030" numOctaves="3" seed="21" result="noise">
-                <animate attributeName="baseFrequency" values="0.022 0.030;0.028 0.020;0.022 0.030" dur="14s" repeatCount="indefinite"/>
-              </feTurbulence>
-              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.18  0 0 0 0 0.26  0 0 0 0 0.42  0 0 0 0.30 0"/>
-            </filter>
-            <linearGradient id="baseSky" x1="0" y1="0" x2="0.3" y2="1">
-              <stop offset="0%" stop-color="#070f1e"/>
-              <stop offset="45%" stop-color="#0e1b33"/>
-              <stop offset="100%" stop-color="#1a2c4d"/>
-            </linearGradient>
-          </defs>
-          <rect width="1600" height="900" fill="url(#baseSky)"/>
-          <rect width="1600" height="900" filter="url(#cloud-deep)" opacity="1"/>
-          <rect width="1600" height="900" filter="url(#cloud-mid)" opacity="0.8"/>
-          <rect width="1600" height="900" filter="url(#cloud-light)" opacity="0.5"/>
-        </svg>
-        <div class="cloud-layer">
-          <div class="cloud-wisp"></div><div class="cloud-wisp"></div>
-          <div class="cloud-wisp"></div><div class="cloud-wisp"></div>
-          <div class="cloud-wisp"></div>
-        </div>
-        <div class="cloud-layer">
-          <div class="cloud-gold"></div><div class="cloud-gold"></div>
-        </div>
-        <!-- Photo restaurant en superposition douce -->
-        <div class="hero-photo"></div>
-      </div>
+    <!-- ══ HERO — CIEL ÉTOILÉ ══════════════════════════════ -->
+    <section class="hero" id="heroSection">
+      <canvas id="starCanvas"></canvas>
+      <div class="hero-gradient"></div>
 
       <div class="hero-content">
-        <div class="hero-eyebrow">
-          <span class="eyebrow eyebrow-light">Plateforme IA · Dakar, Mbour &amp; Saly</span>
+        <div class="hero-headline">
+          <h1>Votre restaurant,<br><em class="em-accent" style="color:var(--or-clair)">multiplié.</em></h1>
         </div>
-        <h1>Votre restaurant,<br><em class="em-accent" style="color:var(--or-clair)">multiplié.</em></h1>
-        <p class="p-lg">De la réservation au paiement Wave, tout est automatisé. Vos clients commandent plus, reviennent plus souvent — vous pilotez depuis un seul écran.</p>
-        <div class="hero-cta">
-          <button class="btn btn-or btn-lg" type="button" data-view="signup">
-            Démarrer gratuitement — 30 jours
-          </button>
-          <button class="btn btn-ghost-dark" type="button" data-jump="how">Voir comment ça marche</button>
-        </div>
-        <div class="hero-badge">Sans carte bancaire requise</div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <span class="label">Essai gratuit</span>
-            <div class="num">30 j</div>
-            <div class="desc">Installation accompagnée incluse</div>
+        <p class="hero-sub">De la réservation au paiement Wave, tout s'automatise. Concentrez-vous sur la cuisine — laissez l'IA s'occuper du reste.</p>
+
+        <!-- ══ BOT CONCIERGE INLINE ══════════════════════ -->
+        <div class="bot-frame" id="botFrame">
+          <div class="bot-header">
+            <div class="bot-avatar">🍽️</div>
+            <div class="bot-header-text">
+              <div class="name">Concierge Revenue AI</div>
+              <div class="status">En ligne — répond en quelques secondes</div>
+            </div>
           </div>
-          <div class="hero-stat">
-            <span class="label">À partir de</span>
-            <div class="num">20k</div>
-            <div class="desc">FCFA / mois après l'essai</div>
-          </div>
-          <div class="hero-stat">
-            <span class="label">Paiements</span>
-            <div class="num">Wave</div>
-            <div class="desc">Orange Money · Free Money</div>
+          <div class="bot-messages" id="botMessages"></div>
+          <div class="bot-options" id="botOptions"></div>
+          <div class="bot-result" id="botResult">
+            <div class="bot-result-label">Plan recommandé pour vous</div>
+            <div class="bot-plan-rec">
+              <div>
+                <div class="bot-plan-name" id="recPlanName">Growth</div>
+                <div style="font-size:13px;color:rgba(232,220,196,.55);margin-top:4px" id="recPlanDesc">Le plus adapté à votre profil</div>
+              </div>
+              <div>
+                <div class="bot-plan-price" id="recPlanPrice">30 000 FCFA</div>
+                <div style="font-size:11px;color:rgba(232,220,196,.45)">/mois après essai</div>
+              </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-or" type="button" id="botCTA" style="font-size:12px;padding:12px 22px">Démarrer gratuitement — 30 jours →</button>
+              <button class="btn btn-ghost-dark" type="button" data-jump="pricing" style="font-size:12px;padding:12px 22px">Voir tous les plans</button>
+            </div>
           </div>
         </div>
       </div>
@@ -452,18 +380,18 @@
       <div class="scroll-hint">Découvrir</div>
     </section>
 
-    <!-- PROOF STRIP -->
+    <!-- ══ PROOF STRIP ════════════════════════════════════ -->
     <div class="proof-strip reveal">
       <div class="proof-stat"><div class="n">+30%</div><div class="l">CA moyen</div></div>
       <div class="proof-stat"><div class="n">-60%</div><div class="l">No-shows</div></div>
-      <div class="proof-stat"><div class="n">3×</div><div class="l">Plus de commandes directes</div></div>
+      <div class="proof-stat"><div class="n">3×</div><div class="l">Commandes directes</div></div>
       <div class="proof-stat"><div class="n">48h</div><div class="l">Mise en ligne</div></div>
     </div>
 
-    <!-- HOW IT WORKS -->
-    <section id="how" class="section section-light">
+    <!-- ══ HOW IT WORKS ═══════════════════════════════════ -->
+    <section id="how" class="section s-light">
       <div class="container">
-        <div class="reveal" style="max-width:600px;margin-bottom:0">
+        <div class="reveal" style="max-width:600px">
           <span class="eyebrow">Comment ça marche</span>
           <h2 style="margin-top:14px">Opérationnel en 3 étapes,<br><em class="em-accent">en 48 heures.</em></h2>
         </div>
@@ -471,49 +399,81 @@
           <div class="step reveal">
             <div class="step-num">01</div>
             <h3>Inscription &amp; import</h3>
-            <p>Créez votre compte, importez votre menu depuis un PDF, photo, Instagram ou votre site existant. On s'occupe du reste.</p>
+            <p>Créez votre compte, importez votre menu depuis un PDF, photo ou Instagram. Notre IA le structure automatiquement.</p>
             <span class="step-arrow">→</span>
           </div>
           <div class="step reveal reveal-d1">
             <div class="step-num">02</div>
             <h3>Configuration IA</h3>
-            <p>Notre IA structure votre menu, active les paiements locaux (Wave, OM, Free) et configure les flux de réservation et livraison.</p>
+            <p>Paiements Wave &amp; OM activés, flux de réservation configurés, QR codes générés. En moins de 2 heures.</p>
             <span class="step-arrow">→</span>
           </div>
           <div class="step reveal reveal-d2">
             <div class="step-num">03</div>
             <h3>Vous pilotez</h3>
-            <p>Dashboard en temps réel, CRM, promotions, analytics. Vos clients reçoivent leur QR code — et commandent directement.</p>
+            <p>Dashboard temps réel, CRM, promotions, analytics. Vos clients commandent et paient — vous encaissez.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FEATURES -->
-    <section id="features" class="section section-dark">
+    <!-- ══ TABLE INTELLIGENCE — VIP ═══════════════════════ -->
+    <section id="intelligence" class="vip-section">
+      <div class="vip-bg-glow"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div class="vip-label reveal">Table Intelligence™ — Expérience VIP</div>
+        <div class="reveal reveal-d1">
+          <h2 style="color:var(--ecume);max-width:680px">Ce que les meilleurs restaurants<br>au monde font déjà — <em class="em-accent" style="color:var(--or-clair)">maintenant disponible ici.</em></h2>
+          <p class="p-light" style="margin-top:16px;max-width:560px">Alinea, Eleven Madison Park, Nobu — ces restaurants utilisent l'intelligence artificielle pour rendre chaque repas inoubliable. Revenue AI vous donne les mêmes outils.</p>
+        </div>
+
+        <div class="vip-grid">
+          <div class="vip-card reveal">
+            <div class="vip-icon">🧠</div>
+            <h3>Mémoire Client Prédictive</h3>
+            <p>Le système reconnaît chaque client à son numéro. Il sait qu'il commande du poisson le vendredi, qu'il est allergique aux noix, et que son anniversaire est dans 3 jours. Une offre personnalisée part automatiquement par WhatsApp au bon moment.</p>
+            <span class="vip-tag">Disponible Growth+</span>
+          </div>
+          <div class="vip-card reveal reveal-d1">
+            <div class="vip-icon">🎬</div>
+            <h3>Menu Cinématique</h3>
+            <p>Votre QR code n'ouvre plus une liste statique. Il ouvre une expérience : micro-vidéo de chaque plat, note audio du chef, origine des ingrédients. L'IA recommande selon l'heure, la météo du jour et les préférences déclarées du client.</p>
+            <span class="vip-tag">Disponible Premium AI</span>
+          </div>
+          <div class="vip-card reveal reveal-d2">
+            <div class="vip-icon">📡</div>
+            <h3>Intelligence de Table</h3>
+            <p>Quand une table scanne le QR code, la cuisine voit en temps réel : "Table 5 — première visite, anniversaire, budget élevé, végétarien." Le service devient télépathique. Chaque client a l'impression d'être le seul.</p>
+            <span class="vip-tag">Disponible Premium AI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FEATURES ════════════════════════════════════════ -->
+    <section id="features" class="section s-dark">
       <div class="container">
         <div class="reveal" style="margin-bottom:60px">
           <span class="eyebrow eyebrow-light">Tout ce dont vous avez besoin</span>
           <h2 style="color:var(--ecume);margin-top:14px">Une plateforme complète,<br><em class="em-accent" style="color:var(--or-clair)">pas une pièce du puzzle.</em></h2>
         </div>
-        <div class="ds-row reveal"><span class="ds-row-num">01</span><span class="ds-row-title">Menu qui vend seul</span><span class="ds-row-desc">Vos plats s'affichent avec photos et descriptions optimisées. L'IA suggère des extras au bon moment — votre ticket moyen monte sans effort de votre part.</span><span class="ds-row-tag"><span class="dot"></span>Tous les plans</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">01</span><span class="ds-row-title">Menu qui vend seul</span><span class="ds-row-desc">Vos plats s'affichent avec photos et descriptions optimisées. L'IA suggère des extras au bon moment — votre ticket moyen monte sans effort.</span><span class="ds-row-tag"><span class="dot"></span>Tous</span></div>
         <div class="ds-row reveal"><span class="ds-row-num">02</span><span class="ds-row-title">Réservations sans no-show</span><span class="ds-row-desc">Vos clients réservent et versent un acompte Wave en 2 minutes. Les non-venues chutent de 60%. Votre salle est toujours optimisée.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">03</span><span class="ds-row-title">Commandes &amp; livraison directes</span><span class="ds-row-desc">Vos clients commandent via QR code ou lien direct, paient avec Wave ou Orange Money. Vous encaissez immédiatement, sans commission tierce.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">04</span><span class="ds-row-title">Clients qui reviennent</span><span class="ds-row-desc">Chaque commande enrichit votre base client. Relancez automatiquement les inactifs avec une offre personnalisée. Vos habituel(le)s reviennent 40% plus souvent.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">05</span><span class="ds-row-title">Promotions qui convertissent</span><span class="ds-row-desc">Créez une offre flash en 30 secondes. Votre QR code la diffuse instantanément. Mesurez exactement combien elle vous a rapporté.</span><span class="ds-row-tag"><span class="dot"></span>Tous</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">06</span><span class="ds-row-title">Sommelier IA</span><span class="ds-row-desc">L'IA recommande le bon plat au bon client, propose des accords mets-boissons et identifie vos produits les plus rentables. Votre marge grimpe.</span><span class="ds-row-tag"><span class="dot"></span>Premium AI</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">03</span><span class="ds-row-title">Commandes directes</span><span class="ds-row-desc">Vos clients commandent via QR code, paient avec Wave ou Orange Money. Vous encaissez immédiatement, sans commission tierce.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">04</span><span class="ds-row-title">Clients qui reviennent</span><span class="ds-row-desc">Chaque commande enrichit votre CRM. Relancez les inactifs avec une offre ciblée. Vos habitués reviennent 40% plus souvent.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">05</span><span class="ds-row-title">Promotions qui convertissent</span><span class="ds-row-desc">Créez une offre flash en 30 secondes. Le QR code la diffuse instantanément. Mesurez exactement combien elle vous rapporte.</span><span class="ds-row-tag"><span class="dot"></span>Tous</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">06</span><span class="ds-row-title">Sommelier IA</span><span class="ds-row-desc">L'IA recommande le bon plat au bon client, propose des accords mets-boissons et identifie vos produits les plus rentables.</span><span class="ds-row-tag"><span class="dot"></span>Premium AI</span></div>
       </div>
     </section>
 
-    <!-- PRICING -->
-    <section id="pricing" class="section section-alt">
+    <!-- ══ PRICING ═════════════════════════════════════════ -->
+    <section id="pricing" class="section s-alt">
       <div class="container">
-        <div class="reveal" style="margin-bottom:0">
+        <div class="reveal">
           <span class="eyebrow">Tarifs</span>
           <h2 style="margin-top:14px">Commencez gratuitement.<br>Payez quand vous êtes convaincu.</h2>
-          <p style="margin-top:14px;max-width:500px">30 jours d'essai, installation incluse, sans engagement. Choisissez votre plan quand vous êtes prêt.</p>
+          <p style="margin-top:14px;max-width:500px">30 jours d'essai, installation incluse, sans engagement. Choisissez votre plan en fin d'essai.</p>
         </div>
-
         <div class="pricing-grid reveal">
           <div class="plan-cell">
             <span class="eyebrow" style="font-size:10px;margin-bottom:16px">Démarrage</span>
@@ -529,8 +489,7 @@
             </ul>
             <button class="btn btn-ghost-light btn-full" type="button" data-plan="starter" data-view="signup">Essai gratuit 30 jours</button>
           </div>
-
-          <div class="plan-cell featured">
+          <div class="plan-cell featured" id="planGrowth">
             <span class="eyebrow eyebrow-light" style="font-size:10px;margin-bottom:16px">Le plus choisi</span>
             <h3>Growth</h3>
             <div class="plan-price">30 000</div>
@@ -541,21 +500,20 @@
               <li>Livraison + à emporter</li>
               <li>CRM &amp; Promotions</li>
               <li>Paiements Wave / OM / Free</li>
-              <li>Support prioritaire</li>
+              <li>Mémoire Client Prédictive</li>
             </ul>
             <button class="btn btn-or btn-full" type="button" data-plan="growth" data-view="signup">Essai gratuit 30 jours</button>
           </div>
-
-          <div class="plan-cell">
+          <div class="plan-cell" id="planPremium">
             <span class="eyebrow" style="font-size:10px;margin-bottom:16px">Intelligence artificielle</span>
             <h3>Premium AI</h3>
             <div class="plan-price">50 000</div>
             <div class="plan-period">FCFA / mois</div>
             <ul class="plan-features">
               <li>Tout Growth inclus</li>
-              <li>Sommelier IA intégré</li>
-              <li>Assistant serveur IA</li>
-              <li>Analytics &amp; prédictions</li>
+              <li>Menu Cinématique</li>
+              <li>Intelligence de Table™</li>
+              <li>Sommelier IA</li>
               <li>Support dédié 7j/7</li>
             </ul>
             <button class="btn btn-primary btn-full" type="button" data-plan="premium_ai" data-view="signup">Essai gratuit 30 jours</button>
@@ -564,35 +522,36 @@
       </div>
     </section>
 
-    <!-- CTA FINAL -->
+    <!-- ══ CTA FINAL ══════════════════════════════════════ -->
     <div class="cta-strip">
       <div class="cta-glow"></div>
       <div style="position:relative;z-index:1">
         <span class="eyebrow eyebrow-light reveal" style="text-align:center;margin-bottom:20px">Prêt à démarrer ?</span>
-        <h2 class="reveal reveal-d1">Votre restaurant mérite<br><em class="em-accent" style="color:var(--or-clair)">mieux qu'un menu statique.</em></h2>
-        <p class="reveal reveal-d2">Rejoignez les restaurants qui ont choisi d'automatiser leur croissance. Installation gratuite, accompagnée, en 48h.</p>
-        <div class="cta-strip-actions reveal reveal-d3">
+        <h2 class="reveal reveal-d1" style="color:var(--ecume)">Votre restaurant mérite<br><em class="em-accent" style="color:var(--or-clair)">mieux qu'un menu statique.</em></h2>
+        <p class="reveal reveal-d2">Rejoignez les restaurants qui ont choisi d'automatiser leur croissance. En 48h, vous êtes opérationnel.</p>
+        <div class="cta-actions reveal reveal-d3">
           <button class="btn btn-or btn-lg" type="button" data-view="signup">Créer mon espace — 30 jours gratuits</button>
           <button class="btn btn-ghost-dark" type="button" data-view="login">J'ai déjà un compte</button>
         </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- ══ FOOTER ══════════════════════════════════════════ -->
     <footer>
       <div class="footer-brand">
         <div class="brand">
           <div class="brand-logo" style="width:28px;height:28px">
-            <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:var(--ecume)"><path d="M12 2C7 2 3 6 3 11c0 3.9 2.4 7.2 5.8 8.6L8 22h8l-.8-2.4C18.6 18.2 21 14.9 21 11c0-5-4-9-9-9zm0 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm-1 3v5l4 2.4-.7 1.2-4.8-2.9V7h1.5z"/></svg>
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--nuit)"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-5.5-6.76-5.68-7.52-5.68H6.5c-.56 0-1 .45-1 1v3.19H1v2.49h15.03v-1zm-5.95-4.09c.39 0 .7.31.7.7s-.31.7-.7.7-.7-.31-.7-.7.31-.7.7-.7z"/></svg>
           </div>
-          <span class="brand-name" style="font-size:16px">Revenue<span>AI</span></span>
+          <span class="brand-name" style="font-size:15px">Revenue<span>AI</span></span>
         </div>
-        <p>La plateforme IA qui transforme votre restaurant en moteur de revenus. Conçue pour Dakar, Mbour et Saly.</p>
+        <p>La plateforme IA qui transforme votre restaurant en moteur de revenus. Conçue pour l'Afrique de l'Ouest.</p>
       </div>
       <div class="footer-col">
         <h4>Produit</h4>
         <ul>
           <li><a href="#how" data-jump="how">Comment ça marche</a></li>
+          <li><a href="#intelligence" data-jump="intelligence">Table Intelligence™</a></li>
           <li><a href="#features" data-jump="features">Fonctionnalités</a></li>
           <li><a href="#pricing" data-jump="pricing">Tarifs</a></li>
         </ul>
@@ -605,7 +564,7 @@
         </ul>
       </div>
     </footer>
-    <div class="footer-bottom" style="background:var(--nuit)">
+    <div class="footer-bottom">
       <p>© 2026 Restaurant Revenue AI. Tous droits réservés.</p>
       <p>Dakar · Mbour · Saly · Sénégal</p>
     </div>
@@ -619,12 +578,12 @@
         <span class="eyebrow eyebrow-light" style="margin-bottom:20px">Inscription gratuite</span>
         <h2 style="color:var(--ecume);margin-bottom:20px">30 jours<br><em class="em-accent" style="color:var(--or-clair)">offerts.</em></h2>
         <p class="p-light" style="margin-bottom:28px;font-size:15px">Créez votre espace restaurant, importez votre menu et commencez à recevoir des commandes — sans carte bancaire.</p>
-        <div class="notice notice-gold" id="signupNotice">Vérification du mode en cours...</div>
-        <div class="divider" style="background:rgba(232,220,196,0.08);margin-top:32px"></div>
-        <p style="font-size:12px;color:rgba(232,220,196,0.35);line-height:1.6">Aucun engagement. Vous choisissez votre plan en fin d'essai, ou vous arrêtez sans frais.</p>
+        <div class="notice-gold" id="signupNotice">Vérification en cours...</div>
+        <div class="divider" style="background:rgba(232,220,196,.08);margin-top:32px"></div>
+        <p style="font-size:12px;color:rgba(232,220,196,.32);line-height:1.6">Aucun engagement. Vous choisissez votre plan en fin d'essai, ou vous arrêtez sans frais.</p>
       </div>
       <div class="form-panel light">
-        <h4 style="color:var(--text-faint);margin-bottom:28px">Informations du restaurant</h4>
+        <h4 style="color:var(--faint);margin-bottom:28px">Informations du restaurant</h4>
         <form id="signupForm">
           <div class="form-row">
             <div class="ds-field"><label>Nom du restaurant</label><input name="restaurantName" placeholder="Ex : Le Baobab" required></div>
@@ -635,7 +594,7 @@
             <div class="ds-field"><label>Type d'établissement</label><select name="restaurantType"><option>restaurant</option><option>lounge</option><option>hotel</option><option>traiteur</option><option>fast-food premium</option></select></div>
           </div>
           <div style="height:1px;background:var(--line-dark);margin:8px 0 24px"></div>
-          <h4 style="color:var(--text-faint);margin-bottom:24px">Votre compte</h4>
+          <h4 style="color:var(--faint);margin-bottom:24px">Votre compte</h4>
           <div class="form-row">
             <div class="ds-field"><label>Votre nom</label><input name="ownerName" placeholder="Prénom Nom" required></div>
             <div class="ds-field"><label>WhatsApp</label><input name="phone" placeholder="+221 77 000 00 00" required></div>
@@ -645,13 +604,13 @@
             <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" placeholder="8 caractères minimum" required></div>
           </div>
           <div class="form-row">
-            <div class="ds-field"><label>Votre menu actuel</label><select name="menuSource"><option value="website">Site web</option><option value="pdf">PDF</option><option value="photo">Photo</option><option value="instagram">Instagram</option><option value="none">Aucun pour l'instant</option></select></div>
+            <div class="ds-field"><label>Votre menu actuel</label><select name="menuSource"><option value="website">Site web</option><option value="pdf">PDF</option><option value="photo">Photo</option><option value="instagram">Instagram</option><option value="none">Aucun</option></select></div>
             <div class="ds-field"><label>Plan après essai</label><select name="selectedPlan" id="selectedPlan"><option value="starter">Starter — 20 000 FCFA</option><option value="growth" selected>Growth — 30 000 FCFA</option><option value="premium_ai">Premium AI — 50 000 FCFA</option></select></div>
           </div>
           <button class="btn btn-or btn-full" type="submit" style="margin-top:16px">Créer mon espace restaurant →</button>
           <pre class="report-pre hidden" id="signupResult"></pre>
         </form>
-        <p style="margin-top:22px;font-size:13px;color:var(--text-faint)">Déjà inscrit ? <a href="#" data-view="login" style="color:var(--or);text-decoration:underline">Se connecter</a></p>
+        <p style="margin-top:22px;font-size:13px;color:var(--faint)">Déjà inscrit ? <a href="#" data-view="login" style="color:var(--or);text-decoration:underline">Se connecter</a></p>
       </div>
     </div>
   </main>
@@ -665,164 +624,434 @@
         <p class="p-light" style="font-size:15px">Accédez à votre tableau de bord, vos commandes et vos statistiques en temps réel.</p>
       </div>
       <div class="form-panel light" style="display:flex;flex-direction:column;justify-content:center">
-        <h4 style="color:var(--text-faint);margin-bottom:28px">Connexion à votre compte</h4>
+        <h4 style="color:var(--faint);margin-bottom:28px">Connexion à votre compte</h4>
         <form id="loginForm">
           <div class="ds-field"><label>Email</label><input type="email" name="email" placeholder="vous@email.com" required></div>
           <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" placeholder="Votre mot de passe" required></div>
           <button class="btn btn-primary btn-full" type="submit" style="margin-top:28px">Se connecter →</button>
           <pre class="report-pre hidden" id="loginResult"></pre>
         </form>
-        <p style="margin-top:24px;font-size:13px;color:var(--text-faint)">Pas encore inscrit ? <a href="#" data-view="signup" style="color:var(--or);text-decoration:underline">30 jours gratuits</a></p>
+        <p style="margin-top:24px;font-size:13px;color:var(--faint)">Pas encore inscrit ? <a href="#" data-view="signup" style="color:var(--or);text-decoration:underline">30 jours gratuits</a></p>
       </div>
     </div>
   </main>
 
   <!-- ═══ MODAL ════════════════════════════════════════════ -->
-  <div id="modal" style="position:fixed;inset:0;background:rgba(16,29,51,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:200">
-    <div id="modalPanel" style="background:var(--ecume);border:1px solid var(--line-dark);max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:52px;box-shadow:0 32px 100px rgba(16,29,51,.3)"></div>
+  <div id="modal" style="position:fixed;inset:0;background:rgba(7,15,30,.8);display:none;align-items:center;justify-content:center;padding:20px;z-index:200">
+    <div id="modalPanel" style="background:var(--ecume);border:1px solid var(--line-dark);max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:52px;box-shadow:0 32px 100px rgba(7,15,30,.4)"></div>
   </div>
   <style>#modal.active{display:flex!important}</style>
 
   <script>
-    /* ── NAV scroll ──────────────────────────────────────── */
-    const nav = document.getElementById('mainNav');
-    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60), { passive:true });
+  /* ════════════════════════════════════════════════════════
+     STARRY SKY — CANVAS ANIMATION
+  ═══════════════════════════════════════════════════════ */
+  (function() {
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [], shooters = [], constellations = [];
 
-    /* ── Reveal on scroll ────────────────────────────────── */
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, { threshold:0.1 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = document.getElementById('heroSection').offsetHeight;
+    }
 
-    /* ── State ───────────────────────────────────────────── */
-    const STORAGE_KEY = 'rrai_saas_v2_state';
-    const DEMO_RESTAURANT_ID = 'demo-restaurant';
-    const $ = s => document.querySelector(s);
+    // ── Stars
+    function initStars() {
+      stars = [];
+      const count = Math.floor(W * H / 3000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: Math.random() * 1.4 + 0.2,
+          alpha: Math.random() * 0.7 + 0.3,
+          phase: Math.random() * Math.PI * 2,
+          speed: Math.random() * 0.6 + 0.2,
+          color: Math.random() > 0.85 ? '#d3ac74' : Math.random() > 0.7 ? '#e8dcc4' : '#ffffff'
+        });
+      }
+    }
 
-    const state = {
-      view:'home', token:null, user:null, memberships:[], platformAdmin:false,
-      restaurantId:DEMO_RESTAURANT_ID, selectedPlan:'growth',
-      products:[], promotions:[], mode:'demo'
-    };
+    // ── Culinary constellations (normalized 0-1 coords)
+    function initConstellations() {
+      const fork = {
+        name: 'fork', stars: [
+          [.15,.12],[.15,.16],[.15,.20],[.15,.25],[.15,.30],[.15,.36],
+          [.13,.12],[.17,.12],[.13,.16],[.17,.16]
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[6,0],[7,0],[8,1],[9,1]]
+      };
+      const plate = {
+        name: 'plate', stars: [
+          [.72,.20],[.76,.18],[.80,.20],[.82,.24],[.80,.28],[.76,.30],[.72,.28],[.70,.24]
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0]]
+      };
+      const spoon = {
+        name: 'spoon', stars: [
+          [.45,.10],[.47,.13],[.48,.17],[.47,.21],[.45,.24],
+          [.43,.21],[.42,.17],[.43,.13],[.46,.28],[.46,.34],[.46,.40]
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],[2,8],[8,9],[9,10]]
+      };
+      constellations = [fork, plate, spoon];
+    }
 
-    function loadState(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')); }catch(e){} }
-    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    // ── Shooting stars
+    function spawnShooter() {
+      if (Math.random() > 0.003) return;
+      shooters.push({
+        x: Math.random() * W * 0.7,
+        y: Math.random() * H * 0.4,
+        vx: 5 + Math.random() * 8,
+        vy: 2 + Math.random() * 4,
+        len: 60 + Math.random() * 100,
+        alpha: 1,
+        life: 1
+      });
+    }
 
-    async function api(path, opts={}){
-      const headers = { 'Content-Type':'application/json', ...(opts.headers||{}) };
-      if (state.token) headers.Authorization = `Bearer ${state.token}`;
-      if (state.restaurantId) headers['x-restaurant-id'] = state.restaurantId;
-      const res = await fetch(path, { ...opts, headers });
-      const ct = res.headers.get('content-type')||'';
-      let data;
-      if (ct.includes('application/json')) {
-        data = await res.json();
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Background gradient
+      const bg = ctx.createLinearGradient(0, 0, W * .3, H);
+      bg.addColorStop(0, '#020810');
+      bg.addColorStop(.45, '#070f1e');
+      bg.addColorStop(1, '#0e1b33');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      t += .012;
+
+      // ── Draw stars
+      stars.forEach(s => {
+        const twinkle = Math.sin(t * s.speed + s.phase) * 0.3 + 0.7;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.globalAlpha = s.alpha * twinkle;
+        ctx.fill();
+        // Glow for bigger stars
+        if (s.r > 1.0) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
+          const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3);
+          g.addColorStop(0, s.color === '#d3ac74' ? 'rgba(211,172,116,.18)' : 'rgba(255,255,255,.1)');
+          g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g;
+          ctx.globalAlpha = twinkle;
+          ctx.fill();
+        }
+      });
+
+      // ── Draw constellations
+      ctx.globalAlpha = 1;
+      constellations.forEach(c => {
+        const cs = c.stars.map(([nx, ny]) => ({ x: nx * W, y: ny * H }));
+        // Lines
+        ctx.strokeStyle = 'rgba(211,172,116,.08)';
+        ctx.lineWidth = .7;
+        c.lines.forEach(([a, b]) => {
+          ctx.beginPath(); ctx.moveTo(cs[a].x, cs[a].y); ctx.lineTo(cs[b].x, cs[b].y); ctx.stroke();
+        });
+        // Stars in constellation
+        cs.forEach(s => {
+          ctx.beginPath(); ctx.arc(s.x, s.y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#d3ac74'; ctx.globalAlpha = .55 + Math.sin(t * .4) * .15; ctx.fill();
+        });
+      });
+      ctx.globalAlpha = 1;
+
+      // ── Shooting stars
+      spawnShooter();
+      shooters = shooters.filter(s => s.life > 0);
+      shooters.forEach(s => {
+        ctx.save();
+        const grad = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * 10, s.y - s.vy * 10);
+        grad.addColorStop(0, `rgba(255,255,240,${s.alpha})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.vx * (s.len / 10), s.y - s.vy * (s.len / 10));
+        ctx.stroke();
+        ctx.restore();
+        s.x += s.vx; s.y += s.vy; s.life -= 0.025; s.alpha = s.life;
+      });
+
+      // ── Subtle gold nebula
+      const nX = W * (.5 + Math.sin(t * .08) * .15);
+      const nY = H * (.35 + Math.cos(t * .06) * .1);
+      const nebula = ctx.createRadialGradient(nX, nY, 0, nX, nY, W * .35);
+      nebula.addColorStop(0, 'rgba(185,138,79,.04)');
+      nebula.addColorStop(1, 'transparent');
+      ctx.fillStyle = nebula; ctx.fillRect(0, 0, W, H);
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); initStars(); });
+    resize(); initStars(); initConstellations(); draw();
+  })();
+
+  /* ════════════════════════════════════════════════════════
+     BOT CONCIERGE
+  ═══════════════════════════════════════════════════════ */
+  const BOT_SCRIPT = [
+    {
+      q: "Bonsoir 🌙 Parlez-moi de votre restaurant.",
+      opts: ["Lounge / Bar", "Restaurant gastronomique", "Fast-food premium", "Hôtel-restaurant", "Traiteur / Événementiel"]
+    },
+    {
+      q: "Combien de couverts en moyenne par service ?",
+      opts: ["Moins de 20", "20 à 50 couverts", "50 à 100 couverts", "Plus de 100 couverts"]
+    },
+    {
+      q: "Quel est votre plus grand défi en ce moment ?",
+      opts: ["Trop de no-shows", "Augmenter mes commandes", "Fidéliser mes clients", "Gérer les paiements", "Tout faire en même temps"]
+    }
+  ];
+
+  const PLAN_MAP = {
+    "Lounge / Bar": "growth",
+    "Restaurant gastronomique": "premium_ai",
+    "Fast-food premium": "starter",
+    "Hôtel-restaurant": "premium_ai",
+    "Traiteur / Événementiel": "growth",
+    "Moins de 20": "starter",
+    "20 à 50 couverts": "growth",
+    "50 à 100 couverts": "growth",
+    "Plus de 100 couverts": "premium_ai",
+    "Trop de no-shows": "growth",
+    "Augmenter mes commandes": "growth",
+    "Fidéliser mes clients": "premium_ai",
+    "Gérer les paiements": "starter",
+    "Tout faire en même temps": "premium_ai"
+  };
+
+  const PLAN_INFO = {
+    starter: { name: "Starter", price: "20 000 FCFA", desc: "Idéal pour démarrer sans investissement lourd" },
+    growth: { name: "Growth", price: "30 000 FCFA", desc: "Le plan qui correspond à votre profil — le plus adopté" },
+    premium_ai: { name: "Premium AI", price: "50 000 FCFA", desc: "La puissance IA complète pour maximiser chaque service" }
+  };
+
+  let botStep = 0, planScore = {};
+
+  const msgs = document.getElementById('botMessages');
+  const opts = document.getElementById('botOptions');
+  const result = document.getElementById('botResult');
+
+  function botAddMsg(text, isUser = false) {
+    const b = document.createElement('div');
+    b.className = 'bot-bubble' + (isUser ? ' user' : '');
+    b.textContent = text;
+    msgs.appendChild(b);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function botShowTyping(cb) {
+    const t = document.createElement('div');
+    t.className = 'bot-typing';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    msgs.appendChild(t);
+    msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(() => { t.remove(); cb(); }, 900);
+  }
+
+  function botShowOpts(step) {
+    opts.innerHTML = '';
+    BOT_SCRIPT[step].opts.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'bot-opt'; btn.textContent = o;
+      btn.addEventListener('click', () => botAnswer(o));
+      opts.appendChild(btn);
+    });
+  }
+
+  function botAnswer(answer) {
+    opts.innerHTML = '';
+    botAddMsg(answer, true);
+    planScore[answer] = (planScore[answer] || 0) + 1;
+    botStep++;
+
+    if (botStep < BOT_SCRIPT.length) {
+      botShowTyping(() => {
+        botAddMsg(BOT_SCRIPT[botStep].q);
+        botShowOpts(botStep);
+      });
+    } else {
+      botShowTyping(() => {
+        // Calculate best plan
+        let bestPlan = 'growth';
+        let premiumVotes = 0, starterVotes = 0;
+        Object.keys(planScore).forEach(k => {
+          if (PLAN_MAP[k] === 'premium_ai') premiumVotes++;
+          if (PLAN_MAP[k] === 'starter') starterVotes++;
+        });
+        if (premiumVotes >= 2) bestPlan = 'premium_ai';
+        else if (starterVotes >= 2) bestPlan = 'starter';
+
+        const info = PLAN_INFO[bestPlan];
+        botAddMsg("Parfait 🎯 J'ai analysé votre profil. Voici ma recommandation personnalisée :");
+        
+        // Update result
+        document.getElementById('recPlanName').textContent = info.name;
+        document.getElementById('recPlanPrice').textContent = info.price;
+        document.getElementById('recPlanDesc').textContent = info.desc;
+        document.getElementById('botCTA').setAttribute('data-view', 'signup');
+        document.getElementById('botCTA').setAttribute('data-plan', bestPlan);
+
+        setTimeout(() => { result.classList.add('visible'); }, 400);
+        
+        // Highlight plan in pricing section
+        setTimeout(() => {
+          const el = document.getElementById('plan' + bestPlan.charAt(0).toUpperCase() + bestPlan.slice(1).replace('_ai','').replace('_',''));
+          if (el) el.style.outline = '2px solid var(--or)';
+        }, 800);
+      });
+    }
+  }
+
+  // Start bot after 600ms
+  setTimeout(() => {
+    botShowTyping(() => {
+      botAddMsg(BOT_SCRIPT[0].q);
+      botShowOpts(0);
+    });
+  }, 600);
+
+  /* ════════════════════════════════════════════════════════
+     NAV + REVEAL
+  ═══════════════════════════════════════════════════════ */
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: .1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ════════════════════════════════════════════════════════
+     APP STATE & ROUTING
+  ═══════════════════════════════════════════════════════ */
+  const STORAGE_KEY = 'rrai_saas_v2_state';
+  const DEMO_ID = 'demo-restaurant';
+  const $ = s => document.querySelector(s);
+
+  const state = {
+    view: 'home', token: null, user: null, memberships: [], platformAdmin: false,
+    restaurantId: DEMO_ID, selectedPlan: 'growth', products: [], promotions: [], mode: 'demo'
+  };
+
+  function loadState() { try { Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')); } catch(e) {} }
+  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+  async function api(path, opts = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    if (state.token) headers.Authorization = `Bearer ${state.token}`;
+    if (state.restaurantId) headers['x-restaurant-id'] = state.restaurantId;
+    const res = await fetch(path, { ...opts, headers });
+    const ct = res.headers.get('content-type') || '';
+    let data;
+    if (ct.includes('application/json')) { data = await res.json(); }
+    else { const text = await res.text(); throw new Error(`API non JSON (${res.status}). ${text.replace(/\s+/g,' ').slice(0,200)}`); }
+    if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
+    return data;
+  }
+
+  function show(view) {
+    if (view === 'app' || view === 'admin') { window.location.href = '/app.html'; return; }
+    state.view = view; saveState();
+    ['signup', 'login'].forEach(v => {
+      const el = $('#' + v + 'View');
+      if (el) el.classList.toggle('active', v === view);
+    });
+    const home = $('#homeView');
+    if (home) home.style.display = view === 'home' ? 'block' : 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function init() {
+    loadState();
+    if (state.token) { window.location.replace('/app.html'); return; }
+    if (state.view === 'app' || state.view === 'admin') { state.view = 'home'; saveState(); }
+    try {
+      const cfg = await api('/api/config');
+      state.mode = cfg.mode || 'demo';
+      const n = $('#signupNotice');
+      if (n) n.textContent = cfg.configured
+        ? '✓ Mode Supabase — données persistées en temps réel.'
+        : 'Mode démonstration — toutes les fonctionnalités disponibles.';
+    } catch(e) { state.mode = 'demo'; }
+    bind();
+    show(state.view || 'home');
+  }
+
+  function bind() {
+    document.addEventListener('click', e => {
+      const vb = e.target.closest('[data-view]');
+      if (vb) {
+        e.preventDefault();
+        if (vb.dataset.plan) {
+          state.selectedPlan = vb.dataset.plan;
+          const sp = $('#selectedPlan'); if (sp) sp.value = state.selectedPlan;
+        }
+        show(vb.dataset.view); return;
+      }
+      const jb = e.target.closest('[data-jump]');
+      if (jb) { e.preventDefault(); document.getElementById(jb.dataset.jump)?.scrollIntoView({ behavior: 'smooth' }); }
+    });
+    $('#signupForm').addEventListener('submit', submitSignup);
+    $('#loginForm').addEventListener('submit', submitLogin);
+  }
+
+  async function submitSignup(e) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
+    body.modules = ['reservations', 'orders', 'delivery', 'payments', 'crm', 'promotions'];
+    const result = $('#signupResult'); result.classList.remove('hidden'); result.textContent = 'Création en cours...';
+    const btn = e.currentTarget.querySelector('[type=submit]'); btn.textContent = '…'; btn.disabled = true;
+    try {
+      const data = await api('/api/signup', { method: 'POST', body: JSON.stringify(body) });
+      result.textContent = 'Compte créé ! Redirection...';
+      if (data.mode === 'demo') {
+        state.token = 'demo-token'; state.user = data.user;
+        state.memberships = [{ restaurant_id: data.restaurant.id, role: 'owner', status: 'active', restaurants: data.restaurant }];
+        state.restaurantId = data.restaurant.id; state.platformAdmin = true; state.mode = 'demo';
+        saveState(); window.location.replace('/app.html');
       } else {
-        const text = await res.text();
-        throw new Error(`Réponse non JSON (${res.status}). ${text.replace(/\s+/g,' ').slice(0,200)}`);
+        const ld = await api('/api/login', { method: 'POST', body: JSON.stringify({ email: body.email, password: body.password }) });
+        state.token = ld.session.access_token;
+        state.user = { id: ld.session.user.id, email: ld.session.user.email };
+        state.memberships = ld.memberships || [];
+        state.platformAdmin = Boolean(ld.platformAdmin);
+        if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
+        state.mode = 'supabase'; saveState(); window.location.replace('/app.html');
       }
-      if (!res.ok || data.ok===false) throw new Error(data.error||`API error ${res.status}`);
-      return data;
-    }
+    } catch(err) { result.textContent = 'Erreur : ' + err.message; btn.textContent = 'Créer mon espace restaurant →'; btn.disabled = false; }
+  }
 
-    function show(view){
-      if (view==='app'||view==='admin'){ window.location.href='/app.html'; return; }
-      state.view=view; saveState();
-      ['signup','login'].forEach(v => {
-        const el = $('#'+v+'View');
-        if(el) el.classList.toggle('active', v===view);
-      });
-      const homeEl = $('#homeView');
-      if(homeEl) homeEl.style.display = view==='home' ? 'block' : 'none';
-      window.scrollTo({ top:0, behavior:'smooth' });
-    }
+  async function submitLogin(e) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
+    const result = $('#loginResult'); result.classList.remove('hidden'); result.textContent = 'Connexion...';
+    const btn = e.currentTarget.querySelector('[type=submit]'); btn.textContent = '…'; btn.disabled = true;
+    try {
+      const data = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
+      state.token = data.session.access_token;
+      state.user = { id: data.session.user.id, email: data.session.user.email };
+      state.memberships = data.memberships || [];
+      state.platformAdmin = Boolean(data.platformAdmin);
+      if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
+      saveState(); result.textContent = 'Bienvenue ! Redirection...';
+      window.location.replace('/app.html');
+    } catch(err) { result.textContent = 'Erreur : ' + err.message; btn.textContent = 'Se connecter →'; btn.disabled = false; }
+  }
 
-    async function init(){
-      loadState();
-      if(state.token){ window.location.replace('/app.html'); return; }
-      if(state.view==='app'||state.view==='admin'){ state.view='home'; saveState(); }
-      try {
-        const cfg = await api('/api/config');
-        state.mode = cfg.mode||'demo';
-        const noticeEl = $('#signupNotice');
-        if(noticeEl) noticeEl.textContent = cfg.configured
-          ? '✓ Espace sécurisé — vos données sont persistées.'
-          : 'Mode démonstration actif — toutes les fonctionnalités sont disponibles.';
-      } catch(e){ state.mode='demo'; }
-      bind();
-      show(state.view||'home');
-    }
-
-    function bind(){
-      document.addEventListener('click', e => {
-        const vb = e.target.closest('[data-view]');
-        if(vb){
-          e.preventDefault();
-          if(vb.dataset.plan){
-            state.selectedPlan=vb.dataset.plan;
-            const sp=$('#selectedPlan'); if(sp) sp.value=state.selectedPlan;
-          }
-          show(vb.dataset.view); return;
-        }
-        const jb = e.target.closest('[data-jump]');
-        if(jb){ e.preventDefault(); document.getElementById(jb.dataset.jump)?.scrollIntoView({behavior:'smooth'}); }
-      });
-      $('#signupForm').addEventListener('submit', submitSignup);
-      $('#loginForm').addEventListener('submit', submitLogin);
-    }
-
-    async function submitSignup(e){
-      e.preventDefault();
-      const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries());
-      body.modules=['reservations','orders','delivery','payments','crm','promotions'];
-      const result=$('#signupResult'); result.classList.remove('hidden'); result.textContent='Création en cours...';
-      const btn=e.currentTarget.querySelector('[type=submit]');
-      btn.textContent='…'; btn.disabled=true;
-      try{
-        const data=await api('/api/signup',{method:'POST',body:JSON.stringify(body)});
-        result.textContent='Compte créé ! Redirection...';
-        if(data.mode==='demo'){
-          state.token='demo-token'; state.user=data.user;
-          state.memberships=[{restaurant_id:data.restaurant.id,role:'owner',status:'active',restaurants:data.restaurant}];
-          state.restaurantId=data.restaurant.id; state.platformAdmin=true; state.mode='demo';
-          saveState(); window.location.replace('/app.html');
-        } else {
-          const ld=await api('/api/login',{method:'POST',body:JSON.stringify({email:body.email,password:body.password})});
-          state.token=ld.session.access_token;
-          state.user={id:ld.session.user.id,email:ld.session.user.email};
-          state.memberships=ld.memberships||[];
-          state.platformAdmin=Boolean(ld.platformAdmin);
-          if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id;
-          state.mode='supabase'; saveState(); window.location.replace('/app.html');
-        }
-      } catch(err){
-        result.textContent='Erreur : '+err.message;
-        btn.textContent='Créer mon espace restaurant →'; btn.disabled=false;
-      }
-    }
-
-    async function submitLogin(e){
-      e.preventDefault();
-      const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries());
-      const result=$('#loginResult'); result.classList.remove('hidden'); result.textContent='Connexion...';
-      const btn=e.currentTarget.querySelector('[type=submit]');
-      btn.textContent='…'; btn.disabled=true;
-      try{
-        const data=await api('/api/login',{method:'POST',body:JSON.stringify(body)});
-        state.token=data.session.access_token;
-        state.user={id:data.session.user.id,email:data.session.user.email};
-        state.memberships=data.memberships||[];
-        state.platformAdmin=Boolean(data.platformAdmin);
-        if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id;
-        saveState(); result.textContent='Bienvenue ! Redirection...';
-        window.location.replace('/app.html');
-      } catch(err){
-        result.textContent='Erreur : '+err.message;
-        btn.textContent='Se connecter →'; btn.disabled=false;
-      }
-    }
-
-    init();
+  init();
   </script>
 </body>
 </html>
