@@ -219,11 +219,7 @@
       if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
       return data;
     }
-    function updateAdminVisibility() {
-      const isPlatformAdmin = Boolean(state.platformAdmin);
-      const homeAdminBtn = $('#homeAdminBtn');
-      if (homeAdminBtn) homeAdminBtn.style.display = isPlatformAdmin ? 'inline-block' : 'none';
-      const appAdminBtn = $    function show(view){
+    function show(view){
       if (view === 'app' || view === 'admin') {
         window.location.href = '/app.html';
         return;
