@@ -3,7 +3,8 @@ const { isConfigured, authPasswordLogin, getMemberships } = require('./_lib/supa
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;
-  if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'Method not allowed' });
+  if (req.method === 'GET') return send(res, 200, { ok: true, method_hint: 'Use POST with email and password to login.', route: '/api/login' });
+  if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'Method not allowed', allowed: ['POST'] });
   try {
     const body = await readJson(req);
     const email = String(required(body.email, 'Email')).toLowerCase();
