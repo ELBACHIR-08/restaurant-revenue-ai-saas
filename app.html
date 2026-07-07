@@ -598,9 +598,9 @@
     }
 
     async function loadBusinessData(){
-      try{ const p = await api('/api/products'); state.products = p.products||[]; }catch(e){ if(!state.products.length) state.products = demoProducts(); }
-      try{ const pr = await api('/api/promotions'); state.promotions = pr.promotions||[]; }catch(e){ if(!state.promotions.length) state.promotions = demoPromotions(); }
-      try{ const s = await api('/api/admin-summary'); state.adminSummary = s.summary; }catch(e){ state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; }
+      try{ const p = await api('/api/products'); state.products = p.products||[]; }catch(e){ if(!state.products.length && !state.token) state.products = demoProducts(); }
+      try{ const pr = await api('/api/promotions'); state.promotions = pr.promotions||[]; }catch(e){ if(!state.promotions.length && !state.token) state.promotions = demoPromotions(); }
+      try{ const s = await api('/api/admin-summary'); state.adminSummary = s.summary; }catch(e){ if(!state.token) state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; else state.adminSummary = { restaurants:0, trial_active:0, active_subscriptions:0, mrr_xof:0, pending_onboarding:0, support_open:0, churn_risk:0 }; }
       saveState();
     }
 
@@ -617,7 +617,28 @@
     function dashboardMetrics(){
       const productValue = state.products.reduce((s,p)=>s+Number(p.price||0),0);
       const activePromos = state.promotions.filter(p=>p.status==='active').length;
-      return { direct_revenue_xof: 980000 + productValue * 3 + activePromos * 45000, average_basket_xof: Math.max(22000, Math.round(productValue / Math.max(1,state.products.length) * 1.85)), reservations: 27 + activePromos, orders: 13 + state.products.filter(p=>p.delivery_enabled).length, upsell_rate: Math.min(89, 52 + activePromos*6 + state.products.filter(p=>p.upsell_notes).length*3), customers: 142 + activePromos*8 };
+      
+      if (state.token) {
+        // En tant que membre connecté, pas de données fictives !
+        return { 
+          direct_revenue_xof: 0, 
+          average_basket_xof: 0, 
+          reservations: 0, 
+          orders: 0, 
+          upsell_rate: 0, 
+          customers: 0 
+        };
+      }
+
+      // Mode démo visiteur
+      return { 
+        direct_revenue_xof: 980000 + productValue * 3 + activePromos * 45000, 
+        average_basket_xof: Math.max(22000, Math.round(productValue / Math.max(1,state.products.length) * 1.85)), 
+        reservations: 27 + activePromos, 
+        orders: 13 + state.products.filter(p=>p.delivery_enabled).length, 
+        upsell_rate: Math.min(89, 52 + activePromos*6 + state.products.filter(p=>p.upsell_notes).length*3), 
+        customers: 142 + activePromos*8 
+      };
     }
     function renderApp(){
       setActiveButtons(); const m = dashboardMetrics();
