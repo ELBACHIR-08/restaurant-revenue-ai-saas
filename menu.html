@@ -353,8 +353,8 @@
       <h3>Votre panier 🛒</h3>
       <button class="cart-close" onclick="closeCart()">×</button>
     </div>
-    <div class="cart-body" id="cartBody">
-      <div class="empty-cart">Votre panier est vide</div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">Votre panier est vide.<br>Ajoutez des plats !</div>
     </div>
     <div class="cart-footer">
       <button class="checkout-btn" onclick="openPayment()">Valider la commande →</button>
@@ -363,24 +363,7 @@
 
   <div class="overlay" id="payOverlay"></div>
 
-  <!-- ══ RESERVATION MODAL ════════════════════════════════ -->
-  <div class="pay-modal" id="resModal">
-    <div class="pay-header">
-      <h3>Réserver une table 📅</h3>
-      <button onclick="closeReservation()">×</button>
-    </div>
-    <div class="pay-body">
-      <div class="pay-field"><label>Nom complet</label><input type="text" id="res_name" placeholder="Amadou Ndiaye" required></div>
-      <div class="pay-field"><label>Numéro de téléphone</label><input type="tel" id="res_phone" placeholder="77 000 00 00" required></div>
-      <div style="display:flex;gap:12px">
-        <div class="pay-field" style="flex:1"><label>Date</label><input type="date" id="res_date" required></div>
-        <div class="pay-field" style="flex:1"><label>Heure</label><input type="time" id="res_time" required></div>
-      </div>
-      <div class="pay-field"><label>Nombre de personnes</label><input type="number" id="res_guests" value="2" min="1" max="50" required></div>
-      <div class="pay-field"><label>Occasion (Optionnel)</label><input type="text" id="res_occasion" placeholder="Anniversaire, Dîner pro..."></div>
-      <button class="pay-btn" id="resBtn" onclick="submitReservation()">Confirmer la demande</button>
-    </div>
-  </div>
+
 
   <!-- ══ PAYMENT MODAL ═══════════════════════════════════ -->
   <div class="pay-modal" id="payModal">
