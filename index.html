@@ -6,7 +6,7 @@
   <title>Restaurant Revenue AI — Plateforme IA pour restaurants Sénégal</title>
   <meta name="description" content="Plateforme IA pour restaurants : réservation, commande, paiement, CRM, promotions, dashboard directeur et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
     /* ── TOKENS ───────────────────────────────────────────── */
     :root{
@@ -47,16 +47,61 @@
     .section-alt{ background:var(--sable-2); color:var(--encre-text); }
     @media(max-width:860px){ .section{ padding:100px var(--gutter); } }
 
-    /* ── TYPOGRAPHY ───────────────────────────────────────── */
-    .eyebrow{ font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; font-weight:500; color:var(--or); }
+    /* ── TYPOGRAPHY ──────────────────────────────────────── */
+    /*
+      Hiérarchie ÉTALÉE :
+      - Fraunces weight 300 optique 72+ = titres héro (ample, aéré)
+      - Fraunces weight 400 optique 36  = h2, titres de section
+      - Fraunces weight 400 optique 9   = h3, petits titres
+      - Inter 400 / line-height 1.75    = corps de texte
+      - Inter 500 uppercase spacé       = labels, eyebrows, boutons
+    */
+    .eyebrow{
+      font-family:'Inter',sans-serif;
+      font-size:11px; letter-spacing:0.24em; text-transform:uppercase;
+      font-weight:500; color:var(--or); display:block; margin-bottom:6px;
+    }
     .eyebrow-light{ color:var(--or-clair); }
-    h1,h2,h3{ font-family:'Fraunces',serif; font-weight:300; line-height:1.1; }
-    h1{ font-size:clamp(48px,8vw,120px); line-height:0.9; letter-spacing:-0.01em; }
-    h2{ font-size:clamp(30px,4vw,48px); line-height:1.2; }
-    h3{ font-size:22px; line-height:1.3; font-weight:400; }
-    p{ font-weight:300; line-height:1.75; color:var(--text-muted); }
-    .p-light{ color:rgba(232,220,196,0.8); }
+
+    /* Titres — Fraunces optique variable */
+    h1{
+      font-family:'Fraunces',serif;
+      font-size:clamp(44px, 7.5vw, 108px);
+      font-weight:300;
+      line-height:0.95;
+      letter-spacing:-0.025em;  /* serré = luxe sur grand corps */
+    }
+    h2{
+      font-family:'Fraunces',serif;
+      font-size:clamp(28px, 4vw, 46px);
+      font-weight:400;
+      line-height:1.15;
+      letter-spacing:-0.01em;
+    }
+    h3{
+      font-family:'Fraunces',serif;
+      font-size:clamp(18px, 2vw, 22px);
+      font-weight:400;
+      line-height:1.3;
+      letter-spacing:0em;
+    }
+    h4{
+      font-family:'Inter',sans-serif;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+    }
+
+    /* Corps de texte — Inter */
+    p{ font-weight:400; line-height:1.78; color:var(--text-muted); font-size:15.5px; }
+    .p-light{ color:rgba(232,220,196,0.78); }
+    .p-lg{ font-size:17.5px; line-height:1.8; font-weight:300; }   /* hero intro */
+    .p-sm{ font-size:13.5px; line-height:1.65; }
+
+    /* Italique accent (Fraunces) */
     .em-accent{ font-style:italic; font-weight:400; }
+    .em-accent-light{ font-style:italic; font-weight:300; }
 
     /* ── NAV ──────────────────────────────────────────────── */
     .ds-nav{
@@ -113,13 +158,13 @@
     .hero-bg{ position:absolute; inset:0; z-index:0; }
     .hero-bg svg{ width:100%; height:100%; display:block; }
     .hero-content{ position:relative; z-index:1; max-width:820px; }
-    .hero-content h1{ color:var(--ecume); margin:16px 0 24px; }
-    .hero-content p{ color:rgba(232,220,196,0.85); font-size:17px; max-width:600px; margin-bottom:38px; }
+    .hero-content h1{ color:var(--ecume); margin:20px 0 28px; }
+    .hero-content p{ color:rgba(232,220,196,0.85); max-width:580px; margin-bottom:38px; }
     .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
     .hero-metrics{ display:flex; gap:48px; margin-top:64px; padding-top:32px; border-top:1px solid var(--line); flex-wrap:wrap; }
-    .hero-metric .label{ font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--or-clair); margin-bottom:6px; }
-    .hero-metric .value{ font-family:'Fraunces',serif; font-size:36px; font-weight:300; color:var(--ecume); line-height:1; }
-    .hero-metric .sub{ font-size:12px; color:rgba(232,220,196,0.6); margin-top:4px; }
+    .hero-metric .label{ font-size:11px; letter-spacing:0.24em; text-transform:uppercase; font-weight:500; color:var(--or-clair); margin-bottom:8px; font-family:'Inter',sans-serif; }
+    .hero-metric .value{ font-family:'Fraunces',serif; font-size:clamp(28px,4vw,40px); font-weight:300; color:var(--ecume); line-height:1; letter-spacing:-0.02em; }
+    .hero-metric .sub{ font-family:'Inter',sans-serif; font-size:12px; font-weight:400; color:rgba(232,220,196,0.55); margin-top:5px; }
 
     /* ── DS-ROW (features list) ───────────────────────────── */
     .ds-row{ display:grid; grid-template-columns:80px 1fr 1fr 140px; gap:30px; align-items:center; padding:30px 0; border-top:1px solid var(--line); cursor:pointer; transition:background var(--ease-base); }
@@ -305,7 +350,7 @@
       <div class="hero-content">
         <span class="eyebrow eyebrow-light">🚀 Production Core V2 · Supabase ready</span>
         <h1>Transformez chaque menu en <em class="em-accent" style="color:var(--or-clair)">moteur de revenus.</em></h1>
-        <p>Réservations, commandes, livraison, QR codes, paiements, CRM, promotions et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly.</p>
+        <p class="p-lg">Réservations, commandes, livraison, QR codes, paiements, CRM, promotions et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly.</p>
         <div class="hero-actions">
           <button class="btn btn-or" type="button" data-view="signup">Démarrer 30 jours gratuits</button>
           <button class="btn btn-ghost-dark" type="button" data-view="login">Se connecter</button>
