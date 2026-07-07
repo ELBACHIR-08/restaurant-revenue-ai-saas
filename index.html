@@ -324,7 +324,40 @@
       const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
       body.modules = ['reservations','orders','delivery','payments','crm','promotions'];
       const result = $('#signupResult'); result.classList.remove('hidden'); result.textContent='Création en cours...';
-      try{ const data = await api('/api/signup',{ method:'POST', body:JSON.stringify(body) }); result.textContent=JSON.stringify(data,null,2); if(data.restaurant) state.restaurantId=data.restaurant.id; if(data.user) state.user=data.user; saveState(); }
+      try{
+        const data = await api('/api/signup',{ method:'POST', body:JSON.stringify(body) });
+        result.textContent='Compte créé ! Connexion en cours...';
+        
+        // Prefill login fields with newly created credentials
+        const loginEmailInput = $('#loginForm [name="email"]');
+        const loginPassInput = $('#loginForm [name="password"]');
+        if (loginEmailInput) loginEmailInput.value = body.email;
+        if (loginPassInput) loginPassInput.value = body.password;
+
+        if (data.mode === 'demo') {
+          state.token = 'demo-token';
+          state.user = data.user;
+          state.memberships = [{ restaurant_id: data.restaurant.id, role: 'owner', status: 'active', restaurants: data.restaurant }];
+          state.restaurantId = data.restaurant.id;
+          state.mode = 'demo';
+          saveState();
+          await loadBusinessData();
+          show('app');
+        } else {
+          const loginData = await api('/api/login', {
+            method: 'POST',
+            body: JSON.stringify({ email: body.email, password: body.password })
+          });
+          state.token = loginData.session.access_token;
+          state.user = { id: loginData.session.user.id, email: loginData.session.user.email };
+          state.memberships = loginData.memberships || [];
+          if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
+          state.mode = 'supabase';
+          saveState();
+          await loadBusinessData();
+          show('app');
+        }
+      }
       catch(err){ result.textContent='Erreur: '+err.message; }
     }
     async function submitLogin(e){
