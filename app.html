@@ -836,12 +836,44 @@
       const file = input.files[0];
       if(file) {
         document.getElementById('obFileName').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' Ko)';
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          obData.fileBase64 = e.target.result.split(',')[1];
-          obData.fileMime = file.type;
+        
+        if(file.type === 'application/pdf') {
+          // Fallback simple pour PDF
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if(!e.target || !e.target.result) return alert("Erreur de lecture PDF");
+            const res = e.target.result;
+            obData.fileBase64 = res.includes(',') ? res.split(',')[1] : res;
+            obData.fileMime = file.type;
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+
+        // Pour les images (notamment photos mobile), on compresse
+        const imgUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(imgUrl);
+          const canvas = document.createElement('canvas');
+          let w = img.width;
+          let h = img.height;
+          // redimensionner max 1600px
+          const maxDim = 1600;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+          }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          obData.fileBase64 = dataUrl.split(',')[1];
+          obData.fileMime = 'image/jpeg';
         };
-        reader.readAsDataURL(file);
+        img.onerror = () => alert("Erreur: impossible de lire cette image.");
+        img.src = imgUrl;
       }
     }
     async function obStartProcessing(){
