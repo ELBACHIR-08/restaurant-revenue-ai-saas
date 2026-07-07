@@ -226,6 +226,8 @@
           <button class="side-btn" data-section="subscription">💳 Abonnement</button>
           <button class="side-btn" data-section="settings">⚙️ Paramètres</button>
           <div class="divider" style="background:#3a352d"></div>
+          <a class="side-btn" id="sidebarMenuLink" target="_blank" href="/r/demo-restaurant" style="text-decoration:none;color:#ffce85">🔗 Mon Lien Menu</a>
+          <div class="divider" style="background:#3a352d"></div>
           <button class="side-btn" data-view="admin" id="appAdminBtn" style="display:none">🛡️ Super Admin</button>
           <button class="side-btn" data-view="home">← Site public</button>
           <button class="side-btn" data-logout style="color:#f1c6b8;margin-top:12px">🚪 Déconnexion</button>
@@ -649,6 +651,10 @@
     function renderApp(){
       setActiveButtons(); const m = dashboardMetrics();
       const content = $('#appContent');
+
+      const linkEl = document.getElementById('sidebarMenuLink');
+      if (linkEl) linkEl.href = '/r/' + state.restaurantId;
+
       if(state.appSection==='dashboard') content.innerHTML = renderDashboard(m);
       if(state.appSection==='products') content.innerHTML = renderProducts();
       if(state.appSection==='promotions') content.innerHTML = renderPromotions();
