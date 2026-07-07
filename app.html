@@ -807,8 +807,20 @@
         if(name) obData.restaurantName = name;
         obData.city = document.getElementById('ob_city').value;
         const slug = (obData.restaurantName||'mon-resto').toLowerCase().replace(/[^a-z0-9]/g,'-');
-        document.getElementById('obLinkDisplay').textContent = 'https://rrai.app/' + slug;
-        document.getElementById('obQrLabel').textContent = 'rrai.app/' + slug;
+        
+        // Utiliser l'URL réelle du restaurant si on a un ID, sinon le slug
+        const finalId = state.restaurantId && state.restaurantId !== 'demo-restaurant' ? state.restaurantId : slug;
+        const link = window.location.origin + '/r/' + finalId;
+        
+        document.getElementById('obLinkDisplay').textContent = link;
+        
+        // Générer le vrai QR code
+        const qrContainer = document.getElementById('obQrDisplay');
+        qrContainer.innerHTML = `
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}" alt="QR Code" style="width:120px;height:120px;border-radius:8px;margin-bottom:8px;">
+          <div style="font-size:11px;font-weight:600;">Votre QR Code</div>
+          <div style="font-size:9px;color:var(--muted);" id="obQrLabel">${window.location.host}/r/${finalId}</div>
+        `;
       }
       if(from===3){
         const wave = document.getElementById('ob_wave').value.trim();
