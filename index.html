@@ -181,6 +181,43 @@
     /* ── REVEAL ON SCROLL ─────────────────────────────────── */
     .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
     .reveal.in{ opacity:1; transform:translateY(0); }
+
+    /* ── CLOUD WISPS ──────────────────────────────────────── */
+    .cloud-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .cloud-wisp{
+      position:absolute;
+      border-radius:50% 60% 55% 45% / 40% 50% 60% 45%;
+      background:rgba(255,255,255,0.035);
+      filter:blur(42px);
+      animation:cloudDrift linear infinite;
+    }
+    .cloud-wisp:nth-child(1){ width:600px; height:200px; top:8%;  left:-10%; animation-duration:55s; animation-delay:0s;   opacity:.9; }
+    .cloud-wisp:nth-child(2){ width:900px; height:260px; top:22%; left:-20%; animation-duration:80s; animation-delay:-20s; opacity:.6; filter:blur(58px); }
+    .cloud-wisp:nth-child(3){ width:500px; height:160px; top:55%; left:-5%;  animation-duration:65s; animation-delay:-35s; opacity:.7; }
+    .cloud-wisp:nth-child(4){ width:700px; height:220px; top:35%; left:-15%; animation-duration:95s; animation-delay:-10s; opacity:.5; filter:blur(70px); }
+    .cloud-wisp:nth-child(5){ width:400px; height:130px; top:70%; left:10%;  animation-duration:48s; animation-delay:-5s;  opacity:.8; }
+    @keyframes cloudDrift{
+      0%   { transform: translateX(0)   translateY(0)   scale(1); }
+      25%  { transform: translateX(18%) translateY(-3%) scale(1.04); }
+      50%  { transform: translateX(40%) translateY(2%)  scale(1.01); }
+      75%  { transform: translateX(60%) translateY(-2%) scale(1.05); }
+      100% { transform: translateX(115%) translateY(0) scale(1); }
+    }
+    /* Gold shimmer wisp */
+    .cloud-wisp-gold{
+      position:absolute;
+      border-radius:50%;
+      background:radial-gradient(ellipse at center, rgba(185,138,79,0.12) 0%, transparent 70%);
+      filter:blur(60px);
+      animation:goldPulse 18s ease-in-out infinite alternate;
+    }
+    .cloud-wisp-gold:nth-child(1){ width:500px; height:500px; top:-10%; right:-5%; animation-delay:0s; }
+    .cloud-wisp-gold:nth-child(2){ width:350px; height:350px; bottom:5%; left:15%; animation-delay:-9s; }
+    @keyframes goldPulse{
+      0%   { opacity:.4; transform:scale(1)    translateY(0); }
+      50%  { opacity:.7; transform:scale(1.1)  translateY(-20px); }
+      100% { opacity:.3; transform:scale(0.95) translateY(10px); }
+    }
   </style>
 </head>
 <body>
@@ -209,22 +246,60 @@
     <!-- HERO avec fond organique SVG animé -->
     <section class="hero">
       <div class="hero-bg">
-        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+        <!-- Fond gradient nuit indigo -->
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
           <defs>
-            <filter id="organic-flow" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="3" seed="7" result="noise">
-                <animate attributeName="baseFrequency" values="0.008 0.014;0.011 0.009;0.008 0.014" dur="26s" repeatCount="indefinite"/>
+            <!-- Couche 1 : turbulence profonde lente (marée) -->
+            <filter id="cloud-deep" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.006 0.010" numOctaves="4" seed="3" result="noise">
+                <animate attributeName="baseFrequency" values="0.006 0.010;0.009 0.006;0.006 0.010" dur="34s" repeatCount="indefinite"/>
               </feTurbulence>
-              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.10  0 0 0 0 0.16  0 0 0 0 0.28  0 0 0 0.9 0"/>
+              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.08  0 0 0 0 0.13  0 0 0 0 0.25  0 0 0 0.85 0"/>
             </filter>
-            <linearGradient id="baseSky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#0c1626"/>
+            <!-- Couche 2 : turbulence intermédiaire (nuages) -->
+            <filter id="cloud-mid" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.013 0.020" numOctaves="5" seed="12" result="noise">
+                <animate attributeName="baseFrequency" values="0.013 0.020;0.018 0.014;0.013 0.020" dur="22s" repeatCount="indefinite"/>
+              </feTurbulence>
+              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.18  0 0 0 0 0.32  0 0 0 0.55 0"/>
+            </filter>
+            <!-- Couche 3 : turbulence légère rapide (écume de nuages) -->
+            <filter id="cloud-light" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.022 0.030" numOctaves="3" seed="21" result="noise">
+                <animate attributeName="baseFrequency" values="0.022 0.030;0.028 0.020;0.022 0.030" dur="14s" repeatCount="indefinite"/>
+              </feTurbulence>
+              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.18  0 0 0 0 0.26  0 0 0 0 0.42  0 0 0 0.30 0"/>
+            </filter>
+            <linearGradient id="baseSky" x1="0" y1="0" x2="0.3" y2="1">
+              <stop offset="0%" stop-color="#070f1e"/>
+              <stop offset="45%" stop-color="#0e1b33"/>
               <stop offset="100%" stop-color="#1a2c4d"/>
             </linearGradient>
           </defs>
+          <!-- Fond -->
           <rect width="1600" height="900" fill="url(#baseSky)"/>
-          <rect width="1600" height="900" filter="url(#organic-flow)"/>
+          <!-- Couche profonde (marée de fond) -->
+          <rect width="1600" height="900" filter="url(#cloud-deep)" opacity="1"/>
+          <!-- Couche nuages intermédiaire -->
+          <rect width="1600" height="900" filter="url(#cloud-mid)" opacity="0.8"/>
+          <!-- Couche légère (écume haute) -->
+          <rect width="1600" height="900" filter="url(#cloud-light)" opacity="0.5"/>
         </svg>
+
+        <!-- Volutes CSS qui dérivent (nuages légers) -->
+        <div class="cloud-layer">
+          <div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div>
+        </div>
+
+        <!-- Reflets dorés pulsants -->
+        <div class="cloud-layer">
+          <div class="cloud-wisp-gold"></div>
+          <div class="cloud-wisp-gold"></div>
+        </div>
       </div>
 
       <div class="hero-content">
