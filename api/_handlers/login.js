@@ -1,5 +1,5 @@
 const { send, handleOptions, readJson, required } = require('../_lib/http');
-const { isConfigured, authPasswordLogin, getMemberships } = require('../_lib/supabase-rest');
+const { isConfigured, authPasswordLogin, getMemberships, isPlatformAdmin } = require('../_lib/supabase-rest');
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;
@@ -14,12 +14,14 @@ module.exports = async (req, res) => {
         ok: true,
         mode: 'demo',
         session: { access_token: 'demo-token', user: { id: 'demo-user', email } },
-        memberships: [{ restaurant_id: 'demo-restaurant', role: 'owner', restaurants: { id: 'demo-restaurant', name: 'Restaurant Démo', city: 'Dakar' } }]
+        memberships: [{ restaurant_id: 'demo-restaurant', role: 'owner', restaurants: { id: 'demo-restaurant', name: 'Restaurant Démo', city: 'Dakar' } }],
+        platformAdmin: true
       });
     }
     const session = await authPasswordLogin(email, password);
     const memberships = await getMemberships(session.user.id);
-    send(res, 200, { ok: true, mode: 'supabase', session, memberships });
+    const platformAdmin = await isPlatformAdmin(session.user);
+    send(res, 200, { ok: true, mode: 'supabase', session, memberships, platformAdmin });
   } catch (error) {
     send(res, error.statusCode || 500, { ok: false, error: error.message, payload: error.payload || null });
   }

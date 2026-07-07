@@ -109,7 +109,7 @@
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
             <button class="btn gold" type="button" data-view="signup">Démarrer 30 jours gratuits</button>
             <button class="btn" type="button" data-view="app">Voir l’espace restaurant</button>
-            <button class="btn ghost" type="button" data-view="admin">Super Admin</button>
+            <button class="btn ghost" type="button" data-view="admin" id="homeAdminBtn" style="display:none">Super Admin</button>
           </div>
           <div class="grid cols-3" style="margin-top:24px">
             <div class="metric"><div class="label">Promesse</div><div class="value">+CA</div><div class="sub">Upsell IA, commandes directes, réservations captées</div></div>
@@ -192,7 +192,7 @@
           <button class="side-btn" data-section="subscription">💳 Abonnement</button>
           <button class="side-btn" data-section="settings">⚙️ Paramètres</button>
           <div class="divider" style="background:#3a352d"></div>
-          <button class="side-btn" data-view="admin">🛡️ Super Admin</button>
+          <button class="side-btn" data-view="admin" id="appAdminBtn" style="display:none">🛡️ Super Admin</button>
           <button class="side-btn" data-view="home">← Site public</button>
         </aside>
         <section class="content" id="appContent"></section>
@@ -257,7 +257,18 @@
       if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
       return data;
     }
-    function show(view){ state.view=view; saveState(); ['home','signup','login','app','admin'].forEach(v=>{ const el = $('#' + v + 'View'); if(el) el.classList.toggle('active', v===view && v!=='home'); }); $('#homeView').style.display = view==='home' ? 'block' : 'none'; if(view==='app') renderApp(); if(view==='admin') renderAdmin(); window.scrollTo({ top:0, behavior:'smooth' }); }
+    function updateAdminVisibility() {
+      const isPlatformAdmin = Boolean(state.platformAdmin);
+      const homeAdminBtn = $('#homeAdminBtn');
+      if (homeAdminBtn) homeAdminBtn.style.display = isPlatformAdmin ? 'inline-block' : 'none';
+      const appAdminBtn = $('#appAdminBtn');
+      if (appAdminBtn) appAdminBtn.style.display = isPlatformAdmin ? 'flex' : 'none';
+    }
+    function show(view){
+      if (view === 'admin' && !state.platformAdmin) {
+        view = 'home';
+      }
+      state.view=view; saveState(); ['home','signup','login','app','admin'].forEach(v=>{ const el = $('#' + v + 'View'); if(el) el.classList.toggle('active', v===view && v!=='home'); }); $('#homeView').style.display = view==='home' ? 'block' : 'none'; if(view==='app') renderApp(); if(view==='admin') renderAdmin(); window.scrollTo({ top:0, behavior:'smooth' }); }
     function stayRender(fn){ const y=window.scrollY; fn(); requestAnimationFrame(()=>window.scrollTo(0,y)); }
     function setActiveButtons(){ $$('.side-btn[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===state.appSection)); $$('.side-btn[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===state.adminTab)); }
     function modal(html){ $('#modalPanel').innerHTML=html; $('#modal').classList.add('active'); }
@@ -268,6 +279,7 @@
       try { state.config = await api('/api/config'); state.mode = state.config.mode || 'demo'; } catch(e) { state.config = { configured:false, mode:'demo' }; }
       $('#signupNotice').textContent = state.config.configured ? 'Mode Supabase actif : création de compte réelle avec persistance.' : 'Mode démo : ajoutez SUPABASE_URL, SUPABASE_ANON_KEY et SUPABASE_SERVICE_ROLE_KEY sur Vercel pour passer en réel.';
       if(state.token){ try{ const me = await api('/api/auth-me'); state.user = me.user; state.memberships = me.memberships || []; state.platformAdmin = me.platformAdmin; if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id; }catch(e){} }
+      updateAdminVisibility();
       await loadBusinessData();
       bind();
       show(state.view || 'home');
@@ -295,7 +307,7 @@
         const downloadReport = e.target.closest('[data-download-report]');
         if(downloadReport){ downloadText('rapport-restaurant-revenue-ai.txt', $('#reportText')?.textContent||''); return; }
         const logout = e.target.closest('[data-logout]');
-        if(logout){ state.token=null; state.user=null; state.memberships=[]; state.platformAdmin=false; saveState(); show('home'); return; }
+        if(logout){ state.token=null; state.user=null; state.memberships=[]; state.platformAdmin=false; saveState(); updateAdminVisibility(); show('home'); return; }
       });
       $('#signupForm').addEventListener('submit', submitSignup);
       $('#loginForm').addEventListener('submit', submitLogin);
@@ -339,8 +351,10 @@
           state.user = data.user;
           state.memberships = [{ restaurant_id: data.restaurant.id, role: 'owner', status: 'active', restaurants: data.restaurant }];
           state.restaurantId = data.restaurant.id;
+          state.platformAdmin = true;
           state.mode = 'demo';
           saveState();
+          updateAdminVisibility();
           await loadBusinessData();
           show('app');
         } else {
@@ -351,9 +365,11 @@
           state.token = loginData.session.access_token;
           state.user = { id: loginData.session.user.id, email: loginData.session.user.email };
           state.memberships = loginData.memberships || [];
+          state.platformAdmin = Boolean(loginData.platformAdmin);
           if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
           state.mode = 'supabase';
           saveState();
+          updateAdminVisibility();
           await loadBusinessData();
           show('app');
         }
@@ -362,7 +378,19 @@
     }
     async function submitLogin(e){
       e.preventDefault(); const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries()); const result=$('#loginResult'); result.classList.remove('hidden'); result.textContent='Connexion...';
-      try{ const data = await api('/api/login',{method:'POST', body:JSON.stringify(body)}); state.token = data.session.access_token; state.user = { id:data.session.user.id, email:data.session.user.email }; state.memberships=data.memberships||[]; if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id; saveState(); await loadBusinessData(); result.textContent='Connexion réussie'; show('app'); }
+      try{
+        const data = await api('/api/login',{method:'POST', body:JSON.stringify(body)});
+        state.token = data.session.access_token;
+        state.user = { id:data.session.user.id, email:data.session.user.email };
+        state.memberships = data.memberships || [];
+        state.platformAdmin = Boolean(data.platformAdmin);
+        if(state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
+        saveState();
+        updateAdminVisibility();
+        await loadBusinessData();
+        result.textContent='Connexion réussie';
+        show('app');
+      }
       catch(err){ result.textContent='Erreur: '+err.message; }
     }
 
