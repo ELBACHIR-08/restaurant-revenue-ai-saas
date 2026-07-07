@@ -10,6 +10,7 @@ const handlers = {
   'health': require('./_handlers/health'),
   'login': require('./_handlers/login'),
   'me': require('./_handlers/me'),
+  'parse-menu': require('./_handlers/parse-menu'),
   'ping': require('./_handlers/ping'),
   'products': require('./_handlers/products'),
   'promotions': require('./_handlers/promotions'),

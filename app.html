@@ -725,9 +725,17 @@
     }
     function obHandleFile(input){
       const file = input.files[0];
-      if(file) document.getElementById('obFileName').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' Ko)';
+      if(file) {
+        document.getElementById('obFileName').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' Ko)';
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          obData.fileBase64 = e.target.result.split(',')[1];
+          obData.fileMime = file.type;
+        };
+        reader.readAsDataURL(file);
+      }
     }
-    function obStartProcessing(){
+    async function obStartProcessing(){
       const proc = document.getElementById('obProcessing');
       const res = document.getElementById('obMenuResult');
       proc.classList.add('active');
@@ -735,44 +743,59 @@
       document.getElementById('obMenuNextBtn').disabled = true;
 
       const steps = ['obProc1','obProc2','obProc3','obProc4'];
-      const labels = ['✅ Lecture du fichier...','✅ Extraction des plats et catégories...','✅ Création de votre chatbot...','✅ QR code généré !'];
+      const labels = ['✅ Fichier envoyé à l\'IA...','✅ Extraction des plats et catégories en cours...','✅ Création de votre chatbot...','✅ Terminé !'];
+      
+      // UI Animation for the first 3 steps
       let i = 0;
-      const interval = setInterval(() => {
-        if(i < steps.length){
+      document.getElementById(steps[0]).classList.add('active');
+      const advanceUI = (toIndex) => {
+        while(i < toIndex && i < steps.length) {
           const el = document.getElementById(steps[i]);
           el.classList.add('done'); el.classList.remove('active');
           el.querySelector('.ic').textContent = '✅';
           el.textContent = labels[i];
           i++;
-          if(i < steps.length){
-            const next = document.getElementById(steps[i]);
-            next.classList.add('active');
-          }
-        } else {
-          clearInterval(interval);
-          // Simulate extracted products
-          const demoExtracted = [
-            {id:'ob-1',name:'Thiéboudienne royale',category:'Plats',price:4500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['signature'],upsell_notes:'Jus bissap'},
-            {id:'ob-2',name:'Yassa poulet fermier',category:'Plats',price:3800,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['populaire'],upsell_notes:'Thiakry'},
-            {id:'ob-3',name:'Mafé bœuf',category:'Plats',price:3500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['traditionnel'],upsell_notes:'Jus gingembre'},
-            {id:'ob-4',name:'Salade de crudités',category:'Entrées',price:1500,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:[],upsell_notes:''},
-            {id:'ob-5',name:'Jus bissap maison',category:'Boissons',price:800,status:'available',delivery_enabled:true,takeaway_enabled:true,dine_in_enabled:true,tags:['fait-maison'],upsell_notes:''},
-            {id:'ob-6',name:'Thiakry crémeux',category:'Desserts',price:1200,status:'available',delivery_enabled:false,takeaway_enabled:true,dine_in_enabled:true,tags:['dessert'],upsell_notes:''},
-          ];
-          state.products = demoExtracted;
-          saveState();
-          document.getElementById('obMenuStats').innerHTML = `
-            ✅ <strong>${demoExtracted.length} plats</strong> importés<br>
-            ✅ <strong>4 catégories</strong> créées (Entrées, Plats, Desserts, Boissons)<br>
-            ✅ Votre chatbot est prêt<br>
-            ✅ QR code généré
-          `;
-          res.style.display = 'block';
-          document.getElementById('obMenuNextBtn').disabled = false;
-          document.getElementById('obMenuNextBtn').textContent = 'Continuer →';
-          document.getElementById('obMenuNextBtn').setAttribute('onclick','obNext(2)');
+          if(i < steps.length) document.getElementById(steps[i]).classList.add('active');
         }
-      }, 900);
+      };
+
+      try {
+        advanceUI(1); // Step 1: Sending to AI
+        
+        // Make the real API call
+        const payload = {
+          base64: obData.fileBase64 || '',
+          mimeType: obData.fileMime || 'image/jpeg',
+          restaurant_id: state.restaurantId
+        };
+
+        const result = await api('/api/parse-menu', { method: 'POST', body: JSON.stringify(payload) });
+        
+        advanceUI(3); // Finished AI extraction
+        
+        state.products = result.products || [];
+        saveState();
+
+        const categories = new Set(state.products.map(p => p.category));
+        
+        advanceUI(4); // Done
+        
+        document.getElementById('obMenuStats').innerHTML = `
+          ✅ <strong>${state.products.length} plats</strong> extraits par l'IA<br>
+          ✅ <strong>${categories.size} catégories</strong> créées<br>
+          ✅ Votre chatbot est prêt<br>
+          ✅ Base de données à jour
+        `;
+        res.style.display = 'block';
+        document.getElementById('obMenuNextBtn').disabled = false;
+        document.getElementById('obMenuNextBtn').textContent = 'Continuer →';
+        document.getElementById('obMenuNextBtn').setAttribute('onclick','obNext(2)');
+
+      } catch (err) {
+        alert('Erreur lors de l\'extraction: ' + err.message);
+        document.getElementById('obMenuNextBtn').disabled = false;
+        proc.classList.remove('active');
+      }
     }
     function obCopyLink(){
       const link = document.getElementById('obLinkDisplay').textContent;
