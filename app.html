@@ -775,7 +775,7 @@
       document.getElementById('obOverlay').classList.add('active');
       try {
         const prefs = JSON.parse(localStorage.getItem('rrai_bot_prefs') || '{}');
-        if (prefs.type) {
+        if (prefs && prefs.type) {
           const map = {
             "Lounge / Bar": "lounge",
             "Restaurant gastronomique": "restaurant",
