@@ -223,6 +223,17 @@
     .sticky-order button:active{transform:scale(.99);}
     .sticky-order .sticky-total{font-family:'Fraunces',serif;font-size:18px;color:var(--or-clair);}
 
+    /* ══ UPSELL SECTION ══ */
+    .upsell-section { margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(185,138,79,.3); }
+    .upsell-title { font-family: 'Fraunces', serif; font-size: 15px; color: var(--or); margin-bottom: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .upsell-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+    .upsell-scroll::-webkit-scrollbar { display: none; }
+    .upsell-card { flex: 0 0 140px; background: rgba(185,138,79,.05); border: 1px solid rgba(185,138,79,.2); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .upsell-card-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ecume); }
+    .upsell-card-price { font-size: 12px; color: rgba(232,220,196,.7); }
+    .upsell-add-btn { background: var(--or); color: var(--nuit-2); border: none; border-radius: 20px; padding: 6px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: auto; transition: opacity .2s; }
+    .upsell-add-btn:hover { opacity: 0.9; }
+
     /* ══ OVERLAY for cart ══ */
     .overlay{position:fixed;inset:0;background:rgba(7,15,30,.5);z-index:99;display:none;}
     .overlay.active{display:block;}
@@ -636,6 +647,60 @@
         <div class="cart-item-price">${money(c.price*c.qty)}</div>
       </div>
     `).join('');
+
+    // Append Upsell Section if cart is not empty
+    const upsells = getUpsellSuggestions();
+    if(upsells.length > 0) {
+      el.innerHTML += `
+        <div class="upsell-section">
+          <div class="upsell-title">✨ Pour accompagner votre commande</div>
+          <div class="upsell-scroll">
+            ${upsells.map(u => `
+              <div class="upsell-card">
+                <div class="upsell-card-name">${u.name}</div>
+                <div class="upsell-card-price">+ ${fmt.format(u.price)} FCFA</div>
+                <button class="upsell-add-btn" onclick="addToCart('${u.id}')">Ajouter</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  function getUpsellSuggestions() {
+    if(!cart.length) return [];
+    
+    // Determine what's already in the cart
+    const cartCategoryTags = cart.map(c => {
+      const it = MENU.find(m => m.id === c.id);
+      return it ? it.category.toLowerCase() : '';
+    });
+    const cartIds = cart.map(c => c.id);
+
+    const hasPlat = cartCategoryTags.some(c => c.includes('plat') || c.includes('viande') || c.includes('poisson') || c.includes('burger'));
+    const hasBoisson = cartCategoryTags.some(c => c.includes('boisson') || c.includes('jus'));
+    const hasDessert = cartCategoryTags.some(c => c.includes('dessert') || c.includes('sucre'));
+
+    let targetCategories = [];
+    if(hasPlat && !hasBoisson) targetCategories.push('boisson', 'jus');
+    else if((hasPlat || hasBoisson) && !hasDessert) targetCategories.push('dessert', 'sucre');
+    else targetCategories.push('boisson', 'jus', 'dessert', 'sucre'); // Fallback suggest drinks & desserts
+
+    // Find items matching target categories that are not already in the cart
+    let candidates = MENU.filter(item => {
+      if(cartIds.includes(item.id)) return false;
+      const cat = item.category.toLowerCase();
+      return targetCategories.some(tc => cat.includes(tc));
+    });
+
+    // If no specific candidates, just suggest something cheap/popular not in cart
+    if(candidates.length === 0) {
+      candidates = MENU.filter(item => !cartIds.includes(item.id) && item.price <= 5000);
+    }
+
+    // Shuffle and pick top 3
+    return candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
   }
 
   function openCart(){
