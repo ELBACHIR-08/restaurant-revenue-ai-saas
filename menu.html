@@ -27,9 +27,9 @@
     .app-header{
       background:var(--nuit-2);color:var(--ecume);
       padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
-      position:sticky;top:0;z-index:50;
+      position:relative; z-index:50;
     }
-    .resto-info .name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;}
+    .resto-info .name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;word-break:break-word;}
     .resto-info .city{font-size:11px;color:rgba(232,220,196,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
     .cart-btn{
       background:var(--or);border:none;cursor:pointer;
@@ -49,6 +49,7 @@
     .bot-welcome{
       background:var(--nuit);padding:20px;
       display:flex;gap:12px;align-items:flex-start;
+      position:relative; z-index:45;
     }
     .bot-avatar{width:36px;height:36px;background:var(--or);display:grid;place-items:center;font-size:18px;flex-shrink:0;}
     .bot-bubble-w{
@@ -62,7 +63,8 @@
     .categories{
       display:flex;gap:8px;padding:14px 20px;overflow-x:auto;
       background:#fff;border-bottom:1px solid var(--line);
-      scrollbar-width:none;position:sticky;top:72px;z-index:40;
+      scrollbar-width:none;position:sticky;top:0;z-index:60;
+      align-items:center;min-height:64px;
     }
     .categories::-webkit-scrollbar{display:none;}
     .cat-btn{
@@ -416,7 +418,7 @@
       const data = await res.json();
       
       if (data.ok && data.products && data.products.length > 0) {
-        RESTAURANT.name = restaurantSlug.replace(/-/g, ' ').toUpperCase();
+        RESTAURANT.name = data.restaurant_name ? data.restaurant_name : 'Restaurant';
         document.getElementById('restoName').textContent = RESTAURANT.name;
 
         MENU = data.products.map(p => ({

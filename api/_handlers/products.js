@@ -27,15 +27,25 @@ module.exports = async (req, res) => {
     const restaurantId = req.headers['x-restaurant-id'] || (req.query && req.query.restaurant_id) || 'demo-restaurant';
     const token = getBearer(req);
     const user = token ? await getUserFromToken(token) : { demo: true };
+    if (req.method === 'GET') {
+      let restaurantName = null;
+      if (isConfigured() && restaurantId !== 'demo-restaurant') {
+        const products = await select('products', { restaurant_id: `eq.${restaurantId}`, order: 'created_at.desc' });
+        const restaurants = await select('restaurants', { id: `eq.${restaurantId}` });
+        if (restaurants && restaurants.length > 0) {
+          restaurantName = restaurants[0].name;
+        }
+        return send(res, 200, { ok: true, mode: 'supabase', products, restaurant_name: restaurantName });
+      }
+      return send(res, 200, { ok: true, mode: 'demo', products: demoProducts(), restaurant_name: 'Restaurant Pilote (Démo)' });
+    }
+    
+    // Auth required for POST, PATCH, DELETE
     if (!isConfigured() || user.demo) {
-      if (req.method === 'GET') return send(res, 200, { ok: true, mode: 'demo', products: demoProducts() });
       const body = await readJson(req);
       return send(res, 200, { ok: true, mode: 'demo', product: { id: `demo-${Date.now()}`, ...normalizeProduct(body, restaurantId) } });
     }
-    if (req.method === 'GET') {
-      const products = await select('products', { restaurant_id: `eq.${restaurantId}`, order: 'created_at.desc' });
-      return send(res, 200, { ok: true, mode: 'supabase', products });
-    }
+
     if (req.method === 'POST') {
       await requireMembership(user, restaurantId, ['owner', 'manager', 'marketing']);
       const body = await readJson(req);
