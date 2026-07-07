@@ -221,9 +221,14 @@
       <div class="name" id="restoName">Le Baobab Doré</div>
       <div class="city" id="restoCity">Dakar · Sénégal</div>
     </div>
-    <button class="cart-btn" id="cartToggle">
-      🛒 Panier <span class="cart-count" id="cartCount">0</span>
-    </button>
+    <div style="display:flex;gap:10px;">
+      <button class="cart-btn" style="background:var(--or);color:var(--nuit-2);" onclick="openReservation()">
+        📅 Réserver
+      </button>
+      <button class="cart-btn" id="cartToggle">
+        🛒 Panier <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
   </header>
 
   <!-- ══ BOT WELCOME ═════════════════════════════════════ -->
@@ -257,6 +262,41 @@
 
   <!-- ══ CART PANEL ══════════════════════════════════════ -->
   <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>Votre panier 🛒</h3>
+      <button class="cart-close" onclick="closeCart()">×</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="empty-cart">Votre panier est vide</div>
+    </div>
+    <div class="cart-footer">
+      <button class="checkout-btn" onclick="openPayment()">Valider la commande →</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="payOverlay"></div>
+
+  <!-- ══ RESERVATION MODAL ════════════════════════════════ -->
+  <div class="pay-modal" id="resModal">
+    <div class="pay-header">
+      <h3>Réserver une table 📅</h3>
+      <button onclick="closeReservation()">×</button>
+    </div>
+    <div class="pay-body">
+      <div class="pay-field"><label>Nom complet</label><input type="text" id="res_name" placeholder="Amadou Ndiaye" required></div>
+      <div class="pay-field"><label>Numéro de téléphone</label><input type="tel" id="res_phone" placeholder="77 000 00 00" required></div>
+      <div style="display:flex;gap:12px">
+        <div class="pay-field" style="flex:1"><label>Date</label><input type="date" id="res_date" required></div>
+        <div class="pay-field" style="flex:1"><label>Heure</label><input type="time" id="res_time" required></div>
+      </div>
+      <div class="pay-field"><label>Nombre de personnes</label><input type="number" id="res_guests" value="2" min="1" max="50" required></div>
+      <div class="pay-field"><label>Occasion (Optionnel)</label><input type="text" id="res_occasion" placeholder="Anniversaire, Dîner pro..."></div>
+      <button class="pay-btn" id="resBtn" onclick="submitReservation()">Confirmer la demande</button>
+    </div>
+  </div>
+
+  <!-- ══ PAYMENT MODAL ═══════════════════════════════════ -->
+  <div class="pay-modal" id="payModal">
     <div class="cart-header">
       <h3>Votre panier 🛒</h3>
       <button class="cart-close" onclick="closeCart()">×</button>
@@ -637,6 +677,65 @@
   }
 
   init();
+    // --- RESERVATION ---
+    function openReservation(){
+      document.getElementById('payOverlay').classList.add('active');
+      document.getElementById('resModal').classList.add('active');
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('res_date').value = today;
+    }
+    function closeReservation(){
+      document.getElementById('payOverlay').classList.remove('active');
+      document.getElementById('resModal').classList.remove('active');
+    }
+
+    async function submitReservation() {
+      const name = document.getElementById('res_name').value.trim();
+      const phone = document.getElementById('res_phone').value.trim();
+      const date = document.getElementById('res_date').value;
+      const time = document.getElementById('res_time').value;
+      const guests = document.getElementById('res_guests').value;
+      const occasion = document.getElementById('res_occasion').value;
+
+      if(!name || !phone || !date || !time) {
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
+      }
+
+      const btn = document.getElementById('resBtn');
+      btn.textContent = 'Envoi...';
+      btn.disabled = true;
+
+      try {
+        const payload = {
+          restaurant_id: restaurantSlug,
+          customer_name: name,
+          customer_phone: phone,
+          reservation_date: date,
+          reservation_time: time,
+          party_size: Number(guests),
+          occasion: occasion
+        };
+
+        const res = await fetch('/api/reservations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        
+        closeReservation();
+        alert("✅ Votre demande de réservation a été envoyée au restaurant. Ils vous contacteront pour confirmer.");
+        
+      } catch(e) {
+        alert("Erreur lors de l'envoi.");
+      } finally {
+        btn.textContent = 'Confirmer la demande';
+        btn.disabled = false;
+      }
+    }
+
   </script>
 </body>
 </html>

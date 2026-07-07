@@ -16,6 +16,7 @@ const handlers = {
   'products': require('./_handlers/products'),
   'promotions': require('./_handlers/promotions'),
   'reports-generate': require('./_handlers/reports-generate'),
+  'reservations': require('./_handlers/reservations'),
   'restaurants': require('./_handlers/restaurants'),
   'routes': require('./_handlers/routes'),
   'signup': require('./_handlers/signup')

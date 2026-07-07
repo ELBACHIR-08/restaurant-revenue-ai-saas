@@ -421,7 +421,7 @@
       token: null, user: null, memberships: [], platformAdmin: false,
       restaurantId: DEMO_RESTAURANT_ID,
       selectedPlan: 'growth',
-      products: [], promotions: [], adminSummary: null, adminRestaurants: [], adminSubscriptions: [],
+      products: [], promotions: [], orders: [], reservations: [], adminSummary: null, adminRestaurants: [], adminSubscriptions: [],
       mode: 'demo'
     };
 
@@ -603,6 +603,7 @@
       try{ const p = await api('/api/products'); state.products = p.products||[]; }catch(e){ if(!state.products.length && !state.token) state.products = demoProducts(); }
       try{ const pr = await api('/api/promotions'); state.promotions = pr.promotions||[]; }catch(e){ if(!state.promotions.length && !state.token) state.promotions = demoPromotions(); }
       try{ const o = await api('/api/orders'); state.orders = o.orders||[]; }catch(e){ state.orders = []; }
+      try{ const r = await api('/api/reservations'); state.reservations = r.reservations||[]; }catch(e){ state.reservations = []; }
       try{ const s = await api('/api/admin-summary'); state.adminSummary = s.summary; }catch(e){ if(!state.token) state.adminSummary = { restaurants:18, trial_active:11, active_subscriptions:7, mrr_xof:260000, pending_onboarding:5, support_open:3, churn_risk:2 }; else state.adminSummary = { restaurants:0, trial_active:0, active_subscriptions:0, mrr_xof:0, pending_onboarding:0, support_open:0, churn_risk:0 }; }
       saveState();
     }
@@ -631,7 +632,7 @@
         return { 
           direct_revenue_xof: realRevenue, 
           average_basket_xof: realAvgBasket, 
-          reservations: 0, 
+          reservations: (state.reservations||[]).length, 
           orders: realOrdersCount, 
           upsell_rate: 0, 
           customers: uniqueCustomers 
@@ -668,8 +669,8 @@
     function renderDashboard(m){ return `<div class="toolbar"><div><span class="eyebrow">${state.mode==='supabase'?'Supabase connecté':'Mode démo fallback'}</span><h2>Dashboard directeur</h2><p>Vue business alimentée par les données produits, promotions et commandes.</p></div><div><button class="btn gold" data-generate-report>Générer rapport</button></div></div><div class="grid cols-4"><div class="metric"><div class="label">CA direct estimé</div><div class="value">${money(m.direct_revenue_xof)}</div><div class="sub">Commandes + upsell</div></div><div class="metric"><div class="label">Panier moyen</div><div class="value">${money(m.average_basket_xof)}</div><div class="sub">Simulation dynamique</div></div><div class="metric"><div class="label">Réservations</div><div class="value">${m.reservations}</div><div class="sub">Acomptes activables</div></div><div class="metric"><div class="label">Upsell accepté</div><div class="value">${m.upsell_rate}%</div><div class="sub">IA + promos</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Recommandations IA de la semaine</h3><div class="features"><div class="feature"><span class="check">✓</span>Mettre en avant les plats signature après 19h30.</div><div class="feature"><span class="check">✓</span>Pousser dessert + boisson maison sur livraison.</div><div class="feature"><span class="check">✓</span>Utiliser acompte wallet sur anniversaires et groupes.</div><div class="feature"><span class="check">✓</span>Activer une promo déjeuner en heures creuses.</div></div></div><div class="card dark"><h3>Score production</h3><p>Vercel + API + Supabase schema + endpoints CRUD produits/promos + super admin stable.</p><div class="divider" style="background:#3b342a"></div><div class="grid cols-2"><div><div class="value">${state.products.length}</div><p>produits</p></div><div><div class="value">${state.promotions.length}</div><p>promos</p></div></div></div></div>`; }
     function renderProducts(){ return `<div class="toolbar"><div><h2>Gestion produits</h2><p>Ajout, disponibilité, livraison, tags, upsell et persistance Supabase.</p></div><button class="btn gold" type="button" onclick="openProductModal()">Ajouter produit</button></div>${state.products.length?`<table class="table"><thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Canaux</th><th>Upsell</th><th></th></tr></thead><tbody>${state.products.map(p=>`<tr><td><strong>${esc(p.name)}</strong><br><span class="mini">${(p.tags||[]).join(', ')}</span></td><td>${esc(p.category||'Carte')}</td><td>${money(p.price)}</td><td>${p.dine_in_enabled?'Sur place ':''}${p.delivery_enabled?'Livraison ':''}${p.takeaway_enabled?'À emporter':''}</td><td>${esc(p.upsell_notes||'')}</td><td class="right"><button class="btn danger" data-delete-product="${p.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucun produit. Ajoutez votre première entrée de menu.</div>'}`; }
     function renderPromotions(){ return `<div class="toolbar"><div><h2>Gestion promotions</h2><p>Créez des offres déclenchées par contexte : midi, anniversaire, livraison, groupe.</p></div><button class="btn gold" type="button" onclick="openPromoModal()">Créer promotion</button></div>${state.promotions.length?`<table class="table"><thead><tr><th>Promo</th><th>Canal</th><th>Règle</th><th>Statut</th><th></th></tr></thead><tbody>${state.promotions.map(p=>`<tr><td><strong>${esc(p.name)}</strong><br><span class="mini">${esc(p.description||'')}</span></td><td>${esc(p.channel||'chatbot')}</td><td>${esc(p.rule_summary||'')}</td><td><span class="status ${p.status==='active'?'green':'gray'}">${esc(p.status||'draft')}</span></td><td class="right"><button class="btn danger" data-delete-promo="${p.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune promotion. Créez une offre ciblée.</div>'}`; }
-    function renderReservations(){ return `<div class="toolbar"><div><h2>Réservations</h2><p>Tunnel conversationnel, acompte wallet, contact WhatsApp et réduction des no-shows.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">Aujourd’hui</div><div class="value">27</div><div class="sub">tables réservées</div></div><div class="metric"><div class="label">Acomptes</div><div class="value">120k</div><div class="sub">FCFA sécurisés</div></div><div class="metric"><div class="label">No-show</div><div class="value">-24%</div><div class="sub">grâce à la confirmation</div></div></div>`; }
-    function renderOrders(){ return `<div class="toolbar"><div><h2>Commandes</h2><p>Livraison, à emporter, panier, frais estimés et paiement wallet-ready.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">Commandes directes</div><div class="value">13</div><div class="sub">hors plateformes tierces</div></div><div class="metric"><div class="label">Livrables</div><div class="value">${state.products.filter(p=>p.delivery_enabled).length}</div><div class="sub">produits activés</div></div><div class="metric"><div class="label">Délai moyen</div><div class="value">42 min</div><div class="sub">simulation opérationnelle</div></div></div>`; }
+    function renderReservations(){ const res = state.reservations || []; return `<div class="toolbar"><div><h2>Réservations</h2><p>Gérez vos réservations de table.</p></div></div>${res.length ? `<table class="table"><thead><tr><th>Date & Heure</th><th>Client</th><th>Couverts</th><th>Occasion</th><th>Statut</th><th></th></tr></thead><tbody>${res.map(r => `<tr><td><strong>${esc(r.reservation_date)} à ${esc(r.reservation_time)}</strong></td><td>${esc(r.notes.split('\\n')[0].replace('Nom: ', ''))}<br><span class="mini">${esc(r.notes.split('\\n')[1].replace('Tél: ', ''))}</span></td><td>${r.party_size} pers.</td><td>${esc(r.notes.split('\\n')[2].replace('Occasion: ', ''))}</td><td><span class="status ${r.status==='approved'?'green':r.status==='rejected'?'gray':'gold'}">${r.status}</span></td><td class="right">${r.status==='pending'?`<button class="btn green" onclick="updateReservation('${r.id}','approved')">✓ Accepter</button> <button class="btn danger" onclick="updateReservation('${r.id}','rejected')">✗ Refuser</button>`:''}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Aucune réservation pour le moment.</div>'}`; }
+    function renderOrders(){ const ords = state.orders || []; return `<div class="toolbar"><div><h2>Commandes</h2><p>Historique des commandes et édition de factures.</p></div></div>${ords.length ? `<table class="table"><thead><tr><th>Client</th><th>Téléphone</th><th>Montant</th><th>Méthode</th><th>Date</th><th></th></tr></thead><tbody>${ords.map(o => `<tr><td><strong>${esc(o.customer_name)}</strong></td><td>${esc(o.customer_phone)}</td><td>${money(o.total_amount)}</td><td>${esc(o.payment_method)}</td><td>${new Date(o.created_at).toLocaleDateString('fr-FR')}</td><td class="right"><button class="btn gold" onclick="openInvoice('${o.id}')">📄 Facture</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Aucune commande pour le moment.</div>'}`; }
     function renderCustomers(){ return `<div class="toolbar"><div><h2>CRM clients</h2><p>Téléphone, email, consentement, historique et préférences.</p></div></div><div class="card"><h3>Segments prêts</h3><div class="grid cols-4"><div class="metric"><div class="label">Clients</div><div class="value">142</div><div class="sub">collectés</div></div><div class="metric"><div class="label">Anniversaire</div><div class="value">18</div><div class="sub">à relancer</div></div><div class="metric"><div class="label">Livraison</div><div class="value">46</div><div class="sub">commandes directes</div></div><div class="metric"><div class="label">Consentement</div><div class="value">62%</div><div class="sub">marketing opt-in</div></div></div></div>`; }
     function renderSubscription(){ return `<div class="toolbar"><div><h2>Abonnement</h2><p>Trial 30 jours puis conversion vers Starter, Growth ou Premium AI.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div class="price">20 000</div><p>FCFA / mois</p></div><div class="card featured"><h3>Growth</h3><div class="price">30 000</div><p>FCFA / mois · recommandé</p></div><div class="card"><h3>Premium AI</h3><div class="price">50 000</div><p>FCFA / mois</p></div></div><div class="notice" style="margin-top:16px">PayDunya sera branché après validation du Core Supabase : webhook IPN, factures, activation/suspension automatique.</div>`; }
     function renderSettings(){ return `<div class="toolbar"><div><h2>Paramètres</h2><p>Rôles, canaux, horaires, zones de livraison et moyens de paiement.</p></div></div><div class="grid cols-2"><div class="card"><h3>Rôles</h3><p>Owner, Manager, Serveur, Cuisine, Marketing, Comptable.</p></div><div class="card"><h3>Wallets</h3><p>Wave, Orange Money, Free Money et PayDunya à connecter.</p></div></div>`; }
@@ -687,6 +688,63 @@
     async function loadAdminRestaurants(){ try{ const data = await api('/api/admin-restaurants'); state.adminRestaurants = data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
 
     function bindInlineForms(){ }
+    
+    window.updateReservation = async function(id, status){
+      const btn = event.currentTarget;
+      const originalText = btn.textContent;
+      btn.textContent = '...';
+      try {
+        await api('/api/reservations', { method: 'PATCH', body: JSON.stringify({ id, status }) });
+        const idx = state.reservations.findIndex(r => String(r.id) === String(id));
+        if (idx !== -1) state.reservations[idx].status = status;
+        saveState();
+        renderApp();
+      } catch(e) { alert(e.message); btn.textContent = originalText; }
+    };
+
+    window.openInvoice = function(orderId) {
+      const order = state.orders.find(o => String(o.id) === String(orderId));
+      if (!order) return;
+      
+      const items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
+      const itemsHtml = items.map(i => `
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;border-bottom:1px dashed #e8dcc440;padding-bottom:4px;">
+          <span>${i.qty}x ${esc(i.name)}</span>
+          <span>${money(Number(i.qty) * Number(i.price))}</span>
+        </div>
+      `).join('');
+
+      const invoiceHtml = `
+        <div style="max-width:320px;margin:0 auto;background:#fff;color:#000;padding:24px;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+          <div style="text-align:center;margin-bottom:20px;">
+            <h2 style="margin:0;font-family:'Fraunces',serif;font-size:24px;">${esc((state.memberships[0]&&state.memberships[0].restaurants&&state.memberships[0].restaurants.name)||'Restaurant')}</h2>
+            <p style="margin:4px 0 0;font-size:12px;color:#666;">Ticket / Reçu de Caisse</p>
+          </div>
+          <div style="font-size:12px;color:#444;margin-bottom:16px;">
+            <div><strong>Date:</strong> ${new Date(order.created_at).toLocaleString('fr-FR')}</div>
+            <div><strong>N° Commande:</strong> ${order.id.split('-')[0].toUpperCase()}</div>
+            <div><strong>Client:</strong> ${esc(order.customer_name)} (${esc(order.customer_phone)})</div>
+            <div><strong>Méthode:</strong> ${esc(order.payment_method).toUpperCase()}</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            ${itemsHtml}
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:bold;margin-top:16px;padding-top:12px;border-top:2px solid #000;">
+            <span>TOTAL:</span>
+            <span>${money(order.total_amount)}</span>
+          </div>
+          <div style="text-align:center;font-size:11px;color:#666;margin-top:24px;">
+            Merci de votre commande !
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:24px;">
+          <button class="btn" data-close-modal>Fermer</button>
+          <button class="btn gold" onclick="window.print()">🖨️ Imprimer le ticket</button>
+        </div>
+      `;
+      modal(invoiceHtml);
+    };
+
     window.openProductModal = function(){ modal(`<h2>Ajouter produit</h2><p>Produit sauvegardé dans Supabase si configuré, sinon en local pour la démo.</p><form class="form" id="productForm"><div class="form-row"><div class="field"><label>Nom</label><input class="input" name="name" required value="Gambas flambées au Pastis"></div><div class="field"><label>Prix FCFA</label><input class="input" name="price" type="number" required value="22500"></div></div><div class="form-row"><div class="field"><label>Catégorie</label><input class="input" name="category" value="Poissons"></div><div class="field"><label>Tags</label><input class="input" name="tags" value="premium,livrable"></div></div><div class="field"><label>Notes upsell</label><input class="input" name="upsell_notes" value="Chablis, dessert signature"></div><div class="quick"><label><input type="checkbox" name="dine_in_enabled" checked> Sur place</label><label><input type="checkbox" name="delivery_enabled" checked> Livraison</label><label><input type="checkbox" name="takeaway_enabled" checked> À emporter</label></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" data-close-modal>Annuler</button><button class="btn gold" type="submit">Sauvegarder</button></div></form>`); $('#productForm').addEventListener('submit', submitProduct); };
     async function submitProduct(e){ e.preventDefault(); const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries()); body.dine_in_enabled = fd.has('dine_in_enabled'); body.delivery_enabled = fd.has('delivery_enabled'); body.takeaway_enabled = fd.has('takeaway_enabled'); body.price = Number(body.price); try{ const data = await api('/api/products',{method:'POST',body:JSON.stringify(body)}); state.products.unshift(data.product); saveState(); closeModal(); renderApp(); }catch(err){ alert(err.message); } }
     async function deleteProductById(id){ if(!confirm('Supprimer ce produit ?')) return; try{ await api('/api/products',{method:'DELETE',body:JSON.stringify({id})}); }catch(e){} state.products = state.products.filter(p => String(p.id) !== String(id)); saveState(); renderApp(); }
@@ -715,6 +773,24 @@
 
     function obStart(){
       document.getElementById('obOverlay').classList.add('active');
+      try {
+        const prefs = JSON.parse(localStorage.getItem('rrai_bot_prefs') || '{}');
+        if (prefs.type) {
+          const map = {
+            "Lounge / Bar": "lounge",
+            "Restaurant gastronomique": "restaurant",
+            "Fast-food premium": "fast",
+            "Hôtel-restaurant": "hotel",
+            "Traiteur / Événementiel": "restaurant"
+          };
+          const mapped = map[prefs.type];
+          if (mapped) {
+            document.querySelectorAll('[data-obchoice="type"]').forEach(c => c.classList.remove('selected'));
+            const el = document.querySelector(`[data-obchoice="type"][data-val="${mapped}"]`);
+            if (el) el.classList.add('selected');
+          }
+        }
+      } catch(e) {}
     }
     function obSetStep(n){
       for(let i=1;i<=4;i++){

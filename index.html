@@ -875,6 +875,15 @@
     opts.innerHTML = '';
     botAddMsg(answer, true);
     planScore[answer] = (planScore[answer] || 0) + 1;
+    
+    try {
+      const saved = JSON.parse(localStorage.getItem('rrai_bot_prefs') || '{}');
+      if (botStep === 0) saved.type = answer;
+      else if (botStep === 1) saved.covers = answer;
+      else if (botStep === 2) saved.challenge = answer;
+      localStorage.setItem('rrai_bot_prefs', JSON.stringify(saved));
+    } catch(e) {}
+
     botStep++;
 
     if (botStep < BOT_SCRIPT.length) {
