@@ -5,7 +5,7 @@
   "description": "Restaurant Revenue AI - Supabase Production Core V2",
   "scripts": {
     "dev": "vercel dev",
-    "check": "node scripts/check.js"
+    "check": "node api/_lib/check.js"
   },
   "engines": {
     "node": "20.x"
