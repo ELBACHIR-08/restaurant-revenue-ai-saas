@@ -8,6 +8,6 @@
     "check": "node api/_lib/check.js"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=18"
   }
 }
