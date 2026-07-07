@@ -6,6 +6,8 @@
     { "source": "/api/:path*", "destination": "/api/index.js?_path=:path*" },
     { "source": "/app", "destination": "/app.html" },
     { "source": "/app.html", "destination": "/app.html" },
-    { "source": "/((?!api/|app\\.html|app$).*)", "destination": "/index.html" }
+    { "source": "/r/:slug", "destination": "/menu.html" },
+    { "source": "/menu.html", "destination": "/menu.html" },
+    { "source": "/((?!api/|app\\.html|app$|r/|menu\\.html).*)", "destination": "/index.html" }
   ]
 }
