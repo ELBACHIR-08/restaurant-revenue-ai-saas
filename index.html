@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Restaurant Revenue AI — Plateforme IA pour restaurants Sénégal</title>
-  <meta name="description" content="Plateforme IA pour restaurants : réservation, commande, paiement, CRM, promotions, dashboard directeur et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly." />
+  <title>Restaurant Revenue AI — Plus de revenus, moins d'effort pour votre restaurant</title>
+  <meta name="description" content="La plateforme IA qui transforme votre restaurant en machine à revenus : réservations, commandes, paiements Wave/OM, CRM et analytics. 30 jours gratuits." />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
-    /* ── TOKENS ───────────────────────────────────────────── */
+    /* ══ TOKENS ══════════════════════════════════════════ */
     :root{
       --nuit:       #101d33;
       --nuit-2:     #182946;
@@ -23,292 +23,327 @@
       --text-faint: #7a7e82;
       --line:       rgba(232,220,196,0.18);
       --line-dark:  rgba(16,29,51,0.12);
-      --radius:     0px;
       --max-width:  1160px;
       --gutter:     6vw;
-      --ease-fast:  .25s ease;
-      --ease-base:  .35s ease;
+      --ease-fast:  .2s ease;
+      --ease-base:  .32s ease;
       --ease-slow:  .5s cubic-bezier(.16,1,.3,1);
     }
 
-    /* ── RESET & BASE ─────────────────────────────────────── */
+    /* ══ RESET ═══════════════════════════════════════════ */
     *{ box-sizing:border-box; margin:0; padding:0; }
     html{ scroll-behavior:smooth; }
-    body{ font-family:'Inter',sans-serif; color:var(--encre-text); background:var(--ecume); min-height:100vh; overflow-x:hidden; }
+    body{ font-family:'Inter',sans-serif; font-size:15.5px; color:var(--encre-text); background:var(--ecume); min-height:100vh; overflow-x:hidden; }
     a{ color:inherit; text-decoration:none; }
     button,input,select,textarea{ font:inherit; }
-    img{ display:block; max-width:100%; }
 
-    /* ── LAYOUT ───────────────────────────────────────────── */
+    /* ══ LAYOUT ══════════════════════════════════════════ */
     .container{ max-width:var(--max-width); margin:0 auto; padding:0 var(--gutter); }
-    .section{ padding:150px var(--gutter); position:relative; }
+    .section{ padding:130px var(--gutter); position:relative; }
     .section-dark{ background:var(--nuit); color:var(--ecume); }
-    .section-light{ background:var(--ecume); color:var(--encre-text); }
-    .section-alt{ background:var(--sable-2); color:var(--encre-text); }
-    @media(max-width:860px){ .section{ padding:100px var(--gutter); } }
+    .section-light{ background:var(--ecume); }
+    .section-alt{ background:var(--sable-2); }
+    @media(max-width:860px){ .section{ padding:90px var(--gutter); } }
 
-    /* ── TYPOGRAPHY ──────────────────────────────────────── */
-    /*
-      Hiérarchie ÉTALÉE :
-      - Fraunces weight 300 optique 72+ = titres héro (ample, aéré)
-      - Fraunces weight 400 optique 36  = h2, titres de section
-      - Fraunces weight 400 optique 9   = h3, petits titres
-      - Inter 400 / line-height 1.75    = corps de texte
-      - Inter 500 uppercase spacé       = labels, eyebrows, boutons
-    */
+    /* ══ TYPOGRAPHY ══════════════════════════════════════ */
     .eyebrow{
-      font-family:'Inter',sans-serif;
-      font-size:11px; letter-spacing:0.24em; text-transform:uppercase;
-      font-weight:500; color:var(--or); display:block; margin-bottom:6px;
+      font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.24em;
+      text-transform:uppercase; font-weight:500; color:var(--or); display:block;
     }
     .eyebrow-light{ color:var(--or-clair); }
-
-    /* Titres — Fraunces optique variable */
-    h1{
-      font-family:'Fraunces',serif;
-      font-size:clamp(44px, 7.5vw, 108px);
-      font-weight:300;
-      line-height:0.95;
-      letter-spacing:-0.025em;  /* serré = luxe sur grand corps */
-    }
-    h2{
-      font-family:'Fraunces',serif;
-      font-size:clamp(28px, 4vw, 46px);
-      font-weight:400;
-      line-height:1.15;
-      letter-spacing:-0.01em;
-    }
-    h3{
-      font-family:'Fraunces',serif;
-      font-size:clamp(18px, 2vw, 22px);
-      font-weight:400;
-      line-height:1.3;
-      letter-spacing:0em;
-    }
-    h4{
-      font-family:'Inter',sans-serif;
-      font-size:13px;
-      font-weight:600;
-      letter-spacing:0.06em;
-      text-transform:uppercase;
-    }
-
-    /* Corps de texte — Inter */
+    h1{ font-family:'Fraunces',serif; font-size:clamp(42px,7vw,104px); font-weight:300; line-height:0.95; letter-spacing:-0.025em; }
+    h2{ font-family:'Fraunces',serif; font-size:clamp(26px,3.5vw,44px); font-weight:400; line-height:1.15; letter-spacing:-0.01em; }
+    h3{ font-family:'Fraunces',serif; font-size:clamp(18px,2vw,22px); font-weight:400; line-height:1.3; }
+    h4{ font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
     p{ font-weight:400; line-height:1.78; color:var(--text-muted); font-size:15.5px; }
-    .p-light{ color:rgba(232,220,196,0.78); }
-    .p-lg{ font-size:17.5px; line-height:1.8; font-weight:300; }   /* hero intro */
+    .p-light{ color:rgba(232,220,196,0.75); }
+    .p-lg{ font-size:17.5px; line-height:1.8; font-weight:300; }
     .p-sm{ font-size:13.5px; line-height:1.65; }
-
-    /* Italique accent (Fraunces) */
     .em-accent{ font-style:italic; font-weight:400; }
-    .em-accent-light{ font-style:italic; font-weight:300; }
 
-    /* ── NAV ──────────────────────────────────────────────── */
+    /* ══ NAV ═════════════════════════════════════════════ */
     .ds-nav{
       position:fixed; top:0; left:0; right:0; z-index:100;
       display:flex; align-items:center; justify-content:space-between;
-      padding:26px var(--gutter);
+      padding:24px var(--gutter);
       transition:background var(--ease-slow), padding var(--ease-base), box-shadow var(--ease-base);
     }
     .ds-nav.scrolled{
-      background:rgba(250,247,240,0.92);
-      backdrop-filter:blur(10px);
-      padding:16px var(--gutter);
-      box-shadow:0 1px 0 var(--line-dark);
+      background:rgba(250,247,240,0.94); backdrop-filter:blur(12px);
+      padding:14px var(--gutter); box-shadow:0 1px 0 var(--line-dark);
     }
-    .ds-nav .brand{ font-family:'Fraunces',serif; font-size:20px; color:var(--ecume); transition:color var(--ease-base); display:flex; align-items:center; gap:10px; }
-    .ds-nav.scrolled .brand{ color:var(--nuit); }
-    .brand-mark{ width:32px; height:32px; background:linear-gradient(135deg,var(--nuit),var(--or)); display:grid; place-items:center; color:#fff; font-size:16px; }
-    .ds-nav.scrolled .brand-mark{ background:linear-gradient(135deg,var(--nuit),var(--or)); }
-    .ds-nav-links{ display:flex; gap:38px; font-size:13px; align-items:center; }
-    .ds-nav-links a{ color:var(--ecume); opacity:.85; position:relative; padding-bottom:4px; transition:opacity var(--ease-fast), color var(--ease-base); }
-    .ds-nav.scrolled .ds-nav-links a{ color:var(--nuit); }
+    /* Logo */
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand-logo{
+      width:36px; height:36px; background:var(--or);
+      display:grid; place-items:center; flex-shrink:0;
+    }
+    .brand-logo svg{ width:20px; height:20px; fill:var(--ecume); }
+    .brand-name{
+      font-family:'Fraunces',serif; font-size:17px; font-weight:400;
+      color:var(--ecume); letter-spacing:0.01em; transition:color var(--ease-base);
+    }
+    .brand-name span{ font-style:italic; color:var(--or-clair); }
+    .ds-nav.scrolled .brand-name{ color:var(--nuit); }
+    .ds-nav-links{ display:flex; gap:36px; font-size:13px; align-items:center; }
+    .ds-nav-links a{
+      color:rgba(250,247,240,0.82); position:relative; padding-bottom:4px;
+      transition:color var(--ease-base), opacity var(--ease-fast);
+    }
+    .ds-nav.scrolled .ds-nav-links a{ color:var(--text-muted); }
     .ds-nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:currentColor; transition:width var(--ease-fast); }
     .ds-nav-links a:hover::after{ width:100%; }
-    .ds-nav-links a:hover{ opacity:1; }
-    .nav-cta{ font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:11px 22px; border:1px solid rgba(250,247,240,0.5); background:none; color:var(--ecume); cursor:pointer; transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base); }
+    .ds-nav-links a:hover{ color:var(--ecume); }
+    .ds-nav.scrolled .ds-nav-links a:hover{ color:var(--nuit); }
+    .nav-cta{
+      font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+      padding:10px 20px; border:1px solid rgba(250,247,240,0.45); background:none; color:var(--ecume);
+      cursor:pointer; transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base);
+    }
     .nav-cta:hover{ background:var(--or); border-color:var(--or); color:var(--nuit); }
-    .ds-nav.scrolled .nav-cta{ border-color:var(--nuit-2); color:var(--nuit); }
+    .nav-cta:active{ background:var(--corail); border-color:var(--corail); color:var(--ecume); transform:scale(.98); }
+    .nav-cta:focus-visible{ outline:2px solid var(--or); outline-offset:3px; }
+    .nav-cta.accent{ background:var(--or); border-color:var(--or); color:var(--nuit); }
+    .nav-cta.accent:hover{ background:var(--corail); border-color:var(--corail); color:var(--ecume); }
+    .ds-nav.scrolled .nav-cta{ border-color:var(--line-dark); color:var(--nuit); }
     .ds-nav.scrolled .nav-cta:hover{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .nav-cta.primary{ background:var(--ecume); color:var(--nuit); border-color:var(--ecume); }
-    .nav-cta.primary:hover{ background:var(--or); border-color:var(--or); }
-    .ds-nav.scrolled .nav-cta.primary{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .ds-nav.scrolled .nav-cta.primary:hover{ background:var(--corail); border-color:var(--corail); }
+    .ds-nav.scrolled .nav-cta.accent{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
+    .ds-nav.scrolled .nav-cta.accent:hover{ background:var(--corail); border-color:var(--corail); }
     @media(max-width:860px){ .ds-nav-links{ display:none; } }
 
-    /* ── BUTTONS ──────────────────────────────────────────── */
-    .btn{ display:inline-block; font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; padding:14px 28px; border:1px solid currentColor; cursor:pointer; background:none; transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base); }
+    /* ══ BUTTONS ═════════════════════════════════════════ */
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+      padding:15px 30px; border:1px solid currentColor; cursor:pointer; background:none;
+      transition:background var(--ease-base), color var(--ease-base), border-color var(--ease-base), transform var(--ease-fast);
+      position:relative; overflow:hidden;
+    }
+    .btn:active{ transform:scale(.98); }
+    .btn:focus-visible{ outline:2px solid var(--or); outline-offset:3px; }
     .btn-primary{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-    .btn-primary:hover{ background:var(--corail); border-color:var(--corail); color:var(--ecume); }
-    .btn-or{ background:var(--or); color:var(--ecume); border-color:var(--or); }
+    .btn-primary:hover{ background:var(--corail); border-color:var(--corail); }
+    .btn-primary:active{ background:#8f3e28; border-color:#8f3e28; }
+    .btn-or{ background:var(--or); color:var(--nuit); border-color:var(--or); font-weight:600; }
     .btn-or:hover{ background:var(--corail); border-color:var(--corail); color:var(--ecume); }
-    .btn-ghost-dark{ color:var(--ecume); border-color:rgba(250,247,240,0.5); }
-    .btn-ghost-dark:hover{ background:var(--or); border-color:var(--or); color:var(--nuit); }
-    .btn-ghost-light{ color:var(--nuit); border-color:var(--nuit-2); }
-    .btn-ghost-light:hover{ background:var(--nuit); color:var(--ecume); }
-    .btn-full{ width:100%; text-align:center; padding:17px; }
+    .btn-or:active{ background:#8f3e28; border-color:#8f3e28; color:var(--ecume); }
+    .btn-ghost-dark{ color:var(--ecume); border-color:rgba(250,247,240,0.4); }
+    .btn-ghost-dark:hover{ background:rgba(250,247,240,0.08); border-color:rgba(250,247,240,0.7); }
+    .btn-ghost-dark:active{ background:rgba(250,247,240,0.15); }
+    .btn-ghost-light{ color:var(--nuit); border-color:var(--line-dark); }
+    .btn-ghost-light:hover{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
+    .btn-full{ width:100%; padding:17px; }
+    .btn-lg{ padding:18px 38px; font-size:13px; }
 
-    /* ── HERO ─────────────────────────────────────────────── */
+    /* ══ HERO ════════════════════════════════════════════ */
     .hero{
       position:relative; min-height:100vh;
-      display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end;
-      padding:0 var(--gutter) 100px;
-      color:var(--ecume); overflow:hidden;
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding:0 var(--gutter) 110px; color:var(--ecume); overflow:hidden;
     }
     .hero-bg{ position:absolute; inset:0; z-index:0; }
     .hero-bg svg{ width:100%; height:100%; display:block; }
-    .hero-content{ position:relative; z-index:1; max-width:820px; }
-    .hero-content h1{ color:var(--ecume); margin:20px 0 28px; }
-    .hero-content p{ color:rgba(232,220,196,0.85); max-width:580px; margin-bottom:38px; }
-    .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
-    .hero-metrics{ display:flex; gap:48px; margin-top:64px; padding-top:32px; border-top:1px solid var(--line); flex-wrap:wrap; }
-    .hero-metric .label{ font-size:11px; letter-spacing:0.24em; text-transform:uppercase; font-weight:500; color:var(--or-clair); margin-bottom:8px; font-family:'Inter',sans-serif; }
-    .hero-metric .value{ font-family:'Fraunces',serif; font-size:clamp(28px,4vw,40px); font-weight:300; color:var(--ecume); line-height:1; letter-spacing:-0.02em; }
-    .hero-metric .sub{ font-family:'Inter',sans-serif; font-size:12px; font-weight:400; color:rgba(232,220,196,0.55); margin-top:5px; }
+    .cloud-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .cloud-wisp{
+      position:absolute; border-radius:50% 60% 55% 45% / 40% 50% 60% 45%;
+      background:rgba(255,255,255,0.032); filter:blur(44px);
+      animation:cloudDrift linear infinite;
+    }
+    .cloud-wisp:nth-child(1){ width:620px; height:210px; top:8%;  left:-12%; animation-duration:58s; }
+    .cloud-wisp:nth-child(2){ width:920px; height:270px; top:21%; left:-22%; animation-duration:84s; animation-delay:-22s; opacity:.65; filter:blur(60px); }
+    .cloud-wisp:nth-child(3){ width:520px; height:170px; top:54%; left:-6%;  animation-duration:68s; animation-delay:-36s; opacity:.75; }
+    .cloud-wisp:nth-child(4){ width:720px; height:230px; top:34%; left:-16%; animation-duration:98s; animation-delay:-12s; opacity:.5; filter:blur(72px); }
+    .cloud-wisp:nth-child(5){ width:420px; height:140px; top:72%; left:8%;   animation-duration:50s; animation-delay:-6s; }
+    @keyframes cloudDrift{
+      0%   { transform:translateX(0)   translateY(0)   scale(1); }
+      33%  { transform:translateX(22%) translateY(-3%) scale(1.03); }
+      66%  { transform:translateX(55%) translateY(2%)  scale(1.02); }
+      100% { transform:translateX(118%) translateY(0)  scale(1); }
+    }
+    .cloud-gold{
+      position:absolute; border-radius:50%;
+      background:radial-gradient(ellipse at center, rgba(185,138,79,0.13) 0%, transparent 70%);
+      filter:blur(64px); animation:goldPulse 18s ease-in-out infinite alternate;
+    }
+    .cloud-gold:nth-child(1){ width:520px; height:520px; top:-12%; right:-4%; }
+    .cloud-gold:nth-child(2){ width:380px; height:380px; bottom:4%; left:14%; animation-delay:-9s; }
+    @keyframes goldPulse{
+      0%  { opacity:.4; transform:scale(1)    translateY(0); }
+      50% { opacity:.7; transform:scale(1.1)  translateY(-22px); }
+      100%{ opacity:.3; transform:scale(0.94) translateY(12px); }
+    }
+    .hero-content{ position:relative; z-index:1; max-width:860px; }
+    .hero-eyebrow{ margin-bottom:20px; }
+    .hero-content h1{ color:var(--ecume); margin-bottom:28px; }
+    .hero-content .p-lg{ color:rgba(232,220,196,0.82); max-width:560px; margin-bottom:42px; }
+    .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:72px; }
+    .hero-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px; color:rgba(232,220,196,0.55); font-weight:300;
+    }
+    .hero-badge::before{ content:''; display:block; width:5px; height:5px; border-radius:50%; background:var(--or-clair); flex-shrink:0; }
+    .hero-stats{ display:flex; gap:52px; padding-top:36px; border-top:1px solid var(--line); flex-wrap:wrap; }
+    .hero-stat .num{ font-family:'Fraunces',serif; font-size:clamp(26px,4vw,38px); font-weight:300; color:var(--ecume); line-height:1; letter-spacing:-0.02em; }
+    .hero-stat .label{ font-size:11px; letter-spacing:0.24em; text-transform:uppercase; font-weight:500; color:var(--or-clair); margin-bottom:7px; font-family:'Inter',sans-serif; display:block; }
+    .hero-stat .desc{ font-size:12px; font-weight:400; color:rgba(232,220,196,0.5); margin-top:5px; font-family:'Inter',sans-serif; }
 
-    /* ── DS-ROW (features list) ───────────────────────────── */
-    .ds-row{ display:grid; grid-template-columns:80px 1fr 1fr 140px; gap:30px; align-items:center; padding:30px 0; border-top:1px solid var(--line); cursor:pointer; transition:background var(--ease-base); }
+    /* Scroll hint */
+    .scroll-hint{
+      position:absolute; bottom:38px; left:50%; transform:translateX(-50%);
+      z-index:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+      font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(232,220,196,0.4);
+      animation:scrollBob 2.5s ease-in-out infinite;
+    }
+    .scroll-hint::after{ content:''; display:block; width:1px; height:28px; background:rgba(232,220,196,0.25); }
+    @keyframes scrollBob{ 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+    /* ══ SOCIAL PROOF ════════════════════════════════════ */
+    .proof-strip{
+      background:var(--nuit-2); padding:36px var(--gutter);
+      display:flex; align-items:center; justify-content:center; gap:60px; flex-wrap:wrap;
+    }
+    .proof-stat{ text-align:center; }
+    .proof-stat .n{ font-family:'Fraunces',serif; font-size:32px; font-weight:300; color:var(--or-clair); letter-spacing:-0.02em; line-height:1; }
+    .proof-stat .l{ font-size:11px; color:rgba(232,220,196,0.5); text-transform:uppercase; letter-spacing:0.16em; margin-top:4px; }
+
+    /* ══ HOW IT WORKS ════════════════════════════════════ */
+    .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; background:var(--line-dark); margin-top:64px; }
+    .step{ background:var(--ecume); padding:44px 36px; position:relative; }
+    .step-num{ font-family:'Fraunces',serif; font-size:56px; font-weight:300; color:var(--sable); line-height:1; margin-bottom:20px; }
+    .step h3{ margin-bottom:10px; }
+    .step p{ font-size:14.5px; }
+    .step-arrow{ position:absolute; top:50%; right:-1px; transform:translateY(-50%); color:var(--or); font-size:18px; z-index:1; }
+    @media(max-width:860px){ .steps{ grid-template-columns:1fr; } .step-arrow{ display:none; } }
+
+    /* ══ FEATURES (ds-row) ═══════════════════════════════ */
+    .ds-row{
+      display:grid; grid-template-columns:70px 1fr 1.2fr 130px; gap:28px; align-items:center;
+      padding:28px 0; border-top:1px solid var(--line); cursor:default;
+      transition:background var(--ease-base), padding-left var(--ease-base);
+    }
     .ds-row:last-child{ border-bottom:1px solid var(--line); }
-    .ds-row:hover{ background:rgba(232,220,196,0.04); }
-    .ds-row-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--or-clair); font-size:15px; }
-    .ds-row-title{ font-family:'Fraunces',serif; font-size:24px; color:var(--ecume); }
-    .ds-row-desc{ font-size:13.5px; opacity:.75; line-height:1.6; font-weight:300; color:rgba(232,220,196,0.8); }
-    .ds-row-tag{ font-size:12px; text-align:right; color:var(--or-clair); display:flex; align-items:center; justify-content:flex-end; gap:8px; }
-    .ds-row-tag .dot{ width:5px; height:5px; border-radius:50%; background:var(--or-clair); flex-shrink:0; }
-    @media(max-width:860px){ .ds-row{ grid-template-columns:36px 1fr; row-gap:8px; } .ds-row-tag,.ds-row-desc{ grid-column:2/3; text-align:left; justify-content:flex-start; } }
+    .ds-row:hover{ background:rgba(232,220,196,0.05); padding-left:12px; }
+    .ds-row-num{ font-family:'Fraunces',serif; font-style:italic; color:var(--or-clair); font-size:14px; }
+    .ds-row-title{ font-family:'Fraunces',serif; font-size:22px; color:var(--ecume); }
+    .ds-row-desc{ font-size:13px; line-height:1.65; font-weight:300; color:rgba(232,220,196,0.72); }
+    .ds-row-tag{ font-size:11px; text-align:right; color:var(--or-clair); display:flex; align-items:center; justify-content:flex-end; gap:6px; letter-spacing:0.06em; text-transform:uppercase; }
+    .ds-row-tag .dot{ width:4px; height:4px; border-radius:50%; background:var(--or-clair); flex-shrink:0; }
+    @media(max-width:860px){ .ds-row{ grid-template-columns:36px 1fr; row-gap:6px; } .ds-row-tag,.ds-row-desc{ grid-column:2/3; text-align:left; justify-content:flex-start; } }
 
-    /* ── DS-CARD & DS-FIELD (pricing forms) ──────────────── */
-    .ds-card{ background:var(--ecume); padding:44px 42px; border:1px solid var(--line-dark); }
-    .ds-card.dark{ background:var(--nuit-2); border-color:rgba(232,220,196,0.08); }
-    .ds-field{ margin-bottom:18px; }
-    .ds-field label{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin-bottom:9px; }
-    .ds-field select,.ds-field input{ width:100%; border:none; border-bottom:1px solid var(--line-dark); background:transparent; padding:10px 2px; font-family:'Inter',sans-serif; font-size:15px; color:var(--encre-text); transition:border-color var(--ease-fast); }
-    .ds-field select:focus,.ds-field input:focus{ outline:none; border-color:var(--or); }
-    .ds-field.dark input,.ds-field.dark select{ color:var(--ecume); border-bottom-color:rgba(232,220,196,0.2); }
-    .ds-field.dark label{ color:var(--or-clair); }
-    .ds-choice-row{ display:flex; gap:8px; }
-    .ds-choice{ flex:1; text-align:center; padding:10px 0; border:1px solid var(--line-dark); font-size:14px; cursor:pointer; transition:all var(--ease-fast); color:var(--text-muted); }
-    .ds-choice.active{ background:var(--nuit); color:var(--ecume); border-color:var(--nuit); }
-
-    /* ── PRICING GRID ─────────────────────────────────────── */
-    .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-dark); }
-    .plan-cell{ background:var(--ecume); padding:44px 36px; }
+    /* ══ PRICING ═════════════════════════════════════════ */
+    .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-dark); margin-top:64px; }
+    .plan-cell{ background:var(--sable-2); padding:44px 36px; display:flex; flex-direction:column; transition:background var(--ease-base); }
+    .plan-cell:hover{ background:var(--ecume); }
     .plan-cell.featured{ background:var(--nuit); color:var(--ecume); }
-    .plan-cell h3{ font-family:'Fraunces',serif; font-weight:400; font-size:22px; margin-bottom:8px; }
+    .plan-cell.featured:hover{ background:var(--nuit-2); }
+    .plan-cell h3{ margin-bottom:6px; }
     .plan-cell.featured h3{ color:var(--ecume); }
-    .plan-price{ font-family:'Fraunces',serif; font-size:42px; font-weight:300; margin:20px 0 6px; line-height:1; }
+    .plan-price{ font-family:'Fraunces',serif; font-size:44px; font-weight:300; margin:22px 0 4px; line-height:1; letter-spacing:-0.02em; }
     .plan-cell.featured .plan-price{ color:var(--or-clair); }
-    .plan-period{ font-size:13px; color:var(--text-faint); margin-bottom:30px; }
-    .plan-cell.featured .plan-period{ color:rgba(232,220,196,0.6); }
-    .plan-features{ list-style:none; display:grid; gap:12px; margin-bottom:32px; }
-    .plan-features li{ font-size:14px; font-weight:300; display:flex; gap:10px; align-items:flex-start; }
+    .plan-period{ font-size:12px; color:var(--text-faint); margin-bottom:32px; text-transform:uppercase; letter-spacing:0.1em; }
+    .plan-cell.featured .plan-period{ color:rgba(232,220,196,0.5); }
+    .plan-features{ list-style:none; display:grid; gap:11px; margin-bottom:36px; flex:1; }
+    .plan-features li{ font-size:14px; font-weight:400; display:flex; gap:10px; align-items:flex-start; color:var(--text-muted); }
     .plan-features li::before{ content:'—'; color:var(--or); flex-shrink:0; }
-    .plan-cell.featured .plan-features li{ color:rgba(232,220,196,0.85); }
+    .plan-cell.featured .plan-features li{ color:rgba(232,220,196,0.82); }
     .plan-cell.featured .plan-features li::before{ color:var(--or-clair); }
     @media(max-width:860px){ .pricing-grid{ grid-template-columns:1fr; } }
 
-    /* ── FORMS (login / signup) ───────────────────────────── */
+    /* ══ FINAL CTA STRIP ═════════════════════════════════ */
+    .cta-strip{
+      background:var(--nuit); padding:120px var(--gutter); text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .cta-strip h2{ color:var(--ecume); margin-bottom:16px; }
+    .cta-strip p{ color:rgba(232,220,196,0.65); max-width:520px; margin:0 auto 44px; }
+    .cta-strip-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+    .cta-glow{ position:absolute; width:600px; height:600px; border-radius:50%; background:radial-gradient(ellipse,rgba(185,138,79,0.10) 0%,transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+
+    /* ══ FOOTER ══════════════════════════════════════════ */
+    footer{
+      background:var(--nuit); border-top:1px solid rgba(232,220,196,0.08);
+      padding:56px var(--gutter) 40px; display:grid;
+      grid-template-columns:1.5fr 1fr 1fr; gap:48px;
+    }
+    .footer-brand .brand-name{ color:var(--ecume); font-size:18px; }
+    .footer-brand p{ font-size:13px; color:rgba(232,220,196,0.45); margin-top:14px; max-width:280px; line-height:1.7; }
+    .footer-col h4{ color:var(--or-clair); margin-bottom:16px; font-size:11px; letter-spacing:0.16em; }
+    .footer-col ul{ list-style:none; display:grid; gap:10px; }
+    .footer-col ul li a{ font-size:13px; color:rgba(232,220,196,0.5); transition:color var(--ease-fast); }
+    .footer-col ul li a:hover{ color:var(--ecume); }
+    .footer-bottom{ border-top:1px solid rgba(232,220,196,0.08); padding:20px var(--gutter); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .footer-bottom p{ font-size:12px; color:rgba(232,220,196,0.3); }
+    @media(max-width:860px){ footer{ grid-template-columns:1fr; gap:32px; } }
+
+    /* ══ FORMS ═══════════════════════════════════════════ */
     .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; background:var(--line-dark); }
     @media(max-width:860px){ .form-grid{ grid-template-columns:1fr; } }
-    .form-panel{ padding:60px 52px; }
+    .form-panel{ padding:64px 56px; }
     .form-panel.dark{ background:var(--nuit); color:var(--ecume); }
     .form-panel.light{ background:var(--ecume); }
     .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
     @media(max-width:640px){ .form-row{ grid-template-columns:1fr; } }
+    .ds-field{ margin-bottom:20px; }
+    .ds-field label{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin-bottom:10px; font-weight:500; }
+    .ds-field input,.ds-field select{ width:100%; border:none; border-bottom:1.5px solid var(--line-dark); background:transparent; padding:10px 2px; font-family:'Inter',sans-serif; font-size:15px; color:var(--encre-text); transition:border-color var(--ease-fast); }
+    .ds-field input:focus,.ds-field select:focus{ outline:none; border-color:var(--or); }
+    .ds-field input::placeholder{ color:var(--text-faint); }
 
-    /* ── MISC UTILITIES ───────────────────────────────────── */
+    /* ══ UTILITIES ═══════════════════════════════════════ */
     .hidden{ display:none!important; }
     .app{ display:none; } .app.active{ display:block; }
-    .report-pre{ white-space:pre-wrap; background:var(--nuit); color:var(--ecume); padding:20px; line-height:1.6; max-height:50vh; overflow:auto; font-size:13px; margin-top:16px; }
-    .notice{ border-left:3px solid var(--or); background:var(--sable-2); padding:16px 20px; color:#6f4a18; font-size:13.5px; }
-    .divider{ height:1px; background:var(--line-dark); margin:20px 0; }
+    .report-pre{ white-space:pre-wrap; background:var(--nuit); color:var(--ecume); padding:20px; line-height:1.6; max-height:50vh; overflow:auto; font-size:13px; margin-top:16px; font-family:'Inter',monospace; }
+    .notice{ border-left:3px solid var(--or); padding:14px 18px; font-size:13px; }
+    .notice-gold{ background:rgba(185,138,79,0.1); border-left-color:var(--or-clair); color:var(--or-clair); }
+    .divider{ height:1px; background:var(--line-dark); margin:24px 0; }
 
-    /* ── REVEAL ON SCROLL ─────────────────────────────────── */
-    .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    /* ══ REVEAL ══════════════════════════════════════════ */
+    .reveal{ opacity:0; transform:translateY(26px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
     .reveal.in{ opacity:1; transform:translateY(0); }
-
-    /* ── CLOUD WISPS ──────────────────────────────────────── */
-    .cloud-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-    .cloud-wisp{
-      position:absolute;
-      border-radius:50% 60% 55% 45% / 40% 50% 60% 45%;
-      background:rgba(255,255,255,0.035);
-      filter:blur(42px);
-      animation:cloudDrift linear infinite;
-    }
-    .cloud-wisp:nth-child(1){ width:600px; height:200px; top:8%;  left:-10%; animation-duration:55s; animation-delay:0s;   opacity:.9; }
-    .cloud-wisp:nth-child(2){ width:900px; height:260px; top:22%; left:-20%; animation-duration:80s; animation-delay:-20s; opacity:.6; filter:blur(58px); }
-    .cloud-wisp:nth-child(3){ width:500px; height:160px; top:55%; left:-5%;  animation-duration:65s; animation-delay:-35s; opacity:.7; }
-    .cloud-wisp:nth-child(4){ width:700px; height:220px; top:35%; left:-15%; animation-duration:95s; animation-delay:-10s; opacity:.5; filter:blur(70px); }
-    .cloud-wisp:nth-child(5){ width:400px; height:130px; top:70%; left:10%;  animation-duration:48s; animation-delay:-5s;  opacity:.8; }
-    @keyframes cloudDrift{
-      0%   { transform: translateX(0)   translateY(0)   scale(1); }
-      25%  { transform: translateX(18%) translateY(-3%) scale(1.04); }
-      50%  { transform: translateX(40%) translateY(2%)  scale(1.01); }
-      75%  { transform: translateX(60%) translateY(-2%) scale(1.05); }
-      100% { transform: translateX(115%) translateY(0) scale(1); }
-    }
-    /* Gold shimmer wisp */
-    .cloud-wisp-gold{
-      position:absolute;
-      border-radius:50%;
-      background:radial-gradient(ellipse at center, rgba(185,138,79,0.12) 0%, transparent 70%);
-      filter:blur(60px);
-      animation:goldPulse 18s ease-in-out infinite alternate;
-    }
-    .cloud-wisp-gold:nth-child(1){ width:500px; height:500px; top:-10%; right:-5%; animation-delay:0s; }
-    .cloud-wisp-gold:nth-child(2){ width:350px; height:350px; bottom:5%; left:15%; animation-delay:-9s; }
-    @keyframes goldPulse{
-      0%   { opacity:.4; transform:scale(1)    translateY(0); }
-      50%  { opacity:.7; transform:scale(1.1)  translateY(-20px); }
-      100% { opacity:.3; transform:scale(0.95) translateY(10px); }
-    }
+    .reveal-d1{ transition-delay:.1s; }
+    .reveal-d2{ transition-delay:.2s; }
+    .reveal-d3{ transition-delay:.3s; }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════════════════════════════════════
-       NAV FIXE (transparent → écume au scroll)
-  ═════════════════════════════════════════════════════ -->
+  <!-- ═══ NAV ════════════════════════════════════════════ -->
   <nav class="ds-nav" id="mainNav">
     <a class="brand" href="#" data-view="home">
-      <span class="brand-mark">🍽️</span>
-      Restaurant Revenue AI
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C7 2 3 6 3 11c0 3.9 2.4 7.2 5.8 8.6L8 22h8l-.8-2.4C18.6 18.2 21 14.9 21 11c0-5-4-9-9-9zm0 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm-1 3v5l4 2.4-.7 1.2-4.8-2.9V7h1.5z"/></svg>
+      </div>
+      <span class="brand-name">Revenue<span>AI</span></span>
     </a>
     <div class="ds-nav-links">
+      <a href="#how" data-jump="how">Comment ça marche</a>
       <a href="#features" data-jump="features">Fonctionnalités</a>
       <a href="#pricing" data-jump="pricing">Tarifs</a>
-      <button class="nav-cta" type="button" data-view="signup">30 jours gratuits</button>
-      <button class="nav-cta primary" type="button" data-view="login">Connexion</button>
+      <button class="nav-cta" type="button" data-view="login">Connexion</button>
+      <button class="nav-cta accent" type="button" data-view="signup">Essai gratuit</button>
     </div>
   </nav>
 
-  <!-- ════════════════════════════════════════════════════
-       HOME VIEW
-  ═════════════════════════════════════════════════════ -->
+  <!-- ═══ HOME ════════════════════════════════════════════ -->
   <main id="homeView">
 
-    <!-- HERO avec fond organique SVG animé -->
+    <!-- HERO -->
     <section class="hero">
       <div class="hero-bg">
-        <!-- Fond gradient nuit indigo -->
         <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
           <defs>
-            <!-- Couche 1 : turbulence profonde lente (marée) -->
             <filter id="cloud-deep" x="-30%" y="-30%" width="160%" height="160%">
               <feTurbulence type="fractalNoise" baseFrequency="0.006 0.010" numOctaves="4" seed="3" result="noise">
                 <animate attributeName="baseFrequency" values="0.006 0.010;0.009 0.006;0.006 0.010" dur="34s" repeatCount="indefinite"/>
               </feTurbulence>
               <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.08  0 0 0 0 0.13  0 0 0 0 0.25  0 0 0 0.85 0"/>
             </filter>
-            <!-- Couche 2 : turbulence intermédiaire (nuages) -->
             <filter id="cloud-mid" x="-30%" y="-30%" width="160%" height="160%">
               <feTurbulence type="fractalNoise" baseFrequency="0.013 0.020" numOctaves="5" seed="12" result="noise">
                 <animate attributeName="baseFrequency" values="0.013 0.020;0.018 0.014;0.013 0.020" dur="22s" repeatCount="indefinite"/>
               </feTurbulence>
               <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.18  0 0 0 0 0.32  0 0 0 0.55 0"/>
             </filter>
-            <!-- Couche 3 : turbulence légère rapide (écume de nuages) -->
             <filter id="cloud-light" x="-30%" y="-30%" width="160%" height="160%">
               <feTurbulence type="fractalNoise" baseFrequency="0.022 0.030" numOctaves="3" seed="21" result="noise">
                 <animate attributeName="baseFrequency" values="0.022 0.030;0.028 0.020;0.022 0.030" dur="14s" repeatCount="indefinite"/>
@@ -321,295 +356,370 @@
               <stop offset="100%" stop-color="#1a2c4d"/>
             </linearGradient>
           </defs>
-          <!-- Fond -->
           <rect width="1600" height="900" fill="url(#baseSky)"/>
-          <!-- Couche profonde (marée de fond) -->
           <rect width="1600" height="900" filter="url(#cloud-deep)" opacity="1"/>
-          <!-- Couche nuages intermédiaire -->
           <rect width="1600" height="900" filter="url(#cloud-mid)" opacity="0.8"/>
-          <!-- Couche légère (écume haute) -->
           <rect width="1600" height="900" filter="url(#cloud-light)" opacity="0.5"/>
         </svg>
-
-        <!-- Volutes CSS qui dérivent (nuages légers) -->
         <div class="cloud-layer">
-          <div class="cloud-wisp"></div>
-          <div class="cloud-wisp"></div>
-          <div class="cloud-wisp"></div>
-          <div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div><div class="cloud-wisp"></div>
+          <div class="cloud-wisp"></div><div class="cloud-wisp"></div>
           <div class="cloud-wisp"></div>
         </div>
-
-        <!-- Reflets dorés pulsants -->
         <div class="cloud-layer">
-          <div class="cloud-wisp-gold"></div>
-          <div class="cloud-wisp-gold"></div>
+          <div class="cloud-gold"></div><div class="cloud-gold"></div>
         </div>
       </div>
 
       <div class="hero-content">
-        <span class="eyebrow eyebrow-light">🚀 Production Core V2 · Supabase ready</span>
-        <h1>Transformez chaque menu en <em class="em-accent" style="color:var(--or-clair)">moteur de revenus.</em></h1>
-        <p class="p-lg">Réservations, commandes, livraison, QR codes, paiements, CRM, promotions et super admin multi-restaurants. Conçu pour Dakar, Mbour et Saly.</p>
-        <div class="hero-actions">
-          <button class="btn btn-or" type="button" data-view="signup">Démarrer 30 jours gratuits</button>
-          <button class="btn btn-ghost-dark" type="button" data-view="login">Se connecter</button>
-          <button class="btn btn-ghost-dark" type="button" data-view="admin" id="homeAdminBtn" style="display:none">🛡️ Super Admin</button>
+        <div class="hero-eyebrow">
+          <span class="eyebrow eyebrow-light">Plateforme IA · Dakar, Mbour &amp; Saly</span>
         </div>
-        <div class="hero-metrics">
-          <div class="hero-metric">
-            <div class="label">Promesse</div>
-            <div class="value">+CA</div>
-            <div class="sub">Upsell IA, commandes directes</div>
+        <h1>Votre restaurant,<br><em class="em-accent" style="color:var(--or-clair)">multiplié.</em></h1>
+        <p class="p-lg">De la réservation au paiement Wave, tout est automatisé. Vos clients commandent plus, reviennent plus souvent — vous pilotez depuis un seul écran.</p>
+        <div class="hero-cta">
+          <button class="btn btn-or btn-lg" type="button" data-view="signup">
+            Démarrer gratuitement — 30 jours
+          </button>
+          <button class="btn btn-ghost-dark" type="button" data-jump="how">Voir comment ça marche</button>
+        </div>
+        <div class="hero-badge">Sans carte bancaire requise</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="label">Essai gratuit</span>
+            <div class="num">30 j</div>
+            <div class="desc">Installation accompagnée incluse</div>
           </div>
-          <div class="hero-metric">
-            <div class="label">Essai gratuit</div>
-            <div class="value">30 j</div>
-            <div class="sub">Installation accompagnée</div>
+          <div class="hero-stat">
+            <span class="label">À partir de</span>
+            <div class="num">20k</div>
+            <div class="desc">FCFA / mois après l'essai</div>
           </div>
-          <div class="hero-metric">
-            <div class="label">Plans</div>
-            <div class="value">20–50k</div>
-            <div class="sub">FCFA / mois</div>
+          <div class="hero-stat">
+            <span class="label">Paiements</span>
+            <div class="num">Wave</div>
+            <div class="desc">Orange Money · Free Money</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint">Découvrir</div>
+    </section>
+
+    <!-- PROOF STRIP -->
+    <div class="proof-strip reveal">
+      <div class="proof-stat"><div class="n">+30%</div><div class="l">CA moyen</div></div>
+      <div class="proof-stat"><div class="n">-60%</div><div class="l">No-shows</div></div>
+      <div class="proof-stat"><div class="n">3×</div><div class="l">Plus de commandes directes</div></div>
+      <div class="proof-stat"><div class="n">48h</div><div class="l">Mise en ligne</div></div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section section-light">
+      <div class="container">
+        <div class="reveal" style="max-width:600px;margin-bottom:0">
+          <span class="eyebrow">Comment ça marche</span>
+          <h2 style="margin-top:14px">Opérationnel en 3 étapes,<br><em class="em-accent">en 48 heures.</em></h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-num">01</div>
+            <h3>Inscription &amp; import</h3>
+            <p>Créez votre compte, importez votre menu depuis un PDF, photo, Instagram ou votre site existant. On s'occupe du reste.</p>
+            <span class="step-arrow">→</span>
+          </div>
+          <div class="step reveal reveal-d1">
+            <div class="step-num">02</div>
+            <h3>Configuration IA</h3>
+            <p>Notre IA structure votre menu, active les paiements locaux (Wave, OM, Free) et configure les flux de réservation et livraison.</p>
+            <span class="step-arrow">→</span>
+          </div>
+          <div class="step reveal reveal-d2">
+            <div class="step-num">03</div>
+            <h3>Vous pilotez</h3>
+            <p>Dashboard en temps réel, CRM, promotions, analytics. Vos clients reçoivent leur QR code — et commandent directement.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FONCTIONNALITÉS — liste de type ds-row sur fond sombre -->
+    <!-- FEATURES -->
     <section id="features" class="section section-dark">
       <div class="container">
-        <div class="reveal" style="margin-bottom:64px">
-          <span class="eyebrow eyebrow-light">Plateforme</span>
-          <h2 style="color:var(--ecume);margin-top:16px">La plateforme qui remplace le menu passif.</h2>
-          <p class="p-light" style="margin-top:12px;max-width:580px">Tout est organisé autour de la conversion, de la donnée client et du pilotage directeur.</p>
+        <div class="reveal" style="margin-bottom:60px">
+          <span class="eyebrow eyebrow-light">Tout ce dont vous avez besoin</span>
+          <h2 style="color:var(--ecume);margin-top:14px">Une plateforme complète,<br><em class="em-accent" style="color:var(--or-clair)">pas une pièce du puzzle.</em></h2>
         </div>
-
-        <div class="ds-row reveal"><span class="ds-row-num">01</span><span class="ds-row-title">Menu intelligent</span><span class="ds-row-desc">Produits, photos, tags, disponibilité, upsells, allergènes et marge estimée.</span><span class="ds-row-tag"><span class="dot"></span>Inclus</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">02</span><span class="ds-row-title">Réservation &amp; acompte</span><span class="ds-row-desc">Tunnel conversationnel, date/heure, acompte wallet et réduction des no-shows.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">03</span><span class="ds-row-title">Commande directe</span><span class="ds-row-desc">Livraison, à emporter, frais estimés, panier dynamique et paiement local.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">04</span><span class="ds-row-title">CRM restaurant</span><span class="ds-row-desc">Téléphone, email, préférences, historique, consentement marketing et relance.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">05</span><span class="ds-row-title">Promotions &amp; QR</span><span class="ds-row-desc">Codes promo, offres saisonnières, QR codes dynamiques et tracking des ventes.</span><span class="ds-row-tag"><span class="dot"></span>Tous</span></div>
-        <div class="ds-row reveal"><span class="ds-row-num">06</span><span class="ds-row-title">Sommelier IA</span><span class="ds-row-desc">Recommandation de plats et accords, assistant serveur et analytics prédictifs.</span><span class="ds-row-tag"><span class="dot"></span>Premium AI</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">01</span><span class="ds-row-title">Menu intelligent</span><span class="ds-row-desc">Photos, tags, disponibilité en temps réel, upsells automatiques, allergènes et marge estimée par produit.</span><span class="ds-row-tag"><span class="dot"></span>Tous les plans</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">02</span><span class="ds-row-title">Réservation &amp; acompte</span><span class="ds-row-desc">Tunnel conversationnel, date/heure, confirmation WhatsApp, acompte Wave et réduction des no-shows.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">03</span><span class="ds-row-title">Commande &amp; livraison</span><span class="ds-row-desc">Livraison, à emporter, frais estimés, panier dynamique et paiement mobile local intégré.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">04</span><span class="ds-row-title">CRM &amp; marketing</span><span class="ds-row-desc">Historique clients, préférences, consentement RGPD, campagnes de relance ciblées et mesure du retour.</span><span class="ds-row-tag"><span class="dot"></span>Growth+</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">05</span><span class="ds-row-title">Promotions &amp; QR codes</span><span class="ds-row-desc">Codes promo, offres flash, QR dynamiques, tracking des conversions et A/B testing des offres.</span><span class="ds-row-tag"><span class="dot"></span>Tous</span></div>
+        <div class="ds-row reveal"><span class="ds-row-num">06</span><span class="ds-row-title">Sommelier IA</span><span class="ds-row-desc">Recommandations personnalisées, assistant serveur, analytics prédictifs et optimisation des prix.</span><span class="ds-row-tag"><span class="dot"></span>Premium AI</span></div>
       </div>
     </section>
 
-    <!-- PRICING — grille sans arrondi -->
+    <!-- PRICING -->
     <section id="pricing" class="section section-alt">
       <div class="container">
-        <div class="reveal" style="margin-bottom:64px">
+        <div class="reveal" style="margin-bottom:0">
           <span class="eyebrow">Tarifs</span>
-          <h2 style="margin-top:16px">Simples pour scaler.</h2>
-          <p style="margin-top:12px;max-width:480px">30 jours gratuits. Ensuite, le restaurant choisit le plan adapté à sa maturité.</p>
+          <h2 style="margin-top:14px">Commencez gratuitement.<br>Payez quand vous êtes convaincu.</h2>
+          <p style="margin-top:14px;max-width:500px">30 jours d'essai, installation incluse, sans engagement. Choisissez votre plan quand vous êtes prêt.</p>
         </div>
 
         <div class="pricing-grid reveal">
           <div class="plan-cell">
-            <span class="eyebrow" style="font-size:10px">Démarrage</span>
+            <span class="eyebrow" style="font-size:10px;margin-bottom:16px">Démarrage</span>
             <h3>Starter</h3>
             <div class="plan-price">20 000</div>
             <div class="plan-period">FCFA / mois</div>
             <ul class="plan-features">
               <li>Menu digital + QR code</li>
               <li>Réservations simples</li>
-              <li>Gestion produits</li>
+              <li>Gestion des produits</li>
               <li>Dashboard basique</li>
+              <li>Support email</li>
             </ul>
-            <button class="btn btn-ghost-light btn-full" type="button" data-plan="starter" data-view="signup">Choisir Starter</button>
+            <button class="btn btn-ghost-light btn-full" type="button" data-plan="starter" data-view="signup">Essai gratuit 30 jours</button>
           </div>
 
           <div class="plan-cell featured">
-            <span class="eyebrow eyebrow-light" style="font-size:10px">Recommandé</span>
+            <span class="eyebrow eyebrow-light" style="font-size:10px;margin-bottom:16px">Le plus choisi</span>
             <h3>Growth</h3>
             <div class="plan-price">30 000</div>
             <div class="plan-period">FCFA / mois</div>
             <ul class="plan-features">
+              <li>Tout Starter inclus</li>
               <li>Réservation avec acompte</li>
               <li>Livraison + à emporter</li>
-              <li>Promotions + CRM complet</li>
+              <li>CRM &amp; Promotions</li>
               <li>Paiements Wave / OM / Free</li>
+              <li>Support prioritaire</li>
             </ul>
-            <button class="btn btn-or btn-full" type="button" data-plan="growth" data-view="signup">Choisir Growth</button>
+            <button class="btn btn-or btn-full" type="button" data-plan="growth" data-view="signup">Essai gratuit 30 jours</button>
           </div>
 
           <div class="plan-cell">
-            <span class="eyebrow" style="font-size:10px">Intelligence</span>
+            <span class="eyebrow" style="font-size:10px;margin-bottom:16px">Intelligence artificielle</span>
             <h3>Premium AI</h3>
             <div class="plan-price">50 000</div>
             <div class="plan-period">FCFA / mois</div>
             <ul class="plan-features">
+              <li>Tout Growth inclus</li>
               <li>Sommelier IA intégré</li>
               <li>Assistant serveur IA</li>
               <li>Analytics &amp; prédictions</li>
-              <li>Support prioritaire dédié</li>
+              <li>Support dédié 7j/7</li>
             </ul>
-            <button class="btn btn-primary btn-full" type="button" data-plan="premium_ai" data-view="signup">Choisir Premium AI</button>
+            <button class="btn btn-primary btn-full" type="button" data-plan="premium_ai" data-view="signup">Essai gratuit 30 jours</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- CTA FINAL -->
+    <div class="cta-strip">
+      <div class="cta-glow"></div>
+      <div style="position:relative;z-index:1">
+        <span class="eyebrow eyebrow-light reveal" style="text-align:center;margin-bottom:20px">Prêt à démarrer ?</span>
+        <h2 class="reveal reveal-d1">Votre restaurant mérite<br><em class="em-accent" style="color:var(--or-clair)">mieux qu'un menu statique.</em></h2>
+        <p class="reveal reveal-d2">Rejoignez les restaurants qui ont choisi d'automatiser leur croissance. Installation gratuite, accompagnée, en 48h.</p>
+        <div class="cta-strip-actions reveal reveal-d3">
+          <button class="btn btn-or btn-lg" type="button" data-view="signup">Créer mon espace — 30 jours gratuits</button>
+          <button class="btn btn-ghost-dark" type="button" data-view="login">J'ai déjà un compte</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="brand-logo" style="width:28px;height:28px">
+            <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:var(--ecume)"><path d="M12 2C7 2 3 6 3 11c0 3.9 2.4 7.2 5.8 8.6L8 22h8l-.8-2.4C18.6 18.2 21 14.9 21 11c0-5-4-9-9-9zm0 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm-1 3v5l4 2.4-.7 1.2-4.8-2.9V7h1.5z"/></svg>
+          </div>
+          <span class="brand-name" style="font-size:16px">Revenue<span>AI</span></span>
+        </div>
+        <p>La plateforme IA qui transforme votre restaurant en moteur de revenus. Conçue pour Dakar, Mbour et Saly.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produit</h4>
+        <ul>
+          <li><a href="#how" data-jump="how">Comment ça marche</a></li>
+          <li><a href="#features" data-jump="features">Fonctionnalités</a></li>
+          <li><a href="#pricing" data-jump="pricing">Tarifs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Compte</h4>
+        <ul>
+          <li><a href="#" data-view="signup">Créer un compte</a></li>
+          <li><a href="#" data-view="login">Se connecter</a></li>
+        </ul>
+      </div>
+    </footer>
+    <div class="footer-bottom" style="background:var(--nuit)">
+      <p>© 2026 Restaurant Revenue AI. Tous droits réservés.</p>
+      <p>Dakar · Mbour · Saly · Sénégal</p>
+    </div>
+
   </main><!-- /#homeView -->
 
-  <!-- ════════════════════════════════════════════════════
-       SIGNUP VIEW
-  ═════════════════════════════════════════════════════ -->
-  <main id="signupView" class="app" style="padding-top:80px">
+  <!-- ═══ SIGNUP ══════════════════════════════════════════ -->
+  <main id="signupView" class="app" style="padding-top:80px;min-height:100vh;background:var(--ecume)">
     <div class="form-grid">
       <div class="form-panel dark">
-        <span class="eyebrow eyebrow-light">Créer un espace restaurant</span>
-        <h2 style="color:var(--ecume);margin-top:18px;margin-bottom:20px">30 jours<br><em class="em-accent" style="color:var(--or-clair)">gratuits.</em></h2>
-        <p class="p-light" style="margin-bottom:24px">Le formulaire crée un compte owner, un restaurant et une période d'essai dans Supabase si les variables sont configurées.</p>
-        <div class="notice" id="signupNotice" style="background:rgba(185,138,79,0.12);border-left-color:var(--or-clair);color:var(--or-clair)">Mode actuel : détection en cours...</div>
+        <span class="eyebrow eyebrow-light" style="margin-bottom:20px">Inscription gratuite</span>
+        <h2 style="color:var(--ecume);margin-bottom:20px">30 jours<br><em class="em-accent" style="color:var(--or-clair)">offerts.</em></h2>
+        <p class="p-light" style="margin-bottom:28px;font-size:15px">Créez votre espace restaurant, importez votre menu et commencez à recevoir des commandes — sans carte bancaire.</p>
+        <div class="notice notice-gold" id="signupNotice">Vérification du mode en cours...</div>
+        <div class="divider" style="background:rgba(232,220,196,0.08);margin-top:32px"></div>
+        <p style="font-size:12px;color:rgba(232,220,196,0.35);line-height:1.6">Aucun engagement. Vous choisissez votre plan en fin d'essai, ou vous arrêtez sans frais.</p>
       </div>
       <div class="form-panel light">
+        <h4 style="color:var(--text-faint);margin-bottom:28px">Informations du restaurant</h4>
         <form id="signupForm">
           <div class="form-row">
-            <div class="ds-field"><label>Nom du restaurant</label><input name="restaurantName" value="La Fourchette Dakar" required></div>
-            <div class="ds-field"><label>Ville</label><input name="city" value="Dakar" required></div>
+            <div class="ds-field"><label>Nom du restaurant</label><input name="restaurantName" placeholder="Ex : Le Baobab" required></div>
+            <div class="ds-field"><label>Ville</label><input name="city" placeholder="Dakar" required></div>
           </div>
           <div class="form-row">
-            <div class="ds-field"><label>Quartier</label><input name="district" value="Plateau"></div>
-            <div class="ds-field"><label>Type</label><select name="restaurantType"><option>restaurant</option><option>lounge</option><option>hotel</option><option>traiteur</option><option>fast-food premium</option></select></div>
+            <div class="ds-field"><label>Quartier</label><input name="district" placeholder="Plateau, Mermoz..."></div>
+            <div class="ds-field"><label>Type d'établissement</label><select name="restaurantType"><option>restaurant</option><option>lounge</option><option>hotel</option><option>traiteur</option><option>fast-food premium</option></select></div>
+          </div>
+          <div style="height:1px;background:var(--line-dark);margin:8px 0 24px"></div>
+          <h4 style="color:var(--text-faint);margin-bottom:24px">Votre compte</h4>
+          <div class="form-row">
+            <div class="ds-field"><label>Votre nom</label><input name="ownerName" placeholder="Prénom Nom" required></div>
+            <div class="ds-field"><label>WhatsApp</label><input name="phone" placeholder="+221 77 000 00 00" required></div>
           </div>
           <div class="form-row">
-            <div class="ds-field"><label>Nom responsable</label><input name="ownerName" value="Bachir Thiam" required></div>
-            <div class="ds-field"><label>Téléphone WhatsApp</label><input name="phone" value="+221770000000" required></div>
+            <div class="ds-field"><label>Email</label><input type="email" name="email" placeholder="vous@email.com" required></div>
+            <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" placeholder="8 caractères minimum" required></div>
           </div>
           <div class="form-row">
-            <div class="ds-field"><label>Email</label><input type="email" name="email" value="owner@example.com" required></div>
-            <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" value="RestoAI-2026!" required></div>
+            <div class="ds-field"><label>Votre menu actuel</label><select name="menuSource"><option value="website">Site web</option><option value="pdf">PDF</option><option value="photo">Photo</option><option value="instagram">Instagram</option><option value="none">Aucun pour l'instant</option></select></div>
+            <div class="ds-field"><label>Plan après essai</label><select name="selectedPlan" id="selectedPlan"><option value="starter">Starter — 20 000 FCFA</option><option value="growth" selected>Growth — 30 000 FCFA</option><option value="premium_ai">Premium AI — 50 000 FCFA</option></select></div>
           </div>
-          <div class="form-row">
-            <div class="ds-field"><label>Menu existant</label><select name="menuSource"><option value="website">Site web</option><option value="pdf">PDF</option><option value="photo">Photo</option><option value="instagram">Instagram</option><option value="none">Aucun</option></select></div>
-            <div class="ds-field"><label>Plan après essai</label><select name="selectedPlan" id="selectedPlan"><option value="starter">Starter — 20 000</option><option value="growth" selected>Growth — 30 000</option><option value="premium_ai">Premium AI — 50 000</option></select></div>
-          </div>
-          <button class="btn btn-or btn-full" type="submit" style="margin-top:12px">Activer l'essai gratuit</button>
+          <button class="btn btn-or btn-full" type="submit" style="margin-top:16px">Créer mon espace restaurant →</button>
           <pre class="report-pre hidden" id="signupResult"></pre>
         </form>
-        <p style="margin-top:20px;font-size:13px;color:var(--text-faint)">Déjà un compte ? <a href="#" data-view="login" style="color:var(--or);text-decoration:underline">Se connecter</a></p>
+        <p style="margin-top:22px;font-size:13px;color:var(--text-faint)">Déjà inscrit ? <a href="#" data-view="login" style="color:var(--or);text-decoration:underline">Se connecter</a></p>
       </div>
     </div>
   </main>
 
-  <!-- ════════════════════════════════════════════════════
-       LOGIN VIEW
-  ═════════════════════════════════════════════════════ -->
-  <main id="loginView" class="app" style="padding-top:80px">
-    <div class="form-grid">
+  <!-- ═══ LOGIN ═══════════════════════════════════════════ -->
+  <main id="loginView" class="app" style="padding-top:80px;min-height:100vh;background:var(--ecume)">
+    <div class="form-grid" style="min-height:calc(100vh - 80px)">
       <div class="form-panel dark">
-        <span class="eyebrow eyebrow-light">Espace restaurant</span>
-        <h2 style="color:var(--ecume);margin-top:18px;margin-bottom:20px">Bon retour<br><em class="em-accent" style="color:var(--or-clair)">parmi vous.</em></h2>
-        <p class="p-light">Connectez-vous en tant qu'owner restaurant ou super admin. Le mode démo reste disponible si Supabase n'est pas configuré.</p>
-        <div class="divider" style="background:rgba(232,220,196,0.12);margin-top:32px"></div>
-        <p style="font-size:12px;color:rgba(232,220,196,0.4)">Pour activer un super admin : ajoutez votre email dans PLATFORM_ADMIN_EMAILS sur Vercel.</p>
+        <span class="eyebrow eyebrow-light" style="margin-bottom:20px">Espace restaurant</span>
+        <h2 style="color:var(--ecume);margin-bottom:20px">Bon retour<br><em class="em-accent" style="color:var(--or-clair)">parmi vous.</em></h2>
+        <p class="p-light" style="font-size:15px">Accédez à votre tableau de bord, vos commandes et vos statistiques en temps réel.</p>
       </div>
-      <div class="form-panel light">
+      <div class="form-panel light" style="display:flex;flex-direction:column;justify-content:center">
+        <h4 style="color:var(--text-faint);margin-bottom:28px">Connexion à votre compte</h4>
         <form id="loginForm">
-          <div class="ds-field"><label>Email</label><input type="email" name="email" value="owner@example.com" required></div>
-          <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" value="RestoAI-2026!" required></div>
-          <button class="btn btn-primary btn-full" type="submit" style="margin-top:24px">Se connecter</button>
+          <div class="ds-field"><label>Email</label><input type="email" name="email" placeholder="vous@email.com" required></div>
+          <div class="ds-field"><label>Mot de passe</label><input type="password" name="password" placeholder="Votre mot de passe" required></div>
+          <button class="btn btn-primary btn-full" type="submit" style="margin-top:28px">Se connecter →</button>
           <pre class="report-pre hidden" id="loginResult"></pre>
         </form>
-        <p style="margin-top:20px;font-size:13px;color:var(--text-faint)">Pas encore de compte ? <a href="#" data-view="signup" style="color:var(--or);text-decoration:underline">30 jours gratuits</a></p>
+        <p style="margin-top:24px;font-size:13px;color:var(--text-faint)">Pas encore inscrit ? <a href="#" data-view="signup" style="color:var(--or);text-decoration:underline">30 jours gratuits</a></p>
       </div>
     </div>
   </main>
 
-  <!-- ════════════════════════════════════════════════════
-       MODAL
-  ═════════════════════════════════════════════════════ -->
-  <div class="modal" id="modal" style="position:fixed;inset:0;background:rgba(16,29,51,.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:200">
-    <div id="modalPanel" style="background:var(--ecume);border:1px solid var(--line-dark);max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:48px;box-shadow:0 24px 80px rgba(16,29,51,.2)"></div>
+  <!-- ═══ MODAL ════════════════════════════════════════════ -->
+  <div id="modal" style="position:fixed;inset:0;background:rgba(16,29,51,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:200">
+    <div id="modalPanel" style="background:var(--ecume);border:1px solid var(--line-dark);max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:52px;box-shadow:0 32px 100px rgba(16,29,51,.3)"></div>
   </div>
-  <style>.modal.active{display:flex!important}</style>
+  <style>#modal.active{display:flex!important}</style>
 
   <script>
-    /* ── SCROLL NAV ────────────────────────────────────── */
+    /* ── NAV scroll ──────────────────────────────────────── */
     const nav = document.getElementById('mainNav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60), { passive:true });
 
-    /* ── REVEAL ON SCROLL ──────────────────────────────── */
-    const io = new IntersectionObserver((entries) => {
+    /* ── Reveal on scroll ────────────────────────────────── */
+    const io = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, { threshold: 0.12 });
+    }, { threshold:0.1 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    /* ── APP STATE ─────────────────────────────────────── */
+    /* ── State ───────────────────────────────────────────── */
     const STORAGE_KEY = 'rrai_saas_v2_state';
     const DEMO_RESTAURANT_ID = 'demo-restaurant';
-    const $ = sel => document.querySelector(sel);
+    const $ = s => document.querySelector(s);
 
     const state = {
-      view: 'home', token: null, user: null, memberships: [], platformAdmin: false,
-      restaurantId: DEMO_RESTAURANT_ID, selectedPlan: 'growth',
-      products: [], promotions: [], mode: 'demo'
+      view:'home', token:null, user:null, memberships:[], platformAdmin:false,
+      restaurantId:DEMO_RESTAURANT_ID, selectedPlan:'growth',
+      products:[], promotions:[], mode:'demo'
     };
 
     function loadState(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')); }catch(e){} }
     function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-    async function api(path, options={}){
-      const headers = { 'Content-Type':'application/json', ...(options.headers||{}) };
+    async function api(path, opts={}){
+      const headers = { 'Content-Type':'application/json', ...(opts.headers||{}) };
       if (state.token) headers.Authorization = `Bearer ${state.token}`;
       if (state.restaurantId) headers['x-restaurant-id'] = state.restaurantId;
-      const res = await fetch(path, { ...options, headers });
-      const ct = res.headers.get('content-type') || '';
+      const res = await fetch(path, { ...opts, headers });
+      const ct = res.headers.get('content-type')||'';
       let data;
       if (ct.includes('application/json')) {
         data = await res.json();
       } else {
         const text = await res.text();
-        throw new Error(`Réponse API non JSON (${res.status}). ${text.replace(/\s+/g,' ').slice(0,200)}`);
+        throw new Error(`Réponse non JSON (${res.status}). ${text.replace(/\s+/g,' ').slice(0,200)}`);
       }
-      if (!res.ok || data.ok === false) throw new Error(data.error || `API error ${res.status}`);
+      if (!res.ok || data.ok===false) throw new Error(data.error||`API error ${res.status}`);
       return data;
     }
 
     function show(view){
-      if (view === 'app' || view === 'admin') { window.location.href = '/app.html'; return; }
-      state.view = view; saveState();
+      if (view==='app'||view==='admin'){ window.location.href='/app.html'; return; }
+      state.view=view; saveState();
       ['signup','login'].forEach(v => {
-        const el = $('#' + v + 'View');
-        if(el) el.classList.toggle('active', v === view);
+        const el = $('#'+v+'View');
+        if(el) el.classList.toggle('active', v===view);
       });
       const homeEl = $('#homeView');
-      if(homeEl) homeEl.style.display = (view === 'home') ? 'block' : 'none';
+      if(homeEl) homeEl.style.display = view==='home' ? 'block' : 'none';
       window.scrollTo({ top:0, behavior:'smooth' });
     }
 
     async function init(){
       loadState();
       if(state.token){ window.location.replace('/app.html'); return; }
-      if (state.view === 'app' || state.view === 'admin'){ state.view = 'home'; saveState(); }
+      if(state.view==='app'||state.view==='admin'){ state.view='home'; saveState(); }
       try {
         const cfg = await api('/api/config');
-        state.mode = cfg.mode || 'demo';
+        state.mode = cfg.mode||'demo';
         const noticeEl = $('#signupNotice');
         if(noticeEl) noticeEl.textContent = cfg.configured
-          ? 'Mode Supabase actif : création de compte réelle avec persistance.'
-          : 'Mode démo : ajoutez SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY sur Vercel pour passer en réel.';
-      } catch(e) { state.mode = 'demo'; }
+          ? '✓ Espace sécurisé — vos données sont persistées.'
+          : 'Mode démonstration actif — toutes les fonctionnalités sont disponibles.';
+      } catch(e){ state.mode='demo'; }
       bind();
-      show(state.view || 'home');
+      show(state.view||'home');
     }
 
     function bind(){
-      document.addEventListener('click', async (e) => {
-        const viewBtn = e.target.closest('[data-view]');
-        if(viewBtn){
+      document.addEventListener('click', e => {
+        const vb = e.target.closest('[data-view]');
+        if(vb){
           e.preventDefault();
-          if(viewBtn.dataset.plan){
-            state.selectedPlan = viewBtn.dataset.plan;
-            const sp = $('#selectedPlan'); if(sp) sp.value = state.selectedPlan;
+          if(vb.dataset.plan){
+            state.selectedPlan=vb.dataset.plan;
+            const sp=$('#selectedPlan'); if(sp) sp.value=state.selectedPlan;
           }
-          show(viewBtn.dataset.view);
-          return;
+          show(vb.dataset.view); return;
         }
-        const jump = e.target.closest('[data-jump]');
-        if(jump){ e.preventDefault(); document.getElementById(jump.dataset.jump)?.scrollIntoView({behavior:'smooth'}); return; }
+        const jb = e.target.closest('[data-jump]');
+        if(jb){ e.preventDefault(); document.getElementById(jb.dataset.jump)?.scrollIntoView({behavior:'smooth'}); }
       });
       $('#signupForm').addEventListener('submit', submitSignup);
       $('#loginForm').addEventListener('submit', submitLogin);
@@ -617,42 +727,53 @@
 
     async function submitSignup(e){
       e.preventDefault();
-      const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
-      body.modules = ['reservations','orders','delivery','payments','crm','promotions'];
-      const result = $('#signupResult'); result.classList.remove('hidden'); result.textContent='Création en cours...';
+      const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries());
+      body.modules=['reservations','orders','delivery','payments','crm','promotions'];
+      const result=$('#signupResult'); result.classList.remove('hidden'); result.textContent='Création en cours...';
+      const btn=e.currentTarget.querySelector('[type=submit]');
+      btn.textContent='…'; btn.disabled=true;
       try{
-        const data = await api('/api/signup',{ method:'POST', body:JSON.stringify(body) });
-        result.textContent='Compte créé ! Connexion en cours...';
-        if (data.mode === 'demo') {
-          state.token = 'demo-token'; state.user = data.user;
-          state.memberships = [{ restaurant_id: data.restaurant.id, role:'owner', status:'active', restaurants: data.restaurant }];
-          state.restaurantId = data.restaurant.id; state.platformAdmin = true; state.mode = 'demo';
+        const data=await api('/api/signup',{method:'POST',body:JSON.stringify(body)});
+        result.textContent='Compte créé ! Redirection...';
+        if(data.mode==='demo'){
+          state.token='demo-token'; state.user=data.user;
+          state.memberships=[{restaurant_id:data.restaurant.id,role:'owner',status:'active',restaurants:data.restaurant}];
+          state.restaurantId=data.restaurant.id; state.platformAdmin=true; state.mode='demo';
           saveState(); window.location.replace('/app.html');
         } else {
-          const loginData = await api('/api/login', { method:'POST', body:JSON.stringify({ email: body.email, password: body.password }) });
-          state.token = loginData.session.access_token;
-          state.user = { id: loginData.session.user.id, email: loginData.session.user.email };
-          state.memberships = loginData.memberships || [];
-          state.platformAdmin = Boolean(loginData.platformAdmin);
-          if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
-          state.mode = 'supabase'; saveState(); window.location.replace('/app.html');
+          const ld=await api('/api/login',{method:'POST',body:JSON.stringify({email:body.email,password:body.password})});
+          state.token=ld.session.access_token;
+          state.user={id:ld.session.user.id,email:ld.session.user.email};
+          state.memberships=ld.memberships||[];
+          state.platformAdmin=Boolean(ld.platformAdmin);
+          if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id;
+          state.mode='supabase'; saveState(); window.location.replace('/app.html');
         }
-      } catch(err){ result.textContent='Erreur: '+err.message; }
+      } catch(err){
+        result.textContent='Erreur : '+err.message;
+        btn.textContent='Créer mon espace restaurant →'; btn.disabled=false;
+      }
     }
 
     async function submitLogin(e){
       e.preventDefault();
-      const fd = new FormData(e.currentTarget); const body = Object.fromEntries(fd.entries());
-      const result = $('#loginResult'); result.classList.remove('hidden'); result.textContent='Connexion...';
+      const fd=new FormData(e.currentTarget); const body=Object.fromEntries(fd.entries());
+      const result=$('#loginResult'); result.classList.remove('hidden'); result.textContent='Connexion...';
+      const btn=e.currentTarget.querySelector('[type=submit]');
+      btn.textContent='…'; btn.disabled=true;
       try{
-        const data = await api('/api/login',{method:'POST', body:JSON.stringify(body)});
-        state.token = data.session.access_token;
-        state.user = { id:data.session.user.id, email:data.session.user.email };
-        state.memberships = data.memberships || [];
-        state.platformAdmin = Boolean(data.platformAdmin);
-        if(state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
-        saveState(); result.textContent='Connexion réussie'; window.location.replace('/app.html');
-      } catch(err){ result.textContent='Erreur: '+err.message; }
+        const data=await api('/api/login',{method:'POST',body:JSON.stringify(body)});
+        state.token=data.session.access_token;
+        state.user={id:data.session.user.id,email:data.session.user.email};
+        state.memberships=data.memberships||[];
+        state.platformAdmin=Boolean(data.platformAdmin);
+        if(state.memberships[0]) state.restaurantId=state.memberships[0].restaurant_id;
+        saveState(); result.textContent='Bienvenue ! Redirection...';
+        window.location.replace('/app.html');
+      } catch(err){
+        result.textContent='Erreur : '+err.message;
+        btn.textContent='Se connecter →'; btn.disabled=false;
+      }
     }
 
     init();
