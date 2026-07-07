@@ -6,8 +6,5 @@
   "scripts": {
     "dev": "vercel dev",
     "check": "node api/_lib/check.js"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
