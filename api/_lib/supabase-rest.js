@@ -38,7 +38,7 @@ async function request(path, options = {}) {
   let data = null;
   try { data = text ? JSON.parse(text) : null; } catch (_) { data = text; }
   if (!response.ok) {
-    const error = new Error((data && (data.message || data.error_description || data.error)) || `Supabase request failed: ${response.status}`);
+    const error = new Error((data && (data.message || data.error_description || data.error || data.msg)) || `Supabase request failed: ${response.status}`);
     error.statusCode = response.status;
     error.payload = data;
     throw error;
