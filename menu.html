@@ -291,6 +291,51 @@
     <!-- Populated by JS -->
   </div>
 
+  <!-- ══ RESERVATION MODAL ═══════════════════════════════ -->
+  <div id="payOverlay" class="overlay" onclick="closeReservation()"></div>
+  <div id="resModal" class="payment-screen" style="border-radius:24px 24px 0 0;top:auto;bottom:0;max-height:85vh;box-shadow:0 -10px 40px rgba(0,0,0,0.2);">
+    <div class="pay-header" style="border-radius:24px 24px 0 0;">
+      <button onclick="closeReservation()">×</button>
+      <h3>Réserver une table</h3>
+    </div>
+    <div class="pay-body">
+      <div class="pay-field">
+        <label>Votre Prénom</label>
+        <input type="text" id="res_name" placeholder="Ex: Awa">
+      </div>
+      <div class="pay-field">
+        <label>Téléphone / WhatsApp</label>
+        <input type="tel" id="res_phone" placeholder="Ex: 77 123 45 67">
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div class="pay-field" style="flex:1;">
+          <label>Date</label>
+          <input type="date" id="res_date">
+        </div>
+        <div class="pay-field" style="flex:1;">
+          <label>Heure</label>
+          <input type="time" id="res_time" value="20:00">
+        </div>
+      </div>
+      <div class="pay-field">
+        <label>Nombre de personnes</label>
+        <select id="res_guests">
+          <option value="1">1 personne</option>
+          <option value="2" selected>2 personnes</option>
+          <option value="3">3 personnes</option>
+          <option value="4">4 personnes</option>
+          <option value="5">5 personnes</option>
+          <option value="6">6+ personnes</option>
+        </select>
+      </div>
+      <div class="pay-field">
+        <label>Occasion (Optionnel)</label>
+        <input type="text" id="res_occasion" placeholder="Anniversaire, Dîner d'affaires...">
+      </div>
+      <button class="pay-btn" id="resBtn" onclick="submitReservation()" style="border-radius:12px;margin-top:8px;">Confirmer la demande</button>
+    </div>
+  </div>
+
   <!-- ══ STICKY ORDER BUTTON ═════════════════════════════ -->
   <div class="sticky-order" id="stickyOrder">
     <button onclick="openPayment()">
@@ -547,7 +592,7 @@
         <div class="item-right">
           <div class="item-price">${fmt.format(item.price)}</div>
           <div class="item-price-sub">FCFA</div>
-          <button class="item-add ${inCart?'added':''}" onclick="addToCart(${item.id})">
+          <button class="item-add ${inCart?'added':''}" onclick="addToCart('${item.id}')">
             ${inCart ? `✓ (${qty})` : '+ Ajouter'}
           </button>
         </div>
@@ -601,9 +646,9 @@
       <div class="cart-item">
         <div class="cart-item-name">${c.name}</div>
         <div class="cart-item-qty">
-          <button class="qty-btn" onclick="updateQty(${c.id},-1)">−</button>
+          <button class="qty-btn" onclick="updateQty('${c.id}',-1)">−</button>
           <span class="qty-val">${c.qty}</span>
-          <button class="qty-btn" onclick="updateQty(${c.id},+1)">+</button>
+          <button class="qty-btn" onclick="updateQty('${c.id}',+1)">+</button>
         </div>
         <div class="cart-item-price">${money(c.price*c.qty)}</div>
       </div>
