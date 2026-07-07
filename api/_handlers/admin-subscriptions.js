@@ -1,5 +1,5 @@
-const { send, handleOptions, getBearer } = require('./_lib/http');
-const { isConfigured, select, getUserFromToken, isPlatformAdmin } = require('./_lib/supabase-rest');
+const { send, handleOptions, getBearer } = require('../_lib/http');
+const { isConfigured, select, getUserFromToken, isPlatformAdmin } = require('../_lib/supabase-rest');
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;

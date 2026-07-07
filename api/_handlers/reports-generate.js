@@ -1,5 +1,5 @@
-const { send, handleOptions, readJson, getBearer, required } = require('./_lib/http');
-const { isConfigured, insert, getUserFromToken, requireMembership } = require('./_lib/supabase-rest');
+const { send, handleOptions, readJson, getBearer, required } = require('../_lib/http');
+const { isConfigured, insert, getUserFromToken, requireMembership } = require('../_lib/supabase-rest');
 
 function buildReport({ restaurantName, metrics, products, promotions }) {
   const totalProducts = (products || []).length;

@@ -1,4 +1,4 @@
-const { send, handleOptions } = require('./_lib/http');
+const { send, handleOptions } = require('../_lib/http');
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;

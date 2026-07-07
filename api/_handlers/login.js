@@ -1,5 +1,5 @@
-const { send, handleOptions, readJson, required } = require('./_lib/http');
-const { isConfigured, authPasswordLogin, getMemberships } = require('./_lib/supabase-rest');
+const { send, handleOptions, readJson, required } = require('../_lib/http');
+const { isConfigured, authPasswordLogin, getMemberships } = require('../_lib/supabase-rest');
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;

@@ -1,5 +1,5 @@
-const { send, handleOptions } = require('./_lib/http');
-const { env, isConfigured } = require('./_lib/supabase-rest');
+const { send, handleOptions } = require('../_lib/http');
+const { env, isConfigured } = require('../_lib/supabase-rest');
 
 module.exports = async (req, res) => {
   if (handleOptions(req, res)) return;

@@ -1,5 +1,5 @@
-const { send, handleOptions, readJson, getBearer, required } = require('./_lib/http');
-const { isConfigured, select, insert, update, remove, getUserFromToken, requireMembership, demoProducts } = require('./_lib/supabase-rest');
+const { send, handleOptions, readJson, getBearer, required } = require('../_lib/http');
+const { isConfigured, select, insert, update, remove, getUserFromToken, requireMembership, demoProducts } = require('../_lib/supabase-rest');
 
 function normalizeProduct(body, restaurantId) {
   return {

@@ -1,5 +1,5 @@
-const { send, handleOptions, readJson, required } = require('./_lib/http');
-const { isConfigured, authAdminCreateUser, insert, select } = require('./_lib/supabase-rest');
+const { send, handleOptions, readJson, required } = require('../_lib/http');
+const { isConfigured, authAdminCreateUser, insert, select } = require('../_lib/supabase-rest');
 
 function slugify(value) {
   return String(value || 'restaurant')
