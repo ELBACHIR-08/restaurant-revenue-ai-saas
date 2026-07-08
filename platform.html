@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Super Admin — Restaurant Revenue AI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+    :root {
+      --nuit:        #101d33;
+      --nuit-2:      #182946;
+      --sable:       #e8dcc4;
+      --sable-2:     #f4ede0;
+      --ecume:       #faf7f0;
+      --or:          #b98a4f;
+      --or-clair:    #d3ac74;
+      --corail:      #b4593a;
+      --encre-text:  #1a1d1f;
+      --text-muted:  #4a4e52;
+      --text-faint:  #7a7e82;
+      --line:        rgba(232,220,196,0.18);
+      --line-dark:   rgba(16,29,51,0.12);
+      --radius:      0px;
+      --shadow:      0 12px 40px rgba(16,29,51,0.06);
+      --ease-fast:   .25s ease;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; font-family:'Inter', sans-serif; color:var(--encre-text);
+      background:var(--ecume); min-height:100vh; overflow-x:hidden;
+    }
+    body:before{
+      content:""; position:fixed;inset:0;z-index:-1;opacity:.25;pointer-events:none;
+      background-image: linear-gradient(90deg,rgba(16,29,51,.04) 1px,transparent 1px), linear-gradient(0deg,rgba(16,29,51,.04) 1px,transparent 1px);
+      background-size:48px 48px; mask-image:linear-gradient(to bottom, black, transparent 90%);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    
+    h1, h2, h3 { font-family:'Fraunces', serif; margin:0 0 10px; }
+    h2 { font-size:clamp(22px,2.5vw,32px); font-weight:400; line-height:1.15; letter-spacing:-0.01em; }
+    h3 { font-size:18px; font-weight:400; line-height:1.3; }
+    p { color:var(--text-muted); line-height:1.75; margin:0; font-weight:400; font-size:14.5px; }
+
+    .btn{
+      border:1px solid var(--line-dark);background:transparent;border-radius:0px;
+      padding:12px 24px;cursor:pointer;color:var(--encre-text);font-family:'Inter', sans-serif;
+      font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;transition:.18s ease;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(16,29,51,0.08)}
+    
+    .grid{display:grid;gap:24px}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-4{grid-template-columns:repeat(4,1fr)}.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .card{background:rgba(255,255,255,0.85);border:1px solid var(--line-dark);border-radius:0px;box-shadow:var(--shadow);padding:32px}.card.dark{background:var(--nuit);color:var(--ecume);border-color:var(--nuit-2)}.card.dark p{color:var(--sable)}
+    .metric{padding:24px;border-radius:0px;background:#fff;border:1px solid var(--line-dark);box-shadow:var(--shadow)}
+    .metric .label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600}
+    .metric .value{font-family:'Fraunces', serif;font-size:32px;font-weight:300;margin-top:8px;color:var(--nuit)}
+    .metric .sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+    
+    .app{padding:28px 0;display:block;}
+    .app-layout{display:grid;grid-template-columns:260px 1fr;gap:24px}
+    .sidebar{position:sticky;top:22px;align-self:start;border-radius:0px;background:var(--nuit);color:var(--ecume);padding:20px;box-shadow:var(--shadow);border:1px solid var(--nuit-2)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:'Fraunces', serif;font-weight:400;font-size:22px;letter-spacing:-.01em}
+    .logo{width:38px;height:38px;border-radius:0px;background:linear-gradient(135deg,var(--nuit),var(--or));display:grid;place-items:center;color:#fff}
+    .side-btn{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--sable);padding:12px 14px;border-radius:0px;text-align:left;cursor:pointer;font-family:'Inter', sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;transition:.18s ease}
+    .side-btn.active,.side-btn:hover{background:rgba(232,220,196,0.08);color:var(--ecume)}
+    .content{min-width:0;padding-right:24px;}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:24px}
+    
+    .table{width:100%;border-collapse:separate;border-spacing:0 8px}.table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);padding:0 12px;font-weight:600}.table td{background:#fff;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);padding:14px 12px}.table td:first-child{border-left:1px solid var(--line-dark);border-radius:0px}.table td:last-child{border-right:1px solid var(--line-dark);border-radius:0px}
+    .status{display:inline-flex;align-items:center;border-radius:0px;padding:6px 10px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+    .status.green{background:#e9f7ef;color:#0f6c4d}.status.gold{background:#fff2d5;color:#8a540c}.status.gray{background:#efede8;color:#665d52}
+    
+    .eyebrow{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-faint);display:block;margin-bottom:8px;}
+    .divider{height:1px;background:var(--line-dark);margin:14px 0}
+    @media(max-width:900px){.app-layout,.grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}.sidebar{position:relative;top:auto}}
+  </style>
+</head>
+<body>
+
+  <main id="adminView" class="app">
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="brand" style="margin:6px 8px 24px;border-bottom:1px solid rgba(232,220,196,0.1);padding-bottom:18px">
+          <span class="logo">🛡️</span><span>Platform</span>
+        </div>
+        <button class="side-btn active" data-admin-tab="global">Vue globale</button>
+        <button class="side-btn" data-admin-tab="restaurants">Restaurants</button>
+        <button class="side-btn" data-admin-tab="plans">Plans</button>
+        <button class="side-btn" data-admin-tab="onboarding">Onboarding</button>
+        <button class="side-btn" data-admin-tab="support">Support</button>
+        <button class="side-btn" data-admin-tab="analytics">Analytics</button>
+        <div class="divider" style="background:#3a352d"></div>
+        <button class="side-btn" onclick="window.location.href='/index.html'" style="color:#f1c6b8;margin-top:12px">🚪 Déconnexion</button>
+      </aside>
+      <section class="content" id="adminContent"></section>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'rrai_saas_v2_state';
+    const fmt = new Intl.NumberFormat('fr-FR');
+    const money = v => `${fmt.format(Number(v||0))} FCFA`;
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    function esc(v){ return String(v??'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+    const state = {
+      adminTab: 'global',
+      token: null,
+      platformAdmin: false,
+      adminSummary: null,
+      adminRestaurants: []
+    };
+
+    async function api(path, options={}){
+      const headers = { 'Content-Type':'application/json' };
+      if (state.token) headers.Authorization = `Bearer ${state.token}`;
+      const res = await fetch(path, { ...options, headers });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || 'Erreur API');
+      return data;
+    }
+
+    function init() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        Object.assign(state, stored);
+      } catch(e) {}
+      
+      if (!state.platformAdmin) {
+        window.location.replace('/backoffice');
+        return;
+      }
+      
+      bind();
+      renderAdmin();
+    }
+
+    function bind() {
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('[data-admin-tab]');
+        if(btn) {
+          state.adminTab = btn.dataset.adminTab;
+          renderAdmin();
+        }
+      });
+    }
+
+    function setActiveButtons(){
+      $$('[data-admin-tab]').forEach(b => {
+        b.classList.toggle('active', b.dataset.adminTab === state.adminTab);
+      });
+    }
+
+    function renderAdmin(){
+      setActiveButtons(); const s = state.adminSummary||{}; const c = $('#adminContent');
+      if(state.adminTab==='global') c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Platform Admin</span><h2>Vue globale plateforme</h2><p>Surveillez la santé financière et l'activité de vos restaurants.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Actions admin</h3><div style="line-height:2.2;font-size:14px;color:var(--text-muted)"><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Activer / suspendre restaurant</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Changer plan et statut abonnement</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
+      if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin-restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
+      if(state.adminTab==='plans') c.innerHTML = `<div class="toolbar"><div><h2>Plans</h2><p>Starter, Growth, Premium AI et Enterprise.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">20k</div><p>Menu, QR, réservations simples.</p></div><div class="card" style="border-color:var(--or)"><h3>Growth</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">30k</div><p>Commandes, livraison, CRM, paiements.</p></div><div class="card"><h3>Premium AI</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">50k</div><p>Sommelier, assistant serveur, analytics.</p></div></div>`;
+      if(state.adminTab==='onboarding') c.innerHTML = `<div class="toolbar"><div><h2>Onboarding</h2><p>Suivi des restaurants en période gratuite.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">À configurer</div><div class="value">5</div><div class="sub">menus à importer</div></div><div class="metric"><div class="label">Prêts à lancer</div><div class="value">4</div><div class="sub">QR + produits OK</div></div><div class="metric"><div class="label">À relancer</div><div class="value">2</div><div class="sub">trial J-5</div></div></div>`;
+      if(state.adminTab==='support') c.innerHTML = `<div class="toolbar"><div><h2>Support</h2><p>Tickets, demandes d’intégration, incidents paiement et demandes restaurants.</p></div></div><div class="card" style="padding:0;overflow:hidden"><table class="table" style="margin:0"><tbody><tr><td><strong>La Fourchette</strong></td><td>Importer photos menu</td><td class="right"><span class="status gold">En cours</span></td></tr><tr><td><strong>Saly Beach Kitchen</strong></td><td>Activer livraison</td><td class="right"><span class="status green">Prêt</span></td></tr></tbody></table></div>`;
+      if(state.adminTab==='analytics') c.innerHTML = `<div class="toolbar"><div><h2>Analytics plateforme</h2><p>MRR, activation, conversion trial, utilisation modules.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Conversion trial</div><div class="value">38%</div><div class="sub">objectif 45%</div></div><div class="metric"><div class="label">ARPA</div><div class="value">37k</div><div class="sub">FCFA / mois</div></div><div class="metric"><div class="label">Modules actifs</div><div class="value">4.8</div><div class="sub">par restaurant</div></div><div class="metric"><div class="label">Churn risk</div><div class="value">${s.churn_risk||2}</div><div class="sub">à traiter</div></div></div>`;
+    }
+    
+    function renderAdminRestaurantsTable(){ const rows = state.adminRestaurants.length ? state.adminRestaurants : [{ name:'La Fourchette Dakar', city:'Dakar', status:'trial', owner_email:'owner@example.com' },{ name:'Saly Beach Kitchen', city:'Saly', status:'active', owner_email:'manager@example.com' }]; return `<table class="table"><thead><tr><th>Restaurant</th><th>Ville</th><th>Owner</th><th>Statut</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.city||'')}</td><td>${esc(r.owner_email||'')}</td><td><span class="status ${r.status==='active'?'green':r.status==='trial'?'gold':'gray'}">${esc(r.status||'trial')}</span></td></tr>`).join('')}</tbody></table>`; }
+    async function loadAdminRestaurants(){ try{ const data = await api('/api/admin-restaurants'); state.adminRestaurants = data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
+
+    init();
+  </script>
+</body>
+</html>

@@ -229,7 +229,7 @@
           <div class="divider" style="background:#3a352d"></div>
           <a class="side-btn" id="sidebarMenuLink" target="_blank" href="/r/demo-restaurant" style="text-decoration:none;color:#ffce85">🔗 Mon Lien Menu</a>
           <div class="divider" style="background:#3a352d"></div>
-          <button class="side-btn" data-view="admin" id="appAdminBtn" style="display:none">🛡️ Super Admin</button>
+
           <button class="side-btn" data-view="home">← Site public</button>
           <button class="side-btn" data-logout style="color:#f1c6b8;margin-top:12px">🚪 Déconnexion</button>
         </aside>
@@ -237,24 +237,7 @@
       </div>
     </main>
 
-    <main id="adminView" class="app">
-      <div class="app-layout">
-        <aside class="sidebar">
-          <div class="brand" style="margin:6px 8px 24px;border-bottom:1px solid rgba(232,220,196,0.1);padding-bottom:18px"><span class="logo">🛡️</span><span>Super Admin</span></div>
-          <button class="side-btn active" data-admin-tab="global">Vue globale</button>
-          <button class="side-btn" data-admin-tab="restaurants">Restaurants</button>
-          <button class="side-btn" data-admin-tab="plans">Plans</button>
-          <button class="side-btn" data-admin-tab="onboarding">Onboarding</button>
-          <button class="side-btn" data-admin-tab="support">Support</button>
-          <button class="side-btn" data-admin-tab="analytics">Analytics</button>
-          <div class="divider" style="background:#3a352d"></div>
-          <button class="side-btn" data-view="app">← Espace restaurant</button>
-          <button class="side-btn" data-view="home">← Site public</button>
-          <button class="side-btn" data-logout style="color:#f1c6b8;margin-top:12px">🚪 Déconnexion</button>
-        </aside>
-        <section class="content" id="adminContent"></section>
-      </div>
-    </main>
+
   </div>
 
   <!-- ══ ONBOARDING WIZARD OVERLAY ════════════════════════ -->
@@ -466,24 +449,16 @@
       return data;
     }
 
-    function updateAdminVisibility() {
-      const isPlatformAdmin = Boolean(state.platformAdmin);
-      const appAdminBtn = $('#appAdminBtn');
-      if (appAdminBtn) appAdminBtn.style.display = isPlatformAdmin ? 'flex' : 'none';
-    }
+
 
     function show(view){
-      if (view === 'admin' && !state.platformAdmin) {
-        view = 'app';
-      }
       state.view = view;
       saveState();
-      ['app','admin'].forEach(v => {
-        const el = $('#' + v + 'View');
-        if(el) el.classList.toggle('active', v === view);
-      });
+      
+      const el = $('#appView');
+      if(el) el.classList.toggle('active', true); // AppView is always active for logged in users
+      
       if(view === 'app') renderApp();
-      if(view === 'admin') renderAdmin();
       window.scrollTo({ top:0, behavior:'smooth' });
     }
 
@@ -500,7 +475,6 @@
     function stayRender(fn){ const y = window.scrollY; fn(); requestAnimationFrame(() => window.scrollTo(0,y)); }
     function setActiveButtons(){
       $$('.side-btn[data-section]').forEach(b => b.classList.toggle('active', b.dataset.section === state.appSection));
-      $$('.side-btn[data-admin-tab]').forEach(b => b.classList.toggle('active', b.dataset.adminTab === state.adminTab));
     }
     
     function modal(html){ $('#modalPanel').innerHTML = html; $('#modal').classList.add('active'); }
@@ -530,17 +504,6 @@
         if(me.memberships && me.memberships[0]) state.restaurantId = me.memberships[0].restaurant_id;
       } catch(e) {}
 
-      // --- DEV TESTING CHEATS ---
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('role') === 'superadmin') {
-        state.platformAdmin = true;
-        state.view = 'admin';
-      } else if (urlParams.get('role') === 'admin') {
-        state.platformAdmin = false;
-        state.view = 'app';
-      }
-
-      updateAdminVisibility();
       await loadBusinessData();
       bind();
 
@@ -699,17 +662,6 @@
     function renderSubscription(){ return `<div class="toolbar"><div><h2>Abonnement</h2><p>Trial 30 jours puis conversion vers Starter, Growth ou Premium AI.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div class="price">20 000</div><p>FCFA / mois</p></div><div class="card featured"><h3>Growth</h3><div class="price">30 000</div><p>FCFA / mois · recommandé</p></div><div class="card"><h3>Premium AI</h3><div class="price">50 000</div><p>FCFA / mois</p></div></div><div class="notice" style="margin-top:16px">PayDunya sera branché après validation du Core Supabase : webhook IPN, factures, activation/suspension automatique.</div>`; }
     function renderSettings(){ return `<div class="toolbar"><div><h2>Paramètres</h2><p>Rôles, canaux, horaires, zones de livraison et moyens de paiement.</p></div></div><div class="grid cols-2"><div class="card"><h3>Rôles</h3><p>Owner, Manager, Serveur, Cuisine, Marketing, Comptable.</p></div><div class="card"><h3>Wallets</h3><p>Wave, Orange Money, Free Money et PayDunya à connecter.</p></div></div>`; }
 
-    function renderAdmin(){
-      setActiveButtons(); const s = state.adminSummary||{}; const c = $('#adminContent');
-      if(state.adminTab==='global') c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Super Admin</span><h2>Vue globale plateforme</h2><p>Les onglets changent uniquement le contenu.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Actions admin</h3><div class="features"><div class="feature"><span class="check">✓</span>Activer / suspendre restaurant</div><div class="feature"><span class="check">✓</span>Changer plan et statut abonnement</div><div class="feature"><span class="check">✓</span>Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
-      if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin-restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
-      if(state.adminTab==='plans') c.innerHTML = `<div class="toolbar"><div><h2>Plans</h2><p>Starter, Growth, Premium AI et Enterprise.</p></div></div><div class="pricing"><div class="card"><h3>Starter</h3><div class="price">20k</div><p>Menu, QR, réservations simples.</p></div><div class="card featured"><h3>Growth</h3><div class="price">30k</div><p>Commandes, livraison, CRM, paiements.</p></div><div class="card"><h3>Premium AI</h3><div class="price">50k</div><p>Sommelier, assistant serveur, analytics.</p></div></div>`;
-      if(state.adminTab==='onboarding') c.innerHTML = `<div class="toolbar"><div><h2>Onboarding</h2><p>Suivi des restaurants en période gratuite.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">À configurer</div><div class="value">5</div><div class="sub">menus à importer</div></div><div class="metric"><div class="label">Prêts à lancer</div><div class="value">4</div><div class="sub">QR + produits OK</div></div><div class="metric"><div class="label">À relancer</div><div class="value">2</div><div class="sub">trial J-5</div></div></div>`;
-      if(state.adminTab==='support') c.innerHTML = `<div class="toolbar"><div><h2>Support</h2><p>Tickets, demandes d’intégration, incidents paiement et demandes restaurants.</p></div></div><div class="card"><table class="table"><tbody><tr><td><strong>La Fourchette</strong></td><td>Importer photos menu</td><td><span class="status gold">En cours</span></td></tr><tr><td><strong>Saly Beach Kitchen</strong></td><td>Activer livraison</td><td><span class="status green">Prêt</span></td></tr></tbody></table></div>`;
-      if(state.adminTab==='analytics') c.innerHTML = `<div class="toolbar"><div><h2>Analytics plateforme</h2><p>MRR, activation, conversion trial, utilisation modules.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Conversion trial</div><div class="value">38%</div><div class="sub">objectif 45%</div></div><div class="metric"><div class="label">ARPA</div><div class="value">37k</div><div class="sub">FCFA / mois</div></div><div class="metric"><div class="label">Modules actifs</div><div class="value">4.8</div><div class="sub">par restaurant</div></div><div class="metric"><div class="label">Churn risk</div><div class="value">${s.churn_risk||2}</div><div class="sub">à traiter</div></div></div>`;
-    }
-    function renderAdminRestaurantsTable(){ const rows = state.adminRestaurants.length ? state.adminRestaurants : [{ name:'La Fourchette Dakar', city:'Dakar', status:'trial', owner_email:'owner@example.com' },{ name:'Saly Beach Kitchen', city:'Saly', status:'active', owner_email:'manager@example.com' }]; return `<table class="table"><thead><tr><th>Restaurant</th><th>Ville</th><th>Owner</th><th>Statut</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.city||'')}</td><td>${esc(r.owner_email||'')}</td><td><span class="status ${r.status==='active'?'green':r.status==='trial'?'gold':'gray'}">${esc(r.status||'trial')}</span></td></tr>`).join('')}</tbody></table>`; }
-    async function loadAdminRestaurants(){ try{ const data = await api('/api/admin-restaurants'); state.adminRestaurants = data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
 
     function bindInlineForms(){ }
     

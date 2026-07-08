@@ -5,10 +5,14 @@
   "rewrites": [
     { "source": "/health", "destination": "/api/index.js?_path=health" },
     { "source": "/api/:path*", "destination": "/api/index.js?_path=:path*" },
+    { "source": "/backoffice", "destination": "/system-login.html" },
+    { "source": "/system-login.html", "destination": "/system-login.html" },
+    { "source": "/platform", "destination": "/platform.html" },
+    { "source": "/platform.html", "destination": "/platform.html" },
     { "source": "/app", "destination": "/app.html" },
     { "source": "/app.html", "destination": "/app.html" },
     { "source": "/r/:slug", "destination": "/menu.html" },
     { "source": "/menu.html", "destination": "/menu.html" },
-    { "source": "/((?!api/|app\\.html|app$|r/|menu\\.html).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|app\\.html|app$|r/|menu\\.html|backoffice|system-login\\.html|platform|platform\\.html).*)", "destination": "/index.html" }
   ]
 }
