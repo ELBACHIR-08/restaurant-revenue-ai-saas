@@ -991,7 +991,10 @@
       return;
     }
     loadState();
-    if (state.token) { window.location.replace('/app.html'); return; }
+      if (state.token) { 
+        window.location.replace(state.platformAdmin ? '/platform.html' : '/app.html'); 
+        return; 
+      }
     if (state.view === 'app' || state.view === 'admin') { state.view = 'home'; saveState(); }
     try {
       const cfg = await api('/api/config');
@@ -1036,7 +1039,7 @@
         state.token = 'demo-token'; state.user = data.user;
         state.memberships = [{ restaurant_id: data.restaurant.id, role: 'owner', status: 'active', restaurants: data.restaurant }];
         state.restaurantId = data.restaurant.id; state.platformAdmin = true; state.mode = 'demo';
-        saveState(); window.location.replace('/app.html');
+        saveState(); window.location.replace(state.platformAdmin ? '/platform.html' : '/app.html');
       } else {
         const ld = await api('/api/login', { method: 'POST', body: JSON.stringify({ email: body.email, password: body.password }) });
         state.token = ld.session.access_token;
@@ -1044,7 +1047,7 @@
         state.memberships = ld.memberships || [];
         state.platformAdmin = Boolean(ld.platformAdmin);
         if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
-        state.mode = 'supabase'; saveState(); window.location.replace('/app.html');
+        state.mode = 'supabase'; saveState(); window.location.replace(state.platformAdmin ? '/platform.html' : '/app.html');
       }
     } catch(err) { result.textContent = 'Erreur : ' + err.message; btn.textContent = 'Créer mon espace restaurant →'; btn.disabled = false; }
   }
@@ -1062,7 +1065,7 @@
       state.platformAdmin = Boolean(data.platformAdmin);
       if (state.memberships[0]) state.restaurantId = state.memberships[0].restaurant_id;
       saveState(); result.textContent = 'Bienvenue ! Redirection...';
-      window.location.replace('/app.html');
+      window.location.replace(state.platformAdmin ? '/platform.html' : '/app.html');
     } catch(err) { result.textContent = 'Erreur : ' + err.message; btn.textContent = 'Se connecter →'; btn.disabled = false; }
   }
 
