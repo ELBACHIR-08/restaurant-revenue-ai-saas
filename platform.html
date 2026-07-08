@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Super Admin — Restaurant Revenue AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
     :root {
@@ -155,7 +156,10 @@
 
     function renderAdmin(){
       setActiveButtons(); const s = state.adminSummary||{}; const c = $('#adminContent');
-      if(state.adminTab==='global') c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Platform Admin</span><h2>Vue globale plateforme</h2><p>Surveillez la santé financière et l'activité de vos restaurants.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="grid cols-2" style="margin-top:16px"><div class="card"><h3>Actions admin</h3><div style="line-height:2.2;font-size:14px;color:var(--text-muted)"><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Activer / suspendre restaurant</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Changer plan et statut abonnement</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
+      if(state.adminTab==='global') {
+        c.innerHTML = `<div class="toolbar"><div><span class="eyebrow">Platform Admin</span><h2>Vue globale plateforme</h2><p>Surveillez la santé financière et l'activité de vos restaurants.</p></div></div><div class="grid cols-4"><div class="metric"><div class="label">Restaurants</div><div class="value">${s.restaurants||18}</div><div class="sub">inscrits</div></div><div class="metric"><div class="label">Trials actifs</div><div class="value">${s.trial_active||11}</div><div class="sub">30 jours</div></div><div class="metric"><div class="label">Abonnements</div><div class="value">${s.active_subscriptions||7}</div><div class="sub">actifs</div></div><div class="metric"><div class="label">MRR</div><div class="value">${money(s.mrr_xof||260000)}</div><div class="sub">mensuel</div></div></div><div class="card" style="margin-top:24px;padding:24px;"><h3 style="margin-bottom:20px;">Croissance MRR (6 derniers mois)</h3><div style="position:relative;height:300px;"><canvas id="mrrGrowthChart"></canvas></div></div><div class="grid cols-2" style="margin-top:24px"><div class="card"><h3>Actions admin</h3><div style="line-height:2.2;font-size:14px;color:var(--text-muted)"><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Activer / suspendre restaurant</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Changer plan et statut abonnement</div><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--or)">✓</span> Suivre support et onboarding</div></div></div><div class="card dark"><h3>Checklist prod</h3><p>Supabase Auth, RLS, variables Vercel, platform admin emails, PayDunya next.</p></div></div>`;
+        initAdminCharts();
+      }
       if(state.adminTab==='restaurants') c.innerHTML = `<div class="toolbar"><div><h2>Restaurants</h2><p>Liste réelle via /api/admin-restaurants si Supabase est configuré.</p></div><button class="btn" onclick="loadAdminRestaurants()">Rafraîchir</button></div><div id="adminRestaurantsTable">${renderAdminRestaurantsTable()}</div>`;
       if(state.adminTab==='plans') c.innerHTML = `<div class="toolbar"><div><h2>Plans</h2><p>Starter, Growth, Premium AI et Enterprise.</p></div></div><div class="grid cols-3"><div class="card"><h3>Starter</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">20k</div><p>Menu, QR, réservations simples.</p></div><div class="card" style="border-color:var(--or)"><h3>Growth</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">30k</div><p>Commandes, livraison, CRM, paiements.</p></div><div class="card"><h3>Premium AI</h3><div style="font-size:24px;margin:8px 0;font-family:'Fraunces',serif">50k</div><p>Sommelier, assistant serveur, analytics.</p></div></div>`;
       if(state.adminTab==='onboarding') c.innerHTML = `<div class="toolbar"><div><h2>Onboarding</h2><p>Suivi des restaurants en période gratuite.</p></div></div><div class="grid cols-3"><div class="metric"><div class="label">À configurer</div><div class="value">5</div><div class="sub">menus à importer</div></div><div class="metric"><div class="label">Prêts à lancer</div><div class="value">4</div><div class="sub">QR + produits OK</div></div><div class="metric"><div class="label">À relancer</div><div class="value">2</div><div class="sub">trial J-5</div></div></div>`;
@@ -165,6 +169,46 @@
     
     function renderAdminRestaurantsTable(){ const rows = state.adminRestaurants.length ? state.adminRestaurants : [{ name:'La Fourchette Dakar', city:'Dakar', status:'trial', owner_email:'owner@example.com' },{ name:'Saly Beach Kitchen', city:'Saly', status:'active', owner_email:'manager@example.com' }]; return `<table class="table"><thead><tr><th>Restaurant</th><th>Ville</th><th>Owner</th><th>Statut</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.city||'')}</td><td>${esc(r.owner_email||'')}</td><td><span class="status ${r.status==='active'?'green':r.status==='trial'?'gold':'gray'}">${esc(r.status||'trial')}</span></td></tr>`).join('')}</tbody></table>`; }
     async function loadAdminRestaurants(){ try{ const data = await api('/api/admin-restaurants'); state.adminRestaurants = data.restaurants||[]; renderAdmin(); }catch(e){ alert(e.message); } }
+
+    let mrrChartInstance = null;
+    function initAdminCharts() {
+      const ctx = document.getElementById('mrrGrowthChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (mrrChartInstance) mrrChartInstance.destroy();
+
+      const labels = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'];
+      const mrrData = [50000, 95000, 140000, 200000, 240000, 260000];
+
+      mrrChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'MRR (FCFA)',
+            data: mrrData,
+            borderColor: '#b98a4f',
+            backgroundColor: 'rgba(185, 138, 79, 0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#101d33',
+            pointBorderColor: '#b98a4f',
+            pointRadius: 4,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter' } } },
+            x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } }
+          }
+        }
+      });
+    }
 
     init();
   </script>
